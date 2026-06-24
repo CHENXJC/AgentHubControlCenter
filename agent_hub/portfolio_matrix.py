@@ -1,0 +1,330 @@
+from __future__ import annotations
+
+
+PROJECT_MATRIX_GROUPS = [
+    {
+        "category_group": "Finance / Market",
+        "categories": {"Finance Automation", "Quant Research"},
+        "portfolio_role": "Market monitoring, quant research, and financial education showcase.",
+        "empty_next_step": "No finance or market project is registered yet.",
+    },
+    {
+        "category_group": "Media / OCR / Extraction",
+        "categories": {"Media Intelligence"},
+        "portfolio_role": "Multimodal extraction, OCR, transcription, and structured report workflow.",
+        "empty_next_step": "No media extraction project is registered yet.",
+    },
+    {
+        "category_group": "Career",
+        "categories": {"Career Automation"},
+        "portfolio_role": "Career workflow planning and job-search support.",
+        "empty_next_step": "No career workflow project is registered yet.",
+    },
+    {
+        "category_group": "News / Signal",
+        "categories": {"News Intelligence"},
+        "portfolio_role": "News signal extraction and structured intelligence analysis.",
+        "empty_next_step": "No news signal project is registered yet.",
+    },
+    {
+        "category_group": "SME Automation",
+        "categories": {"Business Discovery", "Business Operations", "Workflow Automation"},
+        "portfolio_role": "SME workflow diagnosis, operations analysis, and business opportunity scoring.",
+        "empty_next_step": "No SME automation project is registered yet.",
+    },
+    {
+        "category_group": "Knowledge Base",
+        "categories": {"Knowledge Base"},
+        "portfolio_role": "Future local personal knowledge base and retrieval workflow.",
+        "empty_next_step": "Future candidate. Keep it as a portfolio gap until the current showcase pass is complete.",
+    },
+    {
+        "category_group": "Control Center / Meta Agent",
+        "categories": {"Control Center", "Meta Agent", "AgentOps / PortfolioOps"},
+        "portfolio_role": "Portfolio command center, AgentOps dashboard, and project matrix hub.",
+        "empty_next_step": "Continue AgentHubControlCenter as the central portfolio command center.",
+    },
+]
+
+CONTROL_CENTER_VIRTUAL_PROJECT = {
+    "agent_name": "AgentHubControlCenter",
+    "category": "Control Center / Meta Agent",
+    "status": "In Progress",
+    "stage": "HUB-005",
+    "showcase_status": "Local MVP / Pre-showcase",
+    "pin_status": "Not pinned",
+    "next_action": "HUB-006 Public Showcase Packaging / Screenshots / GitHub Release Polish",
+    "portfolio_value": "Shows how the AI Agent portfolio can be managed from one local-first command center.",
+}
+
+
+def _is_public_showcase(agent: dict) -> bool:
+    return agent.get("showcase_status", "").strip().lower() == "github public showcase"
+
+
+def _is_pinned(agent: dict) -> bool:
+    return agent.get("pin_status", "").strip().lower() == "pinned"
+
+
+def _is_paused(agent: dict) -> bool:
+    return "paused" in agent.get("next_action", "").strip().lower()
+
+
+def build_category_matrix(agents: list[dict]) -> dict:
+    """Group registered agents by category."""
+    matrix: dict[str, list[dict]] = {}
+    for agent in agents:
+        category = agent.get("category", "").strip() or "Uncategorized"
+        matrix.setdefault(category, []).append(agent)
+    return matrix
+
+
+def build_capability_summary(agents: list[dict]) -> list[dict]:
+    """Summarize capabilities and showcase status for each category."""
+    matrix = build_category_matrix(agents)
+    summary = []
+
+    for category, category_agents in matrix.items():
+        summary.append(
+            {
+                "category": category,
+                "agent_count": len(category_agents),
+                "agents": [agent.get("agent_name", "") for agent in category_agents],
+                "capabilities": [
+                    agent.get("primary_capability", "")
+                    for agent in category_agents
+                    if agent.get("primary_capability", "")
+                ],
+                "showcase_count": sum(
+                    1 for agent in category_agents if _is_public_showcase(agent)
+                ),
+                "pinned_count": sum(
+                    1 for agent in category_agents if _is_pinned(agent)
+                ),
+            }
+        )
+
+    return summary
+
+
+def _build_project_display(agent: dict) -> dict:
+    """Create a compact project card for the fixed portfolio matrix."""
+    return {
+        "name": agent.get("agent_name", ""),
+        "status": agent.get("status", ""),
+        "showcase_status": agent.get("showcase_status", ""),
+        "pin_status": agent.get("pin_status", ""),
+        "next_action": agent.get("next_action", ""),
+        "public_value": agent.get("portfolio_value", ""),
+    }
+
+
+def _summarize_group_status(group_agents: list[dict]) -> str:
+    """Summarize one matrix group in product-dashboard language."""
+    if not group_agents:
+        return "No registered project yet."
+
+    complete_count = sum(
+        1 for agent in group_agents if agent.get("status", "").strip().lower() == "complete"
+    )
+    public_count = sum(1 for agent in group_agents if _is_public_showcase(agent))
+    pinned_count = sum(1 for agent in group_agents if _is_pinned(agent))
+    paused_count = sum(1 for agent in group_agents if _is_paused(agent))
+
+    return (
+        f"{len(group_agents)} project(s): {complete_count} complete, "
+        f"{public_count} public showcase, {pinned_count} pinned, {paused_count} paused."
+    )
+
+
+def _summarize_group_next_step(
+    category_group: str,
+    group_agents: list[dict],
+    empty_next_step: str,
+) -> str:
+    """Choose a matrix-level next step without expanding paused showcase projects."""
+    if not group_agents:
+        return empty_next_step
+
+    if category_group == "Control Center / Meta Agent":
+        return "Continue HUB-006 packaging for screenshots, public showcase polish, and release readiness."
+
+    for agent in group_agents:
+        next_action = agent.get("next_action", "").strip()
+        notes = agent.get("notes", "").strip()
+        combined_text = f"{next_action} {notes}".lower()
+        if "screenshots pending" in combined_text:
+            return f"Complete public-safe screenshots for {agent.get('agent_name', '')}."
+
+    for agent in group_agents:
+        if _is_public_showcase(agent) and not _is_pinned(agent):
+            return (
+                f"Review GitHub profile pin decision for {agent.get('agent_name', '')}; "
+                "do not expand features unless explicitly requested."
+            )
+
+    if all(_is_paused(agent) or (_is_public_showcase(agent) and _is_pinned(agent)) for agent in group_agents):
+        return "Paused after public showcase/profile pin; no immediate expansion needed."
+
+    return group_agents[0].get("next_action", "") or "Review next action after current showcase pass."
+
+
+def build_project_matrix_view(agents: list[dict]) -> list[dict]:
+    """Build the fixed portfolio matrix requested for the command center UI."""
+    rows = []
+    for group in PROJECT_MATRIX_GROUPS:
+        group_agents = [
+            agent
+            for agent in agents
+            if agent.get("category", "").strip() in group["categories"]
+        ]
+        if group["category_group"] == "Control Center / Meta Agent":
+            group_agents = group_agents + [CONTROL_CENTER_VIRTUAL_PROJECT]
+
+        rows.append(
+            {
+                "category_group": group["category_group"],
+                "projects": [_build_project_display(agent) for agent in group_agents],
+                "status_summary": _summarize_group_status(group_agents),
+                "next_step": _summarize_group_next_step(
+                    group["category_group"],
+                    group_agents,
+                    group["empty_next_step"],
+                ),
+                "portfolio_role": group["portfolio_role"],
+            }
+        )
+
+    return rows
+
+
+def build_priority_summary(agents: list[dict], action_plan: list[dict]) -> dict:
+    """Build strategic portfolio priorities for HUB-005 dashboard/report use."""
+    actionable_items = [item for item in action_plan if item.get("priority") != "None"]
+    top_action = actionable_items[0] if actionable_items else {}
+    paused_projects = [
+        agent.get("agent_name", "")
+        for agent in agents
+        if _is_paused(agent) or (_is_public_showcase(agent) and _is_pinned(agent))
+    ]
+    commercialization_categories = {
+        "Business Discovery",
+        "Business Operations",
+        "Workflow Automation",
+        "Media Intelligence",
+    }
+    commercialization_candidates = [
+        {
+            "agent_name": agent.get("agent_name", ""),
+            "category": agent.get("category", ""),
+            "reason": (
+                "Future service/product candidate. Keep the GitHub portfolio version paused "
+                "until a separate commercial stage is explicitly started."
+            ),
+        }
+        for agent in agents
+        if agent.get("category", "") in commercialization_categories
+    ]
+    github_showcase_projects = [
+        agent.get("agent_name", "") for agent in agents if _is_public_showcase(agent)
+    ]
+    agenthub_integration_candidates = [
+        agent.get("agent_name", "")
+        for agent in agents
+        if agent.get("status", "").strip().lower() == "complete"
+    ]
+
+    portfolio_follow_up = "No urgent child-project action."
+    if top_action:
+        portfolio_follow_up = (
+            f"{top_action.get('agent_name', '')}: {top_action.get('recommended_action', '')}"
+        )
+
+    return {
+        "next_best_project": "AgentHubControlCenter",
+        "next_best_action": "HUB-006 Public Showcase Packaging / Screenshots / GitHub Release Polish",
+        "portfolio_follow_up": portfolio_follow_up,
+        "paused_projects": paused_projects,
+        "commercialization_candidates": commercialization_candidates,
+        "github_showcase_projects": github_showcase_projects,
+        "agenthub_integration_candidates": agenthub_integration_candidates,
+        "pause_rule": (
+            "Projects that reached GitHub Public Showcase and Profile Pin stay paused "
+            "unless a new stage is explicitly requested."
+        ),
+    }
+
+
+def build_portfolio_positioning(agents: list[dict]) -> dict:
+    """Build a high-level positioning summary for the portfolio ecosystem."""
+    category_matrix = build_category_matrix(agents)
+    category_counts = {
+        category: len(category_agents)
+        for category, category_agents in category_matrix.items()
+    }
+    strongest_categories = [
+        category
+        for category, _count in sorted(
+            category_counts.items(),
+            key=lambda item: (-item[1], item[0]),
+        )[:3]
+    ]
+
+    capability_clusters = {
+        "Media Intelligence": [],
+        "Finance & Quant Research": [],
+        "Business Discovery": [],
+        "Workflow Automation": [],
+        "Career Automation": [],
+        "News Intelligence": [],
+        "Business Operations": [],
+        "AgentOps / PortfolioOps": ["AgentHubControlCenter"],
+    }
+
+    for agent in agents:
+        name = agent.get("agent_name", "")
+        category = agent.get("category", "")
+        if category == "Media Intelligence":
+            capability_clusters["Media Intelligence"].append(name)
+        elif category in {"Finance Automation", "Quant Research"}:
+            capability_clusters["Finance & Quant Research"].append(name)
+        elif category == "Business Discovery":
+            capability_clusters["Business Discovery"].append(name)
+        elif category == "Workflow Automation":
+            capability_clusters["Workflow Automation"].append(name)
+        elif category == "Career Automation":
+            capability_clusters["Career Automation"].append(name)
+        elif category == "News Intelligence":
+            capability_clusters["News Intelligence"].append(name)
+        elif category == "Business Operations":
+            capability_clusters["Business Operations"].append(name)
+
+    showcase_strengths = [
+        "Local-first AI workflows",
+        "Streamlit dashboards",
+        "Business-oriented automation",
+        "Report generation",
+        "Finance and market analysis",
+        "Workflow diagnosis",
+    ]
+
+    portfolio_gaps = [
+        "Knowledge base workflow not yet represented as a dedicated project",
+        "AI persona / avatar content workflow pending",
+        "Multi-agent orchestration still early-stage",
+        "Production deployment not yet included",
+        "Real client case studies not included",
+    ]
+
+    return {
+        "positioning_statement": (
+            "AgentHubControlCenter frames the portfolio as a local-first AI Agent "
+            "and Skill ecosystem spanning media intelligence, finance research, "
+            "business discovery, workflow automation, news analysis, career workflows, "
+            "and AgentOps / PortfolioOps management."
+        ),
+        "capability_clusters": capability_clusters,
+        "strongest_categories": strongest_categories,
+        "showcase_strengths": showcase_strengths,
+        "portfolio_gaps": portfolio_gaps,
+    }
