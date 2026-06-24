@@ -9,7 +9,7 @@ command center.
 
 ## Current Status
 
-HUB-006-PUBLIC-SHOWCASE-PACKAGING-COMPLETE
+HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -29,6 +29,22 @@ Packaging status:
 | Compile check | Complete | `python -m compileall agent_hub app.py` passed. |
 | Streamlit smoke check | Complete | Local app opened at `http://127.0.0.1:8501` for screenshot capture. |
 | Safety check | Complete | No `.env` read, no secrets output, no remote change, no push. |
+
+## HUB-007 GitHub Public Release
+
+HUB-007 publishes the public-safe showcase package to GitHub.
+
+Release status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Public repository | Complete | <https://github.com/CHENXJC/AgentHubControlCenter> |
+| Main branch | Complete | `main` is available on GitHub. |
+| README rendering | Complete | README renders on the GitHub repository page. |
+| Screenshot rendering | Complete | README uses relative `docs/images/` screenshot links. |
+| About description | Complete | Repository About description is filled. |
+| Topics | Complete | Repository topics are added. |
+| Profile Pin | Pending | Pending user decision. |
 
 ## HUB-005 Showcase Capabilities
 
@@ -62,8 +78,8 @@ Packaging status:
 This dashboard is for local portfolio management and workflow planning only. It
 does not execute external actions or access private credentials.
 
-The HUB-006 package does not create `.env`, read credentials, call external APIs,
-initialize a remote, modify git remote settings, or push to GitHub.
+The HUB-007 public release does not create `.env`, read credentials, call
+external APIs, or use force push.
 
 ## Public Showcase Notes
 

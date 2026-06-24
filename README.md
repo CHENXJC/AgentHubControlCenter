@@ -5,7 +5,7 @@ Agent and Skill portfolio projects. It gives one dashboard for the registry,
 local health checks, GitHub showcase links, portfolio capability coverage,
 display-only command packs, next actions, and portfolio positioning.
 
-Current status: HUB-007-LOCAL-GIT-RELEASE-READY
+Current status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
 ## What It Does
 
@@ -147,5 +147,5 @@ credential storage, remote initialization, and GitHub push operations in HUB-006
 
 ## Roadmap
 
-- GitHub Public Release: pending public repository remote setup.
-- Profile Pin Decision: pending after GitHub public release.
+- GitHub Public Release: complete.
+- Profile Pin Decision: pending user decision.

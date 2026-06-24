@@ -21,6 +21,19 @@ Use this checklist before preparing or publishing the GitHub public showcase.
 | Compile check | Complete | `python -m compileall agent_hub app.py` passed. |
 | Streamlit smoke check | Complete | Local app opened for screenshot capture. |
 
+## HUB-007 GitHub Public Release Status
+
+| Asset / Release Item | Status | Location / Notes |
+| --- | --- | --- |
+| Public GitHub repository | Complete | <https://github.com/CHENXJC/AgentHubControlCenter> |
+| Main branch | Complete | `main` exists on GitHub. |
+| README GitHub rendering | Complete | README displays on the repository page. |
+| README screenshot rendering | Complete | Screenshot links use `docs/images/`. |
+| About description | Complete | Repository About description is filled. |
+| Topics | Complete | Repository topics are added. |
+| Latest published base commit | Complete | `1170134` |
+| Profile Pin | Pending | Pending user decision. |
+
 ## Public-Safe Asset Rules
 
 - Do not include `.env`, credentials, tokens, customer data, private documents,

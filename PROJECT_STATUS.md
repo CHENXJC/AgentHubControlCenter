@@ -1,21 +1,32 @@
 # Project Status
 
-Current status: HUB-007-LOCAL-GIT-RELEASE-READY
+Current status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
 ## HUB-007 Checkpoint
 
-Checkpoint name: HUB-007-LOCAL-GIT-RELEASE-READY
+Checkpoint name: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
 ## HUB-007 Goal
 
-Prepare AgentHubControlCenter for GitHub public release through final safety
-checks, validation, local git initialization, and a first public-safe release
-commit.
+Complete the AgentHubControlCenter GitHub public release after the local
+public-safe release commit was prepared, pushed, and verified on GitHub.
 
 This stage did not add app features, did not refactor core logic, and did not
 change the completed HUB-005 / HUB-006 product scope.
 
-## Completed In This Stage
+## GitHub Public Release Status
+
+- Repository: published as a public GitHub repository.
+- Repository URL: <https://github.com/CHENXJC/AgentHubControlCenter>
+- Branch: `main`.
+- Latest public release commit before this status correction: `1170134`.
+- README GitHub page: rendered successfully.
+- Screenshot assets: rendered through README relative `docs/images/` links.
+- About description: filled.
+- Topics: added.
+- Profile Pin: Pending user decision.
+
+## Completed In HUB-007
 
 - Closed the previous Streamlit smoke-check process `23496`.
 - Confirmed port `8501` was no longer occupied by the previous app process.
@@ -26,17 +37,22 @@ change the completed HUB-005 / HUB-006 product scope.
 - Re-ran public release safety checks.
 - Re-ran validation commands.
 - Initialized a local git repository and moved the branch to `main`.
-- Prepared a public-safe local release commit.
+- Created the first public-safe release commit.
+- Published the project to GitHub.
+- Confirmed the repository is public, `main` exists, README renders, About is
+  filled, topics are added, and project files display on GitHub.
 
-## Modified Files
+## Modified Files In This Status Correction
 
-- `.gitignore`
 - `README.md`
 - `PROJECT_STATUS.md`
+- `docs/PUBLIC_SHOWCASE_MANIFEST.md`
+- `docs/SHOWCASE_ASSET_CHECKLIST.md`
+- `docs/PROJECT_PLAN.md`
 
 ## Public-Safe Release Files
 
-The local release commit is intended to include:
+The GitHub public release includes:
 
 - `README.md`
 - `PROJECT_STATUS.md`
@@ -49,7 +65,7 @@ The local release commit is intended to include:
 - `outputs/.gitkeep`
 - `.gitignore`
 
-Local-only or generated files are excluded:
+Local-only or generated files remain excluded:
 
 - `AGENTS.md`
 - `.env*`
@@ -64,57 +80,54 @@ Local-only or generated files are excluded:
 
 - `python -m pytest` passed: 24 tests passed.
 - `python -m compileall agent_hub app.py` passed.
-- Streamlit smoke check passed: local app opened at `http://127.0.0.1:8501`
-  and the smoke-check process was stopped.
+- Streamlit smoke check passed during the local release preparation stage.
 
 Commands used:
 
 ```powershell
 python -m pytest
 python -m compileall agent_hub app.py
-python -m streamlit run app.py --server.port 8501 --server.headless true --browser.gatherUsageStats false
 ```
 
 ## Safety Check Results
 
-- `.env`, `.env.local`, and `.env.*`: not found.
-- Sensitive filename scan: no credential/token/secret/key/password/private key
-  files found in release scope.
-- Sensitive keyword scan: no obvious API key, token, password, GitHub token, or
-  Slack token patterns found.
-- `outputs/`: only `.gitkeep`.
+- `.env`, `.env.local`, and `.env.*`: not read or output.
+- No secrets, tokens, passwords, or API keys were output.
+- `outputs/`: kept to `.gitkeep`.
 - `docs/images/`: six public-safe UI screenshots verified.
 - `AGENTS.md`: kept local-only and excluded from the public release commit.
-- GitHub remote: not configured.
-- Push: not executed.
+- GitHub remote: `https://github.com/CHENXJC/AgentHubControlCenter.git`.
+- Push: completed with normal `git push`.
+- Force push: not used.
 
 ## Git Status
 
 - Local git repository initialized.
 - Branch: `main`.
-- First public-safe local release commit: completed in this checkpoint.
-- Commit hash: recorded in the final HUB-007 task summary after commit creation.
-- Remote: none.
-- GitHub public release: pending repository creation or remote setup.
-- Profile Pin: pending user decision after GitHub public release.
+- Remote: `origin` points to `https://github.com/CHENXJC/AgentHubControlCenter.git`.
+- GitHub public release: complete.
+- Profile Pin: pending user decision.
 
-## Previous Checkpoint
+## Previous Checkpoints
 
-HUB-006-PUBLIC-SHOWCASE-PACKAGING-COMPLETE delivered public-safe screenshot
-assets, README screenshot polish, showcase docs, local validation, and smoke
-check readiness.
+- HUB-005-REPORT-EXPORT-SUMMARY-COMPLETE delivered the enhanced Command Center
+  Summary, Portfolio Export Report, Project Matrix View, Priority Action
+  Summary, Public Showcase Readiness report section, README/docs sync, and 24
+  passing tests.
+- HUB-006-PUBLIC-SHOWCASE-PACKAGING-COMPLETE delivered public-safe screenshot
+  assets, README screenshot polish, showcase docs, local validation, and smoke
+  check readiness.
 
 ## Pending Next Stage
 
-HUB-007 GitHub publish remains pending because no remote is configured in this
-new local repository.
+HUB-008: Profile Pin Decision.
 
-Recommended next action:
+Recommended focus:
 
-- Create the public GitHub repository `CHENXJC/AgentHubControlCenter`.
-- Add `origin` as `https://github.com/CHENXJC/AgentHubControlCenter.git`.
-- Push `main` after confirming the repository exists and authentication is
-  available.
+- Decide whether AgentHubControlCenter should replace an existing pinned GitHub
+  profile project.
+- If it is pinned, update this file to `HUB-008-PROFILE-PIN-COMPLETE`.
+- If it is not pinned, keep the project public and mark Profile Pin as deferred.
 
 ## How To Run Locally
 

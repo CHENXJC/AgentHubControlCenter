@@ -64,12 +64,21 @@ launch command visibility, and next actions.
 - Kept the app feature scope stable; no new app logic or core workflow expansion
   was added in this stage.
 
+## HUB-007 GitHub Public Release
+
+- Published the public-safe AgentHubControlCenter showcase repository to GitHub:
+  <https://github.com/CHENXJC/AgentHubControlCenter>.
+- Confirmed the repository is public and the `main` branch is available.
+- Confirmed README rendering, screenshot display, repository About description,
+  topics, and project file visibility.
+- Kept Profile Pin as pending user decision.
+
 ## Later Stages
 
-- HUB-007 GitHub Public Release / Profile Pin Decision
+- HUB-008 Profile Pin Decision
 
 ## Safety Boundary
 
 This project is a dashboard for local portfolio management and workflow planning.
-It does not execute external actions, access private credentials, initialize a
-remote, or push to GitHub.
+It does not execute external actions, access private credentials, or use force
+push. GitHub publishing is limited to public-safe release commits.
