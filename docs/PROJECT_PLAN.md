@@ -310,11 +310,23 @@ launch command visibility, and next actions.
 - Verified the live GitHub README, screenshot assets, docs, and remote tree
   after push.
 
+## HUB-V2-015 Profile Pin / Portfolio Placement Decision
+
+- Added `docs/PROFILE_PIN_PORTFOLIO_DECISION.md` with the GitHub Profile pin
+  recommendation, reasons, repo About options, topic suggestions, README
+  first-screen check, and cross-project backlink recommendation.
+- Added `docs/PORTFOLIO_POSITIONING.md` with one-line, short summary,
+  three-bullet, resume, LinkedIn/portfolio, and interview explanation versions.
+- Recorded the pin decision as `strongly recommend pin`.
+- Kept the stage documentation-only: no product feature expansion, no sibling
+  project edits, no external API calls, no live connectors, no real actions, no
+  remote changes, no commit, and no push.
+
 ## Later Stages
 
-- HUB-V2-015 Profile Pin / Portfolio Placement Decision, if the user wants to
-  decide whether AgentHubControlCenter should be pinned on the GitHub profile
-  after the V2 public showcase update.
+- HUB-V2-016 Cross-Project Backlink Plan, only if the user wants selected
+  sibling project READMEs to link back to AgentHubControlCenter as the portfolio
+  hub.
 
 ## Safety Boundary
 

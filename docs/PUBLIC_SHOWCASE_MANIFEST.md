@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-014-GIT-COMMIT-PUSH-LIVE-SHOWCASE-VERIFICATION-COMPLETE
+Current local development status: HUB-V2-015-PROFILE-PIN-PORTFOLIO-PLACEMENT-DECISION-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -301,6 +301,25 @@ Local and remote status:
 | Commit / push | Complete | Normal commit and push only; no remote modification and no force push. |
 | Live verification | Complete | README, screenshot assets, docs, and remote tree are verified after push. |
 | Safety | Complete | No `.env`, credentials, secrets, live connectors, child scripts, external APIs, real actions, generated reports, remote changes, reset, clean, rm, or force push. |
+
+## HUB-V2-015 Profile Pin / Portfolio Placement Decision
+
+HUB-V2-015 decides how AgentHubControlCenter should be positioned after the V2
+public showcase update. It does not add product features, modify sibling
+projects, call external APIs, connect providers, execute actions, commit, or
+push.
+
+Placement status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Pin decision | Complete | `strongly recommend pin` because AgentHub is the portfolio hub for 11 local AI Agents and Skills. |
+| Repo About options | Complete | Three About description variants are documented in `docs/PROFILE_PIN_PORTFOLIO_DECISION.md`. |
+| Topic suggestions | Complete | AI Agents, AI automation, workflow automation, command center, approval gates, connector readiness, local-first, and portfolio dashboard topics are recommended. |
+| Portfolio positioning copy | Complete | `docs/PORTFOLIO_POSITIONING.md` includes one-line, summary, resume, LinkedIn/portfolio, and interview versions. |
+| README first-screen check | Complete | Current first screen passes; a compact portfolio positioning line was added near the top. |
+| Cross-project backlinks | Recommended next | Backlinks are useful, but should be handled in a separate explicit stage. |
+| Safety | Complete | No `.env`, credentials, secrets, live connectors, child scripts, external APIs, real actions, sibling repo edits, remote changes, commit, or push. |
 
 ## HUB-005 Showcase Capabilities
 

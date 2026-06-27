@@ -6,7 +6,11 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-014-GIT-COMMIT-PUSH-LIVE-SHOWCASE-VERIFICATION-COMPLETE
+Current status: HUB-V2-015-PROFILE-PIN-PORTFOLIO-PLACEMENT-DECISION-COMPLETE
+
+Portfolio positioning: this repo is the hub project for showing how 11
+local-first AI Agents and Skills can be organized into one safe, inspectable
+AgentOps workflow system.
 
 ## What It Does
 
@@ -165,6 +169,8 @@ policy state for high-risk connector ideas.
   public exclusion manifest
 - HUB-V2-014 public-safe git commit, push, and live GitHub showcase
   verification
+- HUB-V2-015 Profile Pin / Portfolio Placement Decision with portfolio
+  positioning copy
 - Manual runbook references for safe human operation
 - Action safety policy for blocked or approval-required action classes
 - Reviewed V2 Agent cards with category, source, demo-mode, safe-mode, action,
@@ -191,8 +197,13 @@ policy state for high-risk connector ideas.
 
 ## Current MVP Status
 
-HUB-V2-014 completes the authorized public showcase commit/push verification
-stage on top of the HUB-V2-013 GitHub showcase update decision. It uses
+HUB-V2-015 completes the GitHub Profile pin / portfolio placement decision. The
+decision is to strongly recommend pinning AgentHubControlCenter because it is
+the portfolio hub that best represents the user's AI Agent matrix, workflow
+automation thinking, safety gates, and AI automation consultant positioning.
+
+HUB-V2-014 completed the authorized public showcase commit/push verification
+stage on top of the HUB-V2-013 GitHub showcase update decision. It used
 `docs/PUBLIC_COMMIT_FILE_MANIFEST.md` as the exact staging source, keeps
 generated public reports excluded, commits only public-safe project files, and
 verifies the live GitHub README, screenshot assets, docs, and remote tree after
@@ -400,4 +411,5 @@ showcase refresh only updates public-safe docs and screenshots.
 - HUB-V2-012 Public Showcase Release Check: complete.
 - HUB-V2-013 GitHub Showcase Update Decision: complete.
 - HUB-V2-014 Git Commit / Push / Live Showcase Verification: complete.
-- HUB-V2-015 Profile Pin / Portfolio Placement Decision: recommended next.
+- HUB-V2-015 Profile Pin / Portfolio Placement Decision: complete.
+- HUB-V2-016 Cross-Project Backlink Plan: optional next stage.
