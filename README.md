@@ -1,11 +1,12 @@
 # AgentHubControlCenter
 
-AgentHubControlCenter is a local-first AgentOps command center for managing AI
-Agent and Skill portfolio projects. It gives one dashboard for the registry,
-local health checks, GitHub showcase links, portfolio capability coverage,
-display-only command packs, next actions, and portfolio positioning.
+AgentHubControlCenter is a local-first Personal AI Command Center for managing
+AI Agent and Skill portfolio projects. V2 upgrades the app from a single
+portfolio dashboard into an AI Agent Operating System entry point: tools,
+workflows, useful signals, action center, connectors, and future plugin
+interface.
 
-Current status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
+Current status: HUB-V2-014-GIT-COMMIT-PUSH-LIVE-SHOWCASE-VERIFICATION-COMPLETE
 
 ## What It Does
 
@@ -20,6 +21,41 @@ Current status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 - Generates an enhanced Markdown portfolio report for download or local saved export.
 - Builds a Command Center Summary and public-safe showcase asset checklist.
 - Builds a Priority Action Summary for paused projects, future commercial candidates, GitHub showcase projects, and future AgentHub integration candidates.
+- Shows a V2 Command Overview for what tools are available, what they can do, and what the recommended next action is.
+- Defines a standard Agent manifest and contract for future Agent onboarding.
+- Scans `F:\AIProjects` child project folders for `agent_manifest.json`.
+- Validates manifest fields and shows onboarding warnings instead of crashing.
+- Merges valid manifest records with `data/agent_registry.csv` at runtime.
+- Shows source labels: `static_registry`, `local_manifest`, and `demo_manifest`.
+- Shows connector readiness without enabling live Gmail, Google Sheets, Notion, Airtable, Telegram, or other external account actions.
+- Defines a unified local action schema for every onboarded Agent.
+- Shows Action Center metrics for total actions, manual-only actions,
+  display-only actions, future connector actions, required approvals, and
+  blocked actions.
+- Shows schema-backed action cards grouped by Agent with risk level, approval
+  flag, expected output, safety note, and manual runbook reference.
+- Provides manual runbook and action safety policy docs before any future
+  execution stage.
+- Generates copy-ready Codex prompts from Agent manifests, local action
+  metadata, checkpoint context, safety rules, validation requirements, and next
+  recommended actions.
+- Scores local/demo Useful Signals from manifest, project status, report,
+  action registry, local JSON/CSV, and manual demo metadata.
+- Shows ranked recommendations with usefulness, relevance, urgency,
+  actionability, value, and risk scores without executing any action.
+- Simulates future connector readiness for Gmail, Google Sheets, Google Drive,
+  Notion, Airtable, Telegram, GitHub, n8n, Make, and Zapier without connecting
+  live accounts.
+- Shows connector permissions, approval gates, risk level, rollback plan, test
+  plan, readiness score, and recommended next step.
+- Simulates local demo workflows that chain Agent manifests, Useful Signals,
+  Action Center metadata, Approval Gates, Manual Runbook references, Codex
+  prompts, and summary outputs.
+- Shows Approval Gates for display-only, manual-only, template-only,
+  dry-run-only, and blocked workflow steps without enabling real execution.
+- Exports public-safe demo workflow reports as Markdown, JSON, and CSV text from
+  local metadata only.
+- Provides a Windows desktop launcher path for opening the command center on port `8525`.
 
 ## Why This Project Matters
 
@@ -32,46 +68,107 @@ local-first AI workflow ecosystem.
 
 ### Command Center Overview
 
-![Command Center Overview](docs/images/01_command_center_home.png)
+![Command Center Overview](docs/images/01_command_overview.png)
 
-Public-safe command center home view with portfolio metrics and summary cards.
+Public-safe command center home view with portfolio metrics, 11 available
+tools, and first-row Agent cards.
 
-### Portfolio Metrics
+### Agent Registry
 
-![Portfolio Metrics](docs/images/02_portfolio_metrics.png)
+![Agent Registry](docs/images/02_agent_registry.png)
 
-Registry overview showing local demo portfolio coverage without credential or
-private path exposure.
+My Tools / Agent Registry view showing 11 manifest-onboarded local Agents and
+Skills with source, demo-mode, safe-mode, action, and connector badges.
 
-### Project Matrix View
+### Action Center
 
-![Project Matrix View](docs/images/03_project_matrix_view.png)
+![Action Center](docs/images/03_action_center.png)
 
-Capability-group matrix for positioning AI Agent and Skill projects in the
-portfolio.
+Local Action Schema metrics, policy-safe action table, and Agent-grouped action
+cards. All actions remain display/manual/template/planned metadata only.
 
-### Priority Action Summary
+### Codex Prompt Generator
 
-![Priority Action Summary](docs/images/04_priority_action_summary.png)
+![Codex Prompt Generator](docs/images/04_codex_prompt_generator.png)
 
-Next-action planning view for screenshot, showcase, and pin decision readiness.
+Template-only prompt generator with Agent selector, prompt type selector,
+safety checklist, validation checklist, preview, and copy-ready text area.
 
-### Report Export Preview
+### Useful Signals
 
-![Report Export Preview](docs/images/05_report_export_preview.png)
+![Useful Signals](docs/images/05_useful_signals.png)
 
-Local Markdown report preview and export summary for portfolio documentation.
+Scored local/demo recommendations for project progress, connector readiness,
+workflow automation, portfolio improvement, and risk warnings.
 
-### Public Showcase Readiness
+### Workflow Simulation
 
-![Public Showcase Readiness](docs/images/06_public_showcase_readiness.png)
+![Workflow Simulation](docs/images/06_workflow_simulation.png)
 
-Health overview for public-showcase file readiness and local structure checks.
+My Workflows page showing local workflow simulation metrics and filters. No
+live connector, credential, child script, or real action is executed.
+
+### Connectors
+
+![Connectors](docs/images/07_connectors.png)
+
+Connector readiness view showing local, link-based, planned, optional, and
+not-connected surfaces without enabling live account integrations.
+
+### Agent Onboarding Metrics
+
+![Agent Onboarding Metrics](docs/images/08_agent_onboarding_metrics.png)
+
+Agent onboarding metrics showing 11 manifests found, 11 valid manifests, 0
+invalid manifests, and 0 missing manifests.
+
+### Report Export
+
+![Report Export](docs/images/09_report_export.png)
+
+Demo Workflow Report Export preview for Markdown, JSON, and CSV public-safe text
+reports under `outputs/public_reports/`.
+
+### Approval Gates
+
+![Approval Gates](docs/images/10_approval_gates.png)
+
+Approval Gates table showing blocked/manual/template-only workflow steps and
+policy state for high-risk connector ideas.
 
 ## Core Features
 
 - Product-style Streamlit dashboard
-- Command center hero section
+- Personal AI Command Center hero section
+- Command Overview page
+- My Tools / Agent Registry page
+- My Workflows page
+- Useful Signals page
+- Action Center page
+- Connectors page
+- Future Plugin Interface page
+- Agent Onboarding section
+- Manifest discovery and validation
+- CSV + manifest runtime registry merge
+- Manifest-based Agent onboarding for 11 local Agents and Skills
+- HUB-V2-005 local action schema for 55 metadata-only actions across 11 Agents
+- HUB-V2-006 Codex Prompt Generator for copy-ready text prompts
+- HUB-V2-007 Useful Signals Engine for scored local recommendations
+- HUB-V2-008 Connector Readiness Simulator for design-only connector planning
+- HUB-V2-009 Local Workflow Simulation + Approval Gates for demo workflow review
+- HUB-V2-010 Demo Workflow Report Export for Markdown / JSON / CSV public-safe
+  reporting
+- HUB-V2-011 refreshed 10-screenshot showcase set and sample public-safe report
+  summary
+- HUB-V2-012 public showcase release checklist and readiness report
+- HUB-V2-013 GitHub showcase update decision, public commit manifest, and
+  public exclusion manifest
+- HUB-V2-014 public-safe git commit, push, and live GitHub showcase
+  verification
+- Manual runbook references for safe human operation
+- Action safety policy for blocked or approval-required action classes
+- Reviewed V2 Agent cards with category, source, demo-mode, safe-mode, action,
+  and connector badges
 - Six metric cards
 - Agent registry table with sidebar filters
 - Agent detail panel
@@ -88,31 +185,144 @@ Health overview for public-showcase file readiness and local structure checks.
 - Priority action summary
 - Public showcase readiness section
 - Showcase asset checklist
+- Standard Agent interface docs and JSON examples
+- Codex Prompt Generator docs and text-only prompt policy
+- Windows one-click command launcher
 
 ## Current MVP Status
 
-HUB-006 packages the completed HUB-005 product UI for GitHub public showcase.
-It adds public-safe screenshot assets under `docs/images/`, updates the README
-screenshot section, refreshes showcase docs, and records final packaging
-verification.
+HUB-V2-014 completes the authorized public showcase commit/push verification
+stage on top of the HUB-V2-013 GitHub showcase update decision. It uses
+`docs/PUBLIC_COMMIT_FILE_MANIFEST.md` as the exact staging source, keeps
+generated public reports excluded, commits only public-safe project files, and
+verifies the live GitHub README, screenshot assets, docs, and remote tree after
+push.
 
-The app feature scope remains HUB-005: Command Center Summary, fixed project
-matrix view, Priority Action Summary, public showcase readiness, stable report
-file naming, and optional local save action for `outputs/`.
+HUB-V2-013 completed a local GitHub showcase update decision on top of the
+HUB-V2-012 public release check. It classified the working tree into
+recommended public commit files and intentional exclusions, recorded a suggested
+staging plan for the explicit commit stage, and confirmed the generated
+report/output boundaries remain public-safe.
 
-It does not call OpenAI APIs, does not create credentials, does not push to
-GitHub, and does not execute external actions.
+HUB-V2-012 completed the local public showcase release check on top of the V2
+action schema, manual runbook, Codex Prompt Generator, Useful Signals Engine,
+Connector Readiness Simulator, Local Workflow Simulation, Approval Gates, and
+Demo Workflow Report Export layers. It verified the 10-image screenshot set,
+sample public-safe report summary, manifest/contract JSON, launcher,
+`.gitignore` boundaries, policy counts, and release-readiness docs for
+GitHub/portfolio review.
+
+The My Workflows page now includes workflow simulation metrics, workflow cards,
+Approval Gates, workflow-generated Useful Signals, and Demo Workflow Report
+Export previews/downloads. Each workflow remains
+`local_simulation_only_no_live_connector_no_real_action_no_credentials`, and
+report export remains `public_safe_demo_report_metadata_only_no_execution`.
+
+The Connectors page still includes readiness metrics, risk/status/provider
+filters, connector cards, readiness table, and connector-generated Useful
+Signals. Each connector remains `not_connected` and
+`design_only_readiness_simulation_no_live_connection`.
+
+The V2 stack now sits on top of
+the completed HUB-V2-001 / HUB-V2-001A command center and launcher work, the
+HUB-V2-002 safe discovery layer, the HUB-V2-003 child manifests, and the
+HUB-V2-004 registry/screenshot review.
+
+It does not call OpenAI APIs, does not create OAuth flows, does not create
+credentials, does not execute child project scripts, does not execute action
+command templates, does not connect external accounts, and does not auto-send
+generated prompts or recommendations anywhere. GitHub push is only performed in
+the explicit V2-014 release stage authorized by the user, without changing git
+remotes or using force push.
+
+Current local scan result:
+
+- Total projects scanned: 11
+- Manifests found: 11
+- Valid manifests: 11
+- Invalid manifests: 0
+- Missing manifests: 0
+- Imported agents: 11
+- Duplicate agent IDs: 9 static registry overrides
+
+Current local action result:
+
+- Total actions: 56
+- Manual-only actions: 17
+- Display-only actions: 31
+- Future connector actions: 0
+- Requires approval: 0
+- Blocked actions: 0
+- Policy violations: 0
+
+Current useful signal result:
+
+- Demo/local useful signals: 20 including 3 connector-generated signals and 3
+  workflow-generated signals
+- Execution policy: `display_only_text_recommendation_no_execution`
+- Real action execution: 0
+
+Current connector readiness result:
+
+- Demo connectors: 14
+- Design-only connectors: 1
+- Ready for demo: 2
+- Needs review: 2
+- Blocked until approved: 6
+- High-risk connectors: 10
+- Average readiness score: 44.9
+- Live connectors connected: 0
+- Connector policy violations: 0
+
+Current local workflow simulation result:
+
+- Demo workflows: 4
+- Workflow-generated Useful Signals: 3
+- Live connectors connected: 0
+- Real workflow execution: 0
+- Workflow policy violations: 0
+- Approval gate policy violations: 0
+
+Current demo workflow report export result:
+
+- Available report sections: 7
+- Export formats: Markdown, JSON, CSV
+- Output directory: `outputs/public_reports/`
+- Report export policy: `public_safe_demo_report_metadata_only_no_execution`
+- Report export policy violations: 0
+
+Current showcase refresh result:
+
+- Canonical screenshots: 10 under `docs/images/`
+- Sample report summary: `docs/SAMPLE_DEMO_WORKFLOW_REPORT_SUMMARY.md`
+- Screenshot public-safe review: no `.env`, secret, token, password, API key,
+  credential, private output, live connector data, or real execution visible
+- Public-safe report source checked: latest Markdown/JSON/CSV files under
+  `outputs/public_reports/`
+
+Current release readiness result:
+
+- Public release checklist: `docs/PUBLIC_RELEASE_CHECKLIST.md`
+- V2 release readiness report: `docs/V2_RELEASE_READINESS_REPORT.md`
+- README/docs/screenshots consistency: ready
+- Manifest/contract JSON validation: ready
+- Public reports boundary: generated report files remain ignored; `.gitkeep` is
+  the only intended tracked file under `outputs/public_reports/`
+- Release recommendation: ready for a separate explicit commit/push decision
 
 ## Registered Agents
 
+- AgentHubControlCenter
 - VideoExtractSkill
 - MarketSenseAgent
 - QuantLabAgent
 - SocialPainFinderAgent
 - CareerPilotAgent
 - NewsSignalAgent
+- PersonalKnowledgeAgent
 - BusinessOpsAgent
 - NextOpsAgent
+- IdeaScoreAgent
 
 ## Tech Stack
 
@@ -129,6 +339,20 @@ python -m pip install -r requirements.txt
 streamlit run app.py
 ```
 
+Desktop launcher:
+
+```powershell
+cd F:\AIProjects\AgentHubControlCenter
+.\launch_command_center.cmd
+```
+
+Create desktop shortcut:
+
+```powershell
+cd F:\AIProjects\AgentHubControlCenter
+powershell -ExecutionPolicy Bypass -File .\scripts\create_desktop_shortcut.ps1
+```
+
 Run tests:
 
 ```powershell
@@ -143,9 +367,37 @@ This dashboard is for local portfolio management and workflow planning only. It
 does not execute external actions or access private credentials.
 
 The project intentionally avoids `.env` creation, API integrations, token reads,
-credential storage, remote initialization, and GitHub push operations in HUB-006.
+credential storage, remote initialization, remote modification, and force push.
+HUB-V2-014 performs only the explicitly authorized public-safe git staging,
+commit, normal push, and live showcase verification. Connectors, workflows,
+approval gates, reports, screenshots, and sample summaries are shown as
+local/demo/planned/readiness/simulation/export/showcase surfaces only. Manifest
+discovery only reads `agent_manifest.json` files from immediate child project
+folders, and child project actions remain display/manual/template/planned
+metadata. Generated Codex prompts and Useful Signals recommendations are
+text-only planning artifacts. Connector readiness records are design-only
+metadata and do not load credentials or call provider APIs. Workflow simulations
+and Approval Gates are metadata-only and do not execute real actions. Demo
+Workflow Report Export writes only public-safe text under `outputs/public_reports/`
+when local file export is used, and does not write `outputs/private/`. The
+showcase refresh only updates public-safe docs and screenshots.
 
 ## Roadmap
 
 - GitHub Public Release: complete.
-- Profile Pin Decision: pending user decision.
+- HUB-V2-001 Unified Command Center Entry + Desktop Launcher: complete.
+- HUB-V2-001A Desktop Launcher Runtime Fix: complete.
+- HUB-V2-002 Manifest Import + Agent Onboarding Flow: complete.
+- HUB-V2-003 Child Agent Manifest Templates: complete.
+- HUB-V2-004 V2 Onboarding Screenshot Refresh + Registry Review: complete.
+- HUB-V2-005 Local Action Schema + Manual Runbook: complete.
+- HUB-V2-006 Codex Prompt Generator: complete.
+- HUB-V2-007 Useful Signals Engine: complete.
+- HUB-V2-008 Connector Readiness Simulator: complete.
+- HUB-V2-009 Local Workflow Simulation + Approval Gates: complete.
+- HUB-V2-010 Demo Workflow Report Export: complete.
+- HUB-V2-011 Report Showcase / Screenshot Refresh: complete.
+- HUB-V2-012 Public Showcase Release Check: complete.
+- HUB-V2-013 GitHub Showcase Update Decision: complete.
+- HUB-V2-014 Git Commit / Push / Live Showcase Verification: complete.
+- HUB-V2-015 Profile Pin / Portfolio Placement Decision: recommended next.

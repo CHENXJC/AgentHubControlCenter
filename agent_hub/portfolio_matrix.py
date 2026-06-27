@@ -4,43 +4,50 @@ from __future__ import annotations
 PROJECT_MATRIX_GROUPS = [
     {
         "category_group": "Finance / Market",
-        "categories": {"Finance Automation", "Quant Research"},
+        "categories": {"Finance Automation", "Quant Research", "market_intelligence", "quant_research"},
         "portfolio_role": "Market monitoring, quant research, and financial education showcase.",
         "empty_next_step": "No finance or market project is registered yet.",
     },
     {
         "category_group": "Media / OCR / Extraction",
-        "categories": {"Media Intelligence"},
+        "categories": {"Media Intelligence", "content_intelligence"},
         "portfolio_role": "Multimodal extraction, OCR, transcription, and structured report workflow.",
         "empty_next_step": "No media extraction project is registered yet.",
     },
     {
         "category_group": "Career",
-        "categories": {"Career Automation"},
+        "categories": {"Career Automation", "career_operations"},
         "portfolio_role": "Career workflow planning and job-search support.",
         "empty_next_step": "No career workflow project is registered yet.",
     },
     {
         "category_group": "News / Signal",
-        "categories": {"News Intelligence"},
+        "categories": {"News Intelligence", "news_intelligence"},
         "portfolio_role": "News signal extraction and structured intelligence analysis.",
         "empty_next_step": "No news signal project is registered yet.",
     },
     {
         "category_group": "SME Automation",
-        "categories": {"Business Discovery", "Business Operations", "Workflow Automation"},
+        "categories": {
+            "Business Discovery",
+            "Business Operations",
+            "Workflow Automation",
+            "opportunity_discovery",
+            "sme_operations",
+            "idea_validation",
+        },
         "portfolio_role": "SME workflow diagnosis, operations analysis, and business opportunity scoring.",
         "empty_next_step": "No SME automation project is registered yet.",
     },
     {
         "category_group": "Knowledge Base",
-        "categories": {"Knowledge Base"},
+        "categories": {"Knowledge Base", "knowledge_management"},
         "portfolio_role": "Future local personal knowledge base and retrieval workflow.",
         "empty_next_step": "Future candidate. Keep it as a portfolio gap until the current showcase pass is complete.",
     },
     {
         "category_group": "Control Center / Meta Agent",
-        "categories": {"Control Center", "Meta Agent", "AgentOps / PortfolioOps"},
+        "categories": {"Control Center", "Meta Agent", "AgentOps / PortfolioOps", "agent_ops"},
         "portfolio_role": "Portfolio command center, AgentOps dashboard, and project matrix hub.",
         "empty_next_step": "Continue AgentHubControlCenter as the central portfolio command center.",
     },
@@ -50,11 +57,11 @@ CONTROL_CENTER_VIRTUAL_PROJECT = {
     "agent_name": "AgentHubControlCenter",
     "category": "Control Center / Meta Agent",
     "status": "In Progress",
-    "stage": "HUB-005",
-    "showcase_status": "Local MVP / Pre-showcase",
+    "stage": "HUB-V2-009",
+    "showcase_status": "GitHub Public Showcase + V2 Local Upgrade",
     "pin_status": "Not pinned",
-    "next_action": "HUB-006 Public Showcase Packaging / Screenshots / GitHub Release Polish",
-    "portfolio_value": "Shows how the AI Agent portfolio can be managed from one local-first command center.",
+    "next_action": "HUB-V2-010 Demo Workflow Report Export",
+    "portfolio_value": "Shows how the AI Agent portfolio can be managed from one local-first personal command center.",
 }
 
 
@@ -147,7 +154,7 @@ def _summarize_group_next_step(
         return empty_next_step
 
     if category_group == "Control Center / Meta Agent":
-        return "Continue HUB-006 packaging for screenshots, public showcase polish, and release readiness."
+        return "Use HUB-V2-009 Local Workflow Simulation + Approval Gates as the safety design layer; next recommended stage is HUB-V2-010 demo workflow report export."
 
     for agent in group_agents:
         next_action = agent.get("next_action", "").strip()
@@ -178,7 +185,11 @@ def build_project_matrix_view(agents: list[dict]) -> list[dict]:
             for agent in agents
             if agent.get("category", "").strip() in group["categories"]
         ]
-        if group["category_group"] == "Control Center / Meta Agent":
+        has_control_center = any(
+            agent.get("agent_name", "").strip() == CONTROL_CENTER_VIRTUAL_PROJECT["agent_name"]
+            for agent in group_agents
+        )
+        if group["category_group"] == "Control Center / Meta Agent" and not has_control_center:
             group_agents = group_agents + [CONTROL_CENTER_VIRTUAL_PROJECT]
 
         rows.append(
@@ -199,7 +210,7 @@ def build_project_matrix_view(agents: list[dict]) -> list[dict]:
 
 
 def build_priority_summary(agents: list[dict], action_plan: list[dict]) -> dict:
-    """Build strategic portfolio priorities for HUB-005 dashboard/report use."""
+    """Build strategic portfolio priorities for the command center dashboard/report use."""
     actionable_items = [item for item in action_plan if item.get("priority") != "None"]
     top_action = actionable_items[0] if actionable_items else {}
     paused_projects = [
@@ -212,6 +223,10 @@ def build_priority_summary(agents: list[dict], action_plan: list[dict]) -> dict:
         "Business Operations",
         "Workflow Automation",
         "Media Intelligence",
+        "opportunity_discovery",
+        "sme_operations",
+        "content_intelligence",
+        "idea_validation",
     }
     commercialization_candidates = [
         {
@@ -242,7 +257,7 @@ def build_priority_summary(agents: list[dict], action_plan: list[dict]) -> dict:
 
     return {
         "next_best_project": "AgentHubControlCenter",
-        "next_best_action": "HUB-006 Public Showcase Packaging / Screenshots / GitHub Release Polish",
+        "next_best_action": "HUB-V2-009 Local Workflow Simulation + Approval Gates",
         "portfolio_follow_up": portfolio_follow_up,
         "paused_projects": paused_projects,
         "commercialization_candidates": commercialization_candidates,
@@ -284,20 +299,22 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
     for agent in agents:
         name = agent.get("agent_name", "")
         category = agent.get("category", "")
-        if category == "Media Intelligence":
+        if category in {"Media Intelligence", "content_intelligence"}:
             capability_clusters["Media Intelligence"].append(name)
-        elif category in {"Finance Automation", "Quant Research"}:
+        elif category in {"Finance Automation", "Quant Research", "market_intelligence", "quant_research"}:
             capability_clusters["Finance & Quant Research"].append(name)
-        elif category == "Business Discovery":
+        elif category in {"Business Discovery", "opportunity_discovery", "idea_validation"}:
             capability_clusters["Business Discovery"].append(name)
-        elif category == "Workflow Automation":
+        elif category in {"Workflow Automation", "sme_operations"}:
             capability_clusters["Workflow Automation"].append(name)
-        elif category == "Career Automation":
+        elif category in {"Career Automation", "career_operations"}:
             capability_clusters["Career Automation"].append(name)
-        elif category == "News Intelligence":
+        elif category in {"News Intelligence", "news_intelligence"}:
             capability_clusters["News Intelligence"].append(name)
-        elif category == "Business Operations":
+        elif category in {"Business Operations", "sme_operations"}:
             capability_clusters["Business Operations"].append(name)
+        elif category in {"Knowledge Base", "knowledge_management"}:
+            capability_clusters.setdefault("Knowledge Management", []).append(name)
 
     showcase_strengths = [
         "Local-first AI workflows",

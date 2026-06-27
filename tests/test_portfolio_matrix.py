@@ -45,7 +45,7 @@ def test_build_project_matrix_view_returns_fixed_groups():
         [
             {
                 "agent_name": "QuantLabAgent",
-                "category": "Quant Research",
+                "category": "quant_research",
                 "status": "Complete",
                 "showcase_status": "GitHub Public Showcase",
                 "pin_status": "Pinned",

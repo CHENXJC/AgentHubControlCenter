@@ -13,6 +13,9 @@ __pycache__/
 *.env
 outputs/*
 !outputs/.gitkeep
+!outputs/public_reports/
+outputs/public_reports/*
+!outputs/public_reports/.gitkeep
 *.log
 *.tmp
 .DS_Store

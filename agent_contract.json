@@ -1,0 +1,372 @@
+{
+  "contract_version": "HUB-V2-012",
+  "purpose": "Standard local-first Agent declaration, action schema, manual runbook, Codex prompt generator, useful signal recommendation, connector readiness simulation, local workflow simulation, approval gate, public-safe demo workflow report export, showcase screenshot refresh, and public release readiness contract for AgentHubControlCenter V2.",
+  "required_fields": [
+    "agent_id",
+    "agent_name",
+    "category",
+    "description",
+    "project_path",
+    "status",
+    "inputs",
+    "outputs",
+    "actions",
+    "connectors",
+    "demo_mode",
+    "safe_mode"
+  ],
+  "optional_fields": [
+    "version",
+    "action_schema_version",
+    "last_run",
+    "next_recommended_action",
+    "github_repo",
+    "dashboard_url",
+    "tags",
+    "owner",
+    "public_showcase_status",
+    "pin_status"
+  ],
+  "action_schema_fields": [
+    "action_id",
+    "label",
+    "description",
+    "action_type",
+    "execution_mode",
+    "risk_level",
+    "requires_approval",
+    "command_template",
+    "runbook_ref",
+    "expected_output",
+    "safety_note",
+    "connector_required",
+    "status"
+  ],
+  "useful_signal_schema_fields": [
+    "signal_id",
+    "title",
+    "source_agent",
+    "source_type",
+    "category",
+    "summary",
+    "usefulness_score",
+    "relevance_score",
+    "urgency_score",
+    "actionability_score",
+    "value_score",
+    "risk_score",
+    "recommended_action",
+    "target_agent",
+    "status",
+    "why_important",
+    "suggested_next_step",
+    "score_explanation",
+    "execution_policy"
+  ],
+  "useful_signal_categories": [
+    "project_progress",
+    "action_required",
+    "business_opportunity",
+    "learning_value",
+    "portfolio_improvement",
+    "connector_readiness",
+    "workflow_automation",
+    "risk_warning"
+  ],
+  "useful_signal_status_enum": [
+    "new",
+    "reviewed",
+    "needs_action",
+    "watchlist",
+    "ignored",
+    "archived"
+  ],
+  "useful_signal_source_types": [
+    "agent_manifest",
+    "project_status",
+    "report",
+    "manual_demo_data",
+    "local_json",
+    "local_csv",
+    "action_registry",
+    "codex_prompt_generator",
+    "connector_readiness",
+    "workflow_simulation"
+  ],
+  "connector_readiness_schema_fields": [
+    "connector_id",
+    "connector_name",
+    "provider",
+    "purpose",
+    "required_permissions",
+    "data_access_level",
+    "write_access",
+    "risk_level",
+    "approval_required",
+    "demo_mode_available",
+    "read_only_mode_available",
+    "rollback_plan",
+    "test_plan",
+    "safety_gates",
+    "readiness_score",
+    "readiness_status",
+    "recommended_next_step"
+  ],
+  "connector_readiness_status_enum": [
+    "design_only",
+    "not_connected",
+    "ready_for_demo",
+    "needs_review",
+    "blocked_until_approved",
+    "future"
+  ],
+  "connector_data_access_level_enum": [
+    "none",
+    "local_demo",
+    "read_only_metadata",
+    "read_only_content",
+    "write_limited",
+    "write_sensitive"
+  ],
+  "workflow_simulation_schema_fields": [
+    "workflow_id",
+    "workflow_name",
+    "workflow_type",
+    "input_source",
+    "source_agents",
+    "signals_used",
+    "recommended_actions",
+    "approval_gates",
+    "blocked_steps",
+    "manual_steps",
+    "generated_outputs",
+    "risk_summary",
+    "next_recommended_step",
+    "execution_policy"
+  ],
+  "workflow_type_enum": [
+    "project_review",
+    "signal_review",
+    "connector_review",
+    "codex_handoff"
+  ],
+  "workflow_status_enum": [
+    "simulation_ready",
+    "ready_for_manual_review",
+    "blocked_until_approval",
+    "needs_review"
+  ],
+  "approval_gate_schema_fields": [
+    "gate_id",
+    "gate_name",
+    "target_action_id",
+    "target_connector_id",
+    "risk_level",
+    "approval_required",
+    "approval_status",
+    "required_checks",
+    "dry_run_required",
+    "rollback_required",
+    "human_review_required",
+    "block_reason",
+    "allowed_execution_mode"
+  ],
+  "report_export_schema_fields": [
+    "report_id",
+    "title",
+    "schema_version",
+    "generated_at",
+    "export_policy",
+    "formats",
+    "selected_sections",
+    "public_safe",
+    "safety_notes",
+    "validation_snapshot",
+    "sections"
+  ],
+  "report_export_format_enum": [
+    "markdown",
+    "json",
+    "csv"
+  ],
+  "report_export_section_enum": [
+    "agents",
+    "actions",
+    "useful_signals",
+    "connectors",
+    "workflows",
+    "approval_gates",
+    "safety_snapshot"
+  ],
+  "approval_status_enum": [
+    "not_required",
+    "required",
+    "blocked",
+    "ready_for_manual_review",
+    "approved_demo_only",
+    "rejected"
+  ],
+  "allowed_execution_mode_enum": [
+    "display_only",
+    "manual_only",
+    "template_only",
+    "dry_run_only",
+    "blocked"
+  ],
+  "action_type_enum": [
+    "display_only",
+    "manual_instruction",
+    "command_template",
+    "local_link",
+    "report_view",
+    "codex_prompt",
+    "future_connector"
+  ],
+  "execution_mode_enum": [
+    "not_executable",
+    "manual_only",
+    "template_only",
+    "planned"
+  ],
+  "risk_level_enum": [
+    "low",
+    "medium",
+    "high",
+    "blocked"
+  ],
+  "field_definitions": {
+    "agent_id": "Stable lowercase identifier used by AgentHubControlCenter.",
+    "agent_name": "Human-readable Agent or Skill name.",
+    "category": "Portfolio category such as Media Intelligence, Workflow Automation, or Knowledge Base.",
+    "description": "Short capability statement for the tool.",
+    "project_path": "Local Windows project path.",
+    "status": "Planned, Active, Complete, or Paused.",
+    "inputs": "List of expected local inputs or manual context items.",
+    "outputs": "List of outputs the tool can produce.",
+    "actions": "List of HUB-V2-005 action schema objects for display, manual instruction, templates, links, report views, Codex prompts, or future connector placeholders.",
+    "connectors": "List of local, link-based, demo, or future connectors.",
+    "demo_mode": "True when the Agent is operating with demo/static/local data.",
+    "safe_mode": "True when external actions and credential reads are disabled.",
+    "last_run": "Last recorded local run time, or Not tracked yet.",
+    "next_recommended_action": "Next safe action to show in Action Center.",
+    "github_repo": "Optional GitHub showcase URL.",
+    "dashboard_url": "Optional local or public dashboard URL.",
+    "tags": "Optional labels such as Python, Streamlit, OCR, or Workflow Automation.",
+    "owner": "Optional owner or maintainer label.",
+    "public_showcase_status": "Optional GitHub/public showcase status.",
+    "pin_status": "Optional GitHub profile pin status."
+  },
+  "execution_policy": {
+    "current_stage": "public_showcase_release_check",
+    "default_mode": "demo_safe",
+    "external_api_calls": "disabled_by_default",
+    "credential_reads": "forbidden_without_explicit_user_request",
+    "actions": "metadata_instruction_template_only",
+    "command_template": "display_text_only_never_auto_execute",
+    "git_push": "never_without_explicit_user_request",
+    "child_project_scripts": "not_executed_by_agenthub",
+    "generated_prompts": "text_only_never_auto_sent_to_codex",
+    "useful_signals": "display_only_text_recommendation_no_execution",
+    "connector_readiness": "design_only_readiness_simulation_no_live_connection",
+    "workflow_simulation": "local_simulation_only_no_live_connector_no_real_action_no_credentials",
+    "approval_gates": "approval_gate_metadata_only_no_execution",
+    "report_export": "public_safe_demo_report_metadata_only_no_execution"
+  },
+  "connector_policy": {
+    "current_stage": "public_showcase_release_check",
+    "available_now": [
+      "local_filesystem",
+      "github_showcase",
+      "streamlit_local_app"
+    ],
+    "planned_connectors": [
+      "gmail",
+      "google_sheets",
+      "google_drive",
+      "notion",
+      "airtable",
+      "telegram",
+      "github",
+      "n8n",
+      "make",
+      "zapier"
+    ],
+    "live_connectors": "not_enabled_in_hub_v2_012"
+  },
+  "codex_prompt_generator": {
+    "current_stage": "HUB-V2-006",
+    "supported_prompt_types": [
+      "continue_next_stage",
+      "fix_or_polish",
+      "github_showcase_update"
+    ],
+    "reserved_prompt_types": [
+      "add_manifest",
+      "refresh_screenshots",
+      "run_tests_only",
+      "create_connector_plan",
+      "generate_report"
+    ],
+    "execution_policy": "generated_prompt_text_only_no_auto_send_no_action_execution"
+  },
+  "useful_signals_engine": {
+    "current_stage": "HUB-V2-007",
+    "scoring_formula": "28% relevance + 24% urgency + 24% actionability + 24% value, plus a visible risk adjustment.",
+    "high_value_threshold": 75,
+    "watchlist_threshold": 55,
+    "data_policy": "local_manifest_project_status_readme_report_demo_json_csv_action_metadata_only",
+    "recommendation_policy": "text_only_no_action_execution_no_connector_call",
+    "execution_policy": "display_only_text_recommendation_no_execution"
+  },
+  "connector_readiness_simulator": {
+    "current_stage": "HUB-V2-008",
+    "scoring_formula": "Demo/read-only availability, rollback plan, test plan, and safety gates increase readiness; risk, write access, and sensitive data access reduce readiness.",
+    "live_connection_status": "not_connected",
+    "data_policy": "demo_metadata_only_no_oauth_no_provider_api_call",
+    "execution_policy": "design_only_readiness_simulation_no_live_connection",
+    "connector_policy": "no_live_connector_no_credentials_no_oauth_no_external_api_call"
+  },
+  "local_workflow_simulation": {
+    "current_stage": "HUB-V2-009",
+    "execution_policy": "local_simulation_only_no_live_connector_no_real_action_no_credentials",
+    "approval_gate_policy": "approval_gate_metadata_only_no_execution",
+    "data_policy": "local_demo_metadata_only_no_live_connector_no_credentials",
+    "recommendation_policy": "workflow_simulation_and_useful_signal_generation_only"
+  },
+  "demo_workflow_report_export": {
+    "current_stage": "HUB-V2-010",
+    "formats": [
+      "markdown",
+      "json",
+      "csv"
+    ],
+    "output_dir": "outputs/public_reports",
+    "execution_policy": "public_safe_demo_report_metadata_only_no_execution",
+    "data_policy": "public_safe_demo_metadata_summary_recommendations_only",
+    "write_policy": "local_files_only_outputs_public_reports"
+  },
+  "showcase_screenshot_refresh": {
+    "current_stage": "HUB-V2-011",
+    "screenshot_dir": "docs/images",
+    "canonical_screenshot_count": 10,
+    "sample_report_summary": "docs/SAMPLE_DEMO_WORKFLOW_REPORT_SUMMARY.md",
+    "execution_policy": "public_safe_showcase_metadata_only_no_execution",
+    "data_policy": "demo_metadata_and_public_reports_only_no_private_outputs"
+  },
+  "public_release_check": {
+    "current_stage": "HUB-V2-012",
+    "release_checklist": "docs/PUBLIC_RELEASE_CHECKLIST.md",
+    "readiness_report": "docs/V2_RELEASE_READINESS_REPORT.md",
+    "execution_policy": "public_safe_release_check_metadata_only_no_commit_no_push",
+    "data_policy": "readme_docs_manifest_contract_screenshot_inventory_public_reports_only"
+  },
+  "blocked_action_examples": [
+    "send_email",
+    "delete_files",
+    "modify_git_remote",
+    "git_push",
+    "connect_real_gmail",
+    "connect_real_sheets",
+    "run_external_script"
+  ]
+}

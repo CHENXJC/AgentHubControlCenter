@@ -30,7 +30,7 @@ def _select_next_best_move(action_plan: list[dict]) -> str:
     if actionable_items:
         top_action = actionable_items[0]
         return f"{top_action.get('agent_name', '')}: {top_action.get('recommended_action', '')}"
-    return "Continue HUB-006 Public Showcase Packaging / Screenshots / GitHub Release Polish."
+    return "Continue HUB-V2-002 Manifest Import + Agent Onboarding Flow."
 
 
 def build_command_center_summary(

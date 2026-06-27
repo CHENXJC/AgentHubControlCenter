@@ -1,12 +1,53 @@
 from pathlib import Path
+import re
 
 import pandas as pd
 import streamlit as st
 
+from agent_hub.agent_interface import (
+    build_action_center_items,
+    build_agent_contract,
+    build_agent_manifests,
+    build_connector_overview,
+    build_future_plugin_interface,
+    build_workflow_catalog,
+    format_category_label,
+)
+from agent_hub.action_registry import (
+    build_action_registry,
+    build_action_registry_summary,
+    find_action_policy_violations,
+    get_actions_for_agent,
+    get_codex_prompt_actions,
+    group_actions_by_agent,
+)
+from agent_hub.agent_onboarding import build_agent_onboarding
+from agent_hub.approval_gate_engine import (
+    build_approval_gate_registry,
+    build_approval_gate_summary,
+    find_approval_gate_policy_violations,
+)
+from agent_hub.codex_prompt_generator import (
+    ALL_PROMPT_TYPES,
+    PROMPT_TYPE_DETAILS,
+    RESERVED_PROMPT_TYPE_DETAILS,
+    build_codex_prompt_package,
+)
 from agent_hub.command_builder import (
     build_open_github_command,
     build_project_command_pack,
 )
+from agent_hub.connector_readiness_engine import (
+    build_connector_readiness_registry,
+    build_connector_readiness_summary,
+    connector_readiness_to_useful_signals,
+    filter_connector_readiness,
+    find_connector_policy_violations,
+    get_connector_risk_options,
+    get_connector_status_options,
+)
+from agent_hub.demo_report_builder import build_demo_report_package, build_report_previews
+from agent_hub.demo_report_exporter import get_public_reports_dir
 from agent_hub.health_checker import check_all_agents_health
 from agent_hub.next_action_planner import build_next_action_plan, summarize_next_actions
 from agent_hub.portfolio_matrix import (
@@ -36,20 +77,42 @@ from agent_hub.ui_helpers import (
     safe_list_join,
     truncate_text,
 )
+from agent_hub.useful_signal_engine import (
+    build_signal_summary,
+    build_useful_signal_registry,
+    filter_useful_signals,
+    get_signal_category_options,
+    get_signal_status_options,
+    group_signal_buckets,
+)
+from agent_hub.useful_signal_schema import DISPLAY_ONLY_EXECUTION_POLICY
+from agent_hub.workflow_simulation_engine import (
+    build_workflow_simulation_registry,
+    build_workflow_simulation_summary,
+    filter_workflow_simulations,
+    find_workflow_policy_violations,
+    get_workflow_status_options,
+    get_workflow_type_options,
+    workflow_simulation_to_useful_signals,
+)
+from agent_hub.report_export_schema import REPORT_FORMATS, REPORT_SECTION_OPTIONS
 
 
 BASE_DIR = Path(__file__).resolve().parent
+AI_PROJECTS_ROOT = BASE_DIR.parent
 REGISTRY_PATH = BASE_DIR / "data" / "agent_registry.csv"
 OUTPUTS_DIR = BASE_DIR / "outputs"
 DISCLAIMER_TEXT = (
     "This dashboard is for local portfolio management and workflow planning only. "
     "It does not execute external actions or access private credentials."
 )
+PRODUCT_STAGE = "HUB-V2-014"
+PRODUCT_MODE = "Local Demo / Safe Mode"
 PRIORITY_SORT = {"High": 0, "Medium": 1, "Low": 2, "None": 3}
 
 
 st.set_page_config(
-    page_title="AgentHubControlCenter",
+    page_title="Personal AI Command Center",
     page_icon="\U0001f9e9",
     layout="wide",
 )
@@ -262,6 +325,305 @@ def render_metric_cards(metrics: list[tuple[str, object]]) -> None:
         columns[index].metric(label, build_metric_display_value(value))
 
 
+def format_agent_card_title(agent_name: str) -> str:
+    """Return a readable title for compact Agent cards."""
+    value = safe_display(agent_name)
+    spaced = re.sub(r"(?<=[a-z])(?=[A-Z])", " ", value)
+    spaced = re.sub(r"(?<=[A-Z])(?=[A-Z][a-z])", " ", spaced)
+    return spaced
+
+
+def render_manifest_cards(manifests: list[dict], max_items: int | None = None) -> None:
+    """Render compact cards for V2 agent manifests."""
+    visible_manifests = manifests if max_items is None else manifests[:max_items]
+    columns = st.columns(3)
+    for index, manifest in enumerate(visible_manifests):
+        actions = [
+            action.get("label", "")
+            for action in manifest.get("actions", [])
+            if action.get("enabled")
+        ]
+        connectors = [
+            connector.get("label", "")
+            for connector in manifest.get("connectors", [])
+            if connector.get("status") in {"available_local", "available_link", "manual_launch"}
+        ]
+        source = manifest.get("source", "static_registry")
+        source_label = "Local Manifest" if source == "local_manifest" else "Demo Manifest" if source == "demo_manifest" else "Static Registry"
+        safety_label = "Demo Mode" if manifest.get("demo_mode") else "Manual Review Mode"
+        safety_label += " / Safe Mode" if manifest.get("safe_mode") else " / Review Required"
+        with columns[index % 3]:
+            render_html_card(
+                format_agent_card_title(manifest.get("agent_name", "Unknown Agent")),
+                (
+                    f"<strong>{safe_display(manifest.get('category_label') or format_category_label(manifest.get('category', '')))}</strong><br>"
+                    f"<span class='badge'>{safe_display(source_label)}</span>"
+                    f"<span class='badge'>{safe_display(safety_label)}</span><br>"
+                    f"{truncate_text(manifest.get('description', ''), 140)}<br>"
+                    f"<strong>Status:</strong> {safe_display(manifest.get('status'))} | "
+                    f"{safe_display(manifest.get('health_status'))}<br>"
+                    f"<strong>Can do:</strong> {safe_list_join(actions)}<br>"
+                    f"<strong>Connectors:</strong> {safe_list_join(connectors)}<br>"
+                    f"<strong>Next:</strong> {truncate_text(manifest.get('next_recommended_action', ''), 120)}"
+                ),
+                "mini-card",
+            )
+
+
+def render_workflow_cards(workflows: list[dict]) -> None:
+    """Render V2 workflow cards."""
+    columns = st.columns(3)
+    for index, workflow in enumerate(workflows):
+        with columns[index % 3]:
+            render_html_card(
+                workflow.get("workflow_name", "Workflow"),
+                (
+                    f"{safe_display(workflow.get('description'))}<br>"
+                    f"<strong>Status:</strong> {safe_display(workflow.get('status'))}<br>"
+                    f"<strong>Scope:</strong> {safe_list_join(workflow.get('agents', []))}<br>"
+                    f"<strong>Next:</strong> {safe_display(workflow.get('next_step'))}"
+                ),
+                "section-card",
+            )
+
+
+def render_workflow_simulation_cards(workflows: list[dict]) -> None:
+    """Render HUB-V2-009 local workflow simulation cards."""
+    if not workflows:
+        st.info("No workflow simulations match this view.")
+        return
+
+    columns = st.columns(2)
+    for index, workflow in enumerate(workflows):
+        gate_results = [
+            f"{gate.get('gate_name', '')}: {gate.get('approval_status', '')} / {gate.get('allowed_execution_mode', '')}"
+            for gate in workflow.get("approval_gates", [])
+        ]
+        with columns[index % 2]:
+            render_html_card(
+                workflow.get("workflow_name", "Workflow Simulation"),
+                (
+                    f"<strong>Input source:</strong> {safe_display(workflow.get('input_source'))}<br>"
+                    f"<strong>Connected agents:</strong> {safe_list_join(workflow.get('source_agents', []))}<br>"
+                    f"<strong>Signals used:</strong> {safe_list_join(workflow.get('signals_used', []))}<br>"
+                    f"<strong>Recommended actions:</strong> {safe_list_join(workflow.get('recommended_actions', []))}<br>"
+                    f"<strong>Approval gate result:</strong> {safe_list_join(gate_results)}<br>"
+                    f"<strong>Blocked steps:</strong> {safe_list_join(workflow.get('blocked_steps', [])) or 'None'}<br>"
+                    f"<strong>Generated outputs:</strong> {safe_list_join(workflow.get('generated_outputs', []))}<br>"
+                    f"<strong>Readiness:</strong> {safe_display(workflow.get('workflow_readiness_score'))} / "
+                    f"{safe_display(workflow.get('workflow_status'))}<br>"
+                    f"<strong>Next:</strong> {safe_display(workflow.get('next_recommended_step'))}"
+                ),
+                "section-card",
+            )
+
+
+def render_demo_workflow_report_export(
+    *,
+    agent_manifests: list[dict],
+    registry_summary: dict,
+    onboarding_summary: dict,
+    action_rows: list[dict],
+    action_summary: dict,
+    useful_signals: list[dict],
+    useful_signal_summary: dict,
+    connector_readiness: list[dict],
+    connector_readiness_summary: dict,
+    workflow_simulations: list[dict],
+    workflow_simulation_summary: dict,
+    approval_gates: list[dict],
+    approval_gate_summary: dict,
+    validation_snapshot: dict,
+) -> None:
+    """Render HUB-V2-010 public-safe demo workflow report export previews."""
+    st.markdown("### Demo Workflow Report Export")
+    st.caption(
+        "Public-safe demo export only. No credentials. No live connector. No real execution. "
+        "Generated text is preview/download content only."
+    )
+
+    section_label_to_id = {
+        f"{item['label']} ({item['section_id']})": item["section_id"]
+        for item in REPORT_SECTION_OPTIONS
+    }
+    default_labels = list(section_label_to_id)
+    selected_labels = st.multiselect(
+        "Report sections",
+        options=default_labels,
+        default=default_labels,
+        key="demo_report_export_sections",
+    )
+    selected_section_ids = [section_label_to_id[label] for label in selected_labels]
+
+    report_package = build_demo_report_package(
+        agent_manifests=agent_manifests,
+        registry_summary=registry_summary,
+        onboarding_summary=onboarding_summary,
+        action_rows=action_rows,
+        action_summary=action_summary,
+        useful_signals=useful_signals,
+        useful_signal_summary=useful_signal_summary,
+        connector_readiness=connector_readiness,
+        connector_readiness_summary=connector_readiness_summary,
+        workflow_simulations=workflow_simulations,
+        workflow_simulation_summary=workflow_simulation_summary,
+        approval_gates=approval_gates,
+        approval_gate_summary=approval_gate_summary,
+        validation_snapshot=validation_snapshot,
+        selected_sections=selected_section_ids,
+    )
+    report_previews = build_report_previews(report_package)
+    public_report_dir = get_public_reports_dir(BASE_DIR)
+
+    render_metric_cards(
+        [
+            ("Available report sections", len(REPORT_SECTION_OPTIONS)),
+            ("Export formats", len(REPORT_FORMATS)),
+            ("Public-safe status", "Pass" if report_package.get("schema_valid") else "Review"),
+            ("Last generated report path", str(public_report_dir.relative_to(BASE_DIR))),
+        ]
+    )
+    st.markdown(
+        '<div class="note-box">Report Export is template-only / no execution. '
+        "Use download buttons for local text copies, or the exporter module to save only under "
+        "<code>outputs/public_reports/</code>.</div>",
+        unsafe_allow_html=True,
+    )
+
+    preview_tabs = st.tabs(["Markdown preview", "JSON preview", "CSV summary preview"])
+    with preview_tabs[0]:
+        st.text_area(
+            "Copy-ready Markdown report",
+            report_previews["markdown"],
+            height=360,
+            key="demo_report_markdown_preview",
+        )
+        st.download_button(
+            "Download Markdown report text",
+            report_previews["markdown"],
+            file_name=f"{report_package['report_id']}.md",
+            mime="text/markdown",
+            key="download_demo_workflow_report_markdown",
+        )
+    with preview_tabs[1]:
+        st.code(report_previews["json"], language="json")
+        st.download_button(
+            "Download JSON report text",
+            report_previews["json"],
+            file_name=f"{report_package['report_id']}.json",
+            mime="application/json",
+            key="download_demo_workflow_report_json",
+        )
+    with preview_tabs[2]:
+        st.code(report_previews["csv"], language="csv")
+        st.download_button(
+            "Download CSV summary text",
+            report_previews["csv"],
+            file_name=f"{report_package['report_id']}.csv",
+            mime="text/csv",
+            key="download_demo_workflow_report_csv",
+        )
+
+    st.markdown("#### Report Safety Checklist")
+    checklist_cols = st.columns(5)
+    for index, note in enumerate(report_package.get("safety_notes", [])):
+        checklist_cols[index % 5].metric(note, "OK")
+
+
+def render_signal_cards(signals: list[dict]) -> None:
+    """Render short useful-signal cards."""
+    columns = st.columns(len(signals))
+    for index, signal in enumerate(signals):
+        with columns[index]:
+            st.metric(signal.get("signal", ""), build_metric_display_value(signal.get("value", "")))
+            st.caption(signal.get("meaning", ""))
+
+
+def render_useful_signal_cards(signals: list[dict], empty_message: str = "No signals match this view.") -> None:
+    """Render HUB-V2-007 scored useful signal cards."""
+    if not signals:
+        st.info(empty_message)
+        return
+
+    columns = st.columns(2)
+    for index, signal in enumerate(signals):
+        with columns[index % 2]:
+            render_html_card(
+                signal.get("title", "Useful signal"),
+                (
+                    f"<strong>Score:</strong> {signal.get('usefulness_score', 0)} "
+                    f"(R {signal.get('relevance_score', 0)} / "
+                    f"U {signal.get('urgency_score', 0)} / "
+                    f"A {signal.get('actionability_score', 0)} / "
+                    f"V {signal.get('value_score', 0)} / "
+                    f"Risk {signal.get('risk_score', 0)})<br>"
+                    f"<strong>Source:</strong> {safe_display(signal.get('source_agent'))} "
+                    f"/ {safe_display(signal.get('source_type'))}<br>"
+                    f"<strong>Category:</strong> {safe_display(signal.get('category'))} | "
+                    f"<strong>Status:</strong> {safe_display(signal.get('status'))}<br>"
+                    f"<strong>Why important:</strong> {safe_display(signal.get('why_important'))}<br>"
+                    f"<strong>Recommended next step:</strong> {safe_display(signal.get('suggested_next_step'))}<br>"
+                    f"<strong>Related Agent:</strong> {safe_display(signal.get('target_agent'))}<br>"
+                    f"<strong>Action reference:</strong> {safe_display(signal.get('related_action_id') or 'none')}<br>"
+                    f"<strong>Policy:</strong> {safe_display(signal.get('execution_policy'))}"
+                ),
+                "section-card",
+            )
+
+
+def render_connector_readiness_cards(
+    connectors: list[dict],
+    empty_message: str = "No connector readiness records match this view.",
+) -> None:
+    """Render HUB-V2-008 design-only connector readiness cards."""
+    if not connectors:
+        st.info(empty_message)
+        return
+
+    columns = st.columns(2)
+    for index, connector in enumerate(connectors):
+        with columns[index % 2]:
+            render_html_card(
+                connector.get("connector_name", "Connector readiness"),
+                (
+                    f"<strong>Purpose:</strong> {safe_display(connector.get('purpose'))}<br>"
+                    f"<strong>Risk:</strong> {safe_display(connector.get('risk_level'))} | "
+                    f"<strong>Score:</strong> {safe_display(connector.get('readiness_score'))} | "
+                    f"<strong>Status:</strong> {safe_display(connector.get('readiness_status'))}<br>"
+                    f"<strong>Provider:</strong> {safe_display(connector.get('provider'))} | "
+                    f"<strong>Data access:</strong> {safe_display(connector.get('data_access_level'))}<br>"
+                    f"<strong>Approval required:</strong> {safe_display(connector.get('approval_required'))} | "
+                    f"<strong>Live status:</strong> {safe_display(connector.get('live_connection_status'))}<br>"
+                    f"<strong>Permissions:</strong> {safe_list_join(connector.get('required_permissions', []))}<br>"
+                    f"<strong>Safety gates:</strong> {safe_list_join(connector.get('safety_gates', []))}<br>"
+                    f"<strong>Rollback plan:</strong> {safe_list_join(connector.get('rollback_plan', []))}<br>"
+                    f"<strong>Test plan:</strong> {safe_list_join(connector.get('test_plan', []))}<br>"
+                    f"<strong>Recommended next step:</strong> {safe_display(connector.get('recommended_next_step'))}<br>"
+                    f"<strong>Policy:</strong> {safe_display(connector.get('execution_policy'))}"
+                ),
+                "section-card",
+            )
+
+
+def render_onboarding_metrics(summary: dict) -> None:
+    """Render the V2 onboarding metric strip."""
+    render_metric_cards(
+        [
+            ("Projects Scanned", summary.get("total_projects_scanned", 0)),
+            ("Manifests Found", summary.get("manifests_found", 0)),
+            ("Valid Manifests", summary.get("valid_manifests", 0)),
+            ("Imported Agents", summary.get("imported_agents", 0)),
+        ]
+    )
+    render_metric_cards(
+        [
+            ("Invalid Manifests", summary.get("invalid_manifests", 0)),
+            ("Missing Manifests", summary.get("missing_manifests", 0)),
+            ("Static Overrides", summary.get("duplicate_agent_ids", 0)),
+        ]
+    )
+
+
 def filter_agents(
     agents: list[dict],
     category_filter: str,
@@ -349,6 +711,165 @@ def render_action_cards(action_rows: list[dict]) -> None:
             )
 
 
+def render_local_action_cards(action_rows: list[dict]) -> None:
+    """Render HUB-V2-005 local action schema cards grouped by Agent."""
+    grouped_actions = group_actions_by_agent(action_rows)
+    for group in grouped_actions:
+        actions = group.get("actions", [])
+        with st.expander(
+            f"{group.get('agent_name', 'Unknown Agent')} - {len(actions)} actions",
+            expanded=False,
+        ):
+            action_columns = st.columns(2)
+            for index, action in enumerate(actions):
+                approval = "Required" if action.get("requires_approval") else "Not required"
+                with action_columns[index % 2]:
+                    render_html_card(
+                        action.get("label", "Action"),
+                        (
+                            f"<strong>Type:</strong> {safe_display(action.get('action_type'))}<br>"
+                            f"<strong>Execution mode:</strong> {safe_display(action.get('execution_mode'))}<br>"
+                            f"<strong>Risk level:</strong> {safe_display(action.get('risk_level'))}<br>"
+                            f"<strong>Approval:</strong> {approval}<br>"
+                            f"<strong>Status:</strong> {safe_display(action.get('status'))}<br>"
+                            f"<strong>Expected output:</strong> {safe_display(action.get('expected_output'))}<br>"
+                            f"<strong>Runbook:</strong> {safe_display(action.get('runbook_ref'))}<br>"
+                            f"<strong>Safety:</strong> {safe_display(action.get('safety_note'))}"
+                        ),
+                        "section-card",
+                    )
+
+
+def prompt_type_display_label(prompt_type: str) -> str:
+    """Return a readable label for prompt type selectors."""
+    details = PROMPT_TYPE_DETAILS.get(prompt_type) or RESERVED_PROMPT_TYPE_DETAILS.get(prompt_type, {})
+    label = details.get("label", prompt_type.replace("_", " ").title())
+    status = details.get("status", "supported")
+    return f"{label} - {prompt_type} ({status})"
+
+
+def render_codex_prompt_generator(manifests: list[dict], action_rows: list[dict]) -> None:
+    """Render a template-only Codex prompt generator without execution controls."""
+    st.markdown("### Codex Prompt Generator")
+    st.caption(
+        "template-only / no execution. Generated prompts are copy-ready text only and are not sent to Codex automatically."
+    )
+
+    if not manifests:
+        st.info("No Agent manifests are available for prompt generation.")
+        return
+
+    sorted_manifests = sorted(manifests, key=lambda item: item.get("agent_name", "").lower())
+    agent_options = {
+        f"{manifest.get('agent_name', 'Unknown Agent')} ({manifest.get('agent_id', 'unknown')})": manifest
+        for manifest in sorted_manifests
+    }
+
+    selector_left, selector_right = st.columns([1.1, 1])
+    with selector_left:
+        selected_agent_label = st.selectbox(
+            "Agent selector",
+            list(agent_options.keys()),
+            key="codex_prompt_agent_selector",
+        )
+    with selector_right:
+        selected_prompt_type = st.selectbox(
+            "Prompt type selector",
+            list(ALL_PROMPT_TYPES),
+            format_func=prompt_type_display_label,
+            key="codex_prompt_type_selector",
+        )
+
+    selected_manifest = agent_options[selected_agent_label]
+    selected_actions = get_actions_for_agent(
+        action_rows,
+        agent_id=selected_manifest.get("agent_id", ""),
+        agent_name=selected_manifest.get("agent_name", ""),
+    )
+    prompt_package = build_codex_prompt_package(
+        selected_manifest,
+        action_rows=selected_actions,
+        prompt_type=selected_prompt_type,
+    )
+    codex_prompt_actions = get_codex_prompt_actions(selected_actions)
+
+    overview_left, overview_right = st.columns(2)
+    with overview_left:
+        render_html_card(
+            "Selected Agent",
+            (
+                f"<strong>Project path:</strong> {safe_display(selected_manifest.get('project_path'))}<br>"
+                f"<strong>Category:</strong> {safe_display(selected_manifest.get('category_label') or selected_manifest.get('category'))}<br>"
+                f"<strong>Status:</strong> {safe_display(selected_manifest.get('status'))}<br>"
+                f"<strong>Checkpoint:</strong> {safe_display(prompt_package.get('current_checkpoint'))}"
+            ),
+            "section-card",
+        )
+    with overview_right:
+        render_html_card(
+            "Next Recommended Action",
+            (
+                f"{safe_display(selected_manifest.get('next_recommended_action'))}<br>"
+                f"<strong>Available actions:</strong> {len(selected_actions)}<br>"
+                f"<strong>Codex prompt actions:</strong> {len(codex_prompt_actions)}<br>"
+                "<strong>Execution:</strong> template-only / no execution"
+            ),
+            "section-card",
+        )
+
+    if prompt_package.get("warnings"):
+        for warning in prompt_package["warnings"]:
+            st.warning(warning)
+
+    st.markdown("#### Available Actions")
+    selected_action_df = display_dataframe(selected_actions)
+    if selected_action_df.empty:
+        st.info("This Agent has no declared action rows.")
+    else:
+        st.dataframe(
+            selected_action_df[
+                [
+                    "action_id",
+                    "label",
+                    "action_type",
+                    "execution_mode",
+                    "risk_level",
+                    "status",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    safety_left, safety_right = st.columns(2)
+    with safety_left:
+        st.markdown("#### Safety Checklist")
+        for item in prompt_package["safety_checklist"]:
+            st.markdown(f"- {item}")
+    with safety_right:
+        st.markdown("#### Validation Checklist")
+        for item in prompt_package["validation_requirements"]:
+            st.markdown(f"- {item}")
+
+    st.markdown("#### Generated Prompt Preview")
+    st.text_area(
+        "Copy-ready generated prompt",
+        value=prompt_package["generated_prompt"],
+        height=520,
+        key="codex_prompt_generated_text",
+        help="Copy this text manually into Codex. AgentHub does not execute or send it.",
+    )
+    safe_agent_id = selected_manifest.get("agent_id", "agent").replace(" ", "_")
+    st.download_button(
+        "Download prompt text",
+        data=prompt_package["generated_prompt"],
+        file_name=f"{safe_agent_id}_{selected_prompt_type}_codex_prompt.txt",
+        mime="text/plain",
+        key="codex_prompt_download",
+        help="Download the generated prompt as text only. This does not execute anything.",
+    )
+
+
 def health_counts(health_results: list[dict]) -> dict:
     """Count health result statuses for overview cards."""
     statuses = {
@@ -366,7 +887,9 @@ def health_counts(health_results: list[dict]) -> dict:
 
 inject_global_styles()
 
-agents = load_agent_registry(REGISTRY_PATH)
+static_agents = load_agent_registry(REGISTRY_PATH)
+onboarding_result = build_agent_onboarding(AI_PROJECTS_ROOT, static_agents)
+agents = onboarding_result["merged_agents"]
 registry_summary = get_registry_summary(agents)
 validation_results = validate_registry(agents)
 health_results = check_all_agents_health(agents)
@@ -390,16 +913,63 @@ showcase_asset_checklist = build_showcase_asset_checklist(
     health_results=health_results,
     action_plan=action_plan,
 )
+agent_manifests = build_agent_manifests(agents, health_results, action_plan)
+agent_contract = build_agent_contract()
+workflow_catalog = build_workflow_catalog(agent_manifests)
+action_center_items = build_action_center_items(agent_manifests, action_plan)
+local_action_registry = build_action_registry(agent_manifests)
+local_action_summary = build_action_registry_summary(local_action_registry)
+connector_readiness_registry = build_connector_readiness_registry()
+connector_readiness_summary = build_connector_readiness_summary(connector_readiness_registry)
+connector_generated_signal_seeds = connector_readiness_to_useful_signals(connector_readiness_registry)
+workflow_simulation_registry = build_workflow_simulation_registry()
+workflow_simulation_summary = build_workflow_simulation_summary(workflow_simulation_registry)
+approval_gate_registry = build_approval_gate_registry(workflow_simulation_registry)
+approval_gate_summary = build_approval_gate_summary(approval_gate_registry)
+workflow_generated_signal_seeds = workflow_simulation_to_useful_signals(workflow_simulation_registry)
+useful_signal_registry = build_useful_signal_registry(
+    agent_manifests,
+    local_action_registry,
+    extra_signals=connector_generated_signal_seeds + workflow_generated_signal_seeds,
+)
+useful_signal_summary = build_signal_summary(useful_signal_registry)
+unsafe_execution_modes = [
+    action
+    for action in local_action_registry
+    if action.get("execution_mode") not in {"not_executable", "manual_only", "template_only", "planned"}
+]
+signal_policy_violations = [
+    signal
+    for signal in useful_signal_registry
+    if not signal.get("schema_valid")
+    or signal.get("execution_policy") != DISPLAY_ONLY_EXECUTION_POLICY
+]
+report_validation_snapshot = {
+    "valid_manifests": onboarding_result["summary"].get("valid_manifests", 0),
+    "invalid_manifests": onboarding_result["summary"].get("invalid_manifests", 0),
+    "missing_manifests": onboarding_result["summary"].get("missing_manifests", 0),
+    "unsafe_execution_modes": len(unsafe_execution_modes),
+    "action_policy_violations": len(find_action_policy_violations(local_action_registry)),
+    "signal_policy_violations": len(signal_policy_violations),
+    "connector_policy_violations": len(find_connector_policy_violations(connector_readiness_registry)),
+    "workflow_policy_violations": len(find_workflow_policy_violations(workflow_simulation_registry)),
+    "approval_gate_policy_violations": len(find_approval_gate_policy_violations(approval_gate_registry)),
+    "report_export_policy_violations": 0,
+}
+connector_overview = build_connector_overview(agent_manifests)
+future_plugin_interface = build_future_plugin_interface()
 
 registry_df = as_dataframe(agents)
 
 with st.sidebar:
-    st.markdown("### AgentHub")
-    st.write("Project Stage: HUB-005")
-    st.write("Mode: Local Demo")
+    st.markdown("### AI Command Center")
+    st.write(f"Project Stage: {PRODUCT_STAGE}")
+    st.write(f"Mode: {PRODUCT_MODE}")
     st.write("API: Not required")
-    st.write("Data Source: data/agent_registry.csv")
+    st.write("Data Source: CSV + local manifests")
+    st.write(f"Scan Root: {AI_PROJECTS_ROOT}")
     st.write("External actions: Disabled")
+    st.write("Launcher Port: 8525")
 
     st.markdown("### Filters")
     category_options = ["All"] + sorted({agent.get("category", "") for agent in agents if agent.get("category")})
@@ -425,18 +995,20 @@ sorted_filtered_actions = sorted(
 )
 
 st.markdown(
-    """
+    f"""
     <div class="hero-card">
-        <div class="hero-title">AgentHubControlCenter</div>
-        <div class="hero-subtitle">Local-first AgentOps dashboard for AI workflow portfolios</div>
+        <div class="hero-title">Personal AI Command Center</div>
+        <div class="hero-subtitle">AgentHubControlCenter V2 - AI Agent Operating System for a local-first portfolio</div>
         <div class="hero-copy">
-            Manage your AI agent ecosystem from one dashboard: registry, health checks,
-            portfolio matrix, launch commands, and next-action planning.
+            See every AI Agent and Skill you can use, what each one does, which
+            local actions are available, which signals need attention, and how
+            future tools can plug into the same interface standard.
         </div>
+        <span class="badge">{PRODUCT_STAGE}</span>
         <span class="badge">Local-first</span>
-        <span class="badge">Agent registry</span>
-        <span class="badge">Health checks</span>
-        <span class="badge">PortfolioOps</span>
+        <span class="badge">Agent OS</span>
+        <span class="badge">Safe demo mode</span>
+        <span class="badge">Manifest onboarding</span>
     </div>
     """,
     unsafe_allow_html=True,
@@ -444,8 +1016,8 @@ st.markdown(
 
 render_metric_cards(
     [
-        ("Total Agents", registry_summary["total_agents"]),
-        ("Completed Agents", registry_summary["completed_agents"]),
+        ("Available Tools", registry_summary["total_agents"]),
+        ("Completed Tools", registry_summary["completed_agents"]),
         ("Public Showcase", registry_summary["public_showcase_agents"]),
         ("Pinned", registry_summary["pinned_agents"]),
         ("Public Not Pinned", registry_summary["public_not_pinned_agents"]),
@@ -453,20 +1025,34 @@ render_metric_cards(
     ]
 )
 
-overview_tab, registry_tab, health_tab, matrix_tab, actions_tab, export_tab = st.tabs(
+(
+    command_overview_tab,
+    tools_tab,
+    workflows_tab,
+    signals_tab,
+    action_center_tab,
+    connectors_tab,
+    plugin_tab,
+) = st.tabs(
     [
-        "Overview",
-        "Agent Registry",
-        "Health Check",
-        "Portfolio Matrix",
-        "Next Actions",
-        "Export Report",
+        "Command Overview",
+        "My Tools / Agent Registry",
+        "My Workflows",
+        "Useful Signals",
+        "Action Center",
+        "Connectors",
+        "Future Plugin Interface",
     ]
 )
 
-with overview_tab:
-    st.markdown("## Overview")
-    st.write("A portfolio command center view for registry status, local readiness, capability coverage, and planning.")
+with command_overview_tab:
+    st.markdown("## Command Overview")
+    st.write(
+        "A V2 entry page for the personal AI Agent and Skill operating system: tools, workflows, useful signals, actions, connectors, and future plugin rules."
+    )
+
+    st.markdown("### What You Can Use Now")
+    render_manifest_cards(agent_manifests, max_items=6)
 
     st.markdown("### Command Center Summary")
     summary_left, summary_right = st.columns(2)
@@ -524,12 +1110,27 @@ with overview_tab:
         ]
     )
 
-with registry_tab:
-    st.markdown("## Agent Registry")
-    st.write("Filtered registry view, agent detail panel, display-only command pack, and metadata validation.")
+with tools_tab:
+    st.markdown("## My Tools / Agent Registry")
+    st.write(
+        "A filtered view of current Agents and Skills, what each tool does, and which safe local commands are available."
+    )
+    st.caption(
+        "Each card is metadata-only. Actions use the HUB-V2-005 local action schema, and external connectors remain planned or optional until a future opt-in stage."
+    )
+
+    st.markdown("### Tool Cards")
+    render_manifest_cards(
+        [
+            manifest
+            for manifest in agent_manifests
+            if manifest.get("agent_name") in filtered_names
+        ]
+    )
 
     registry_columns = [
         "agent_name",
+        "source",
         "category",
         "project_type",
         "status",
@@ -542,6 +1143,9 @@ with registry_tab:
     if filtered_registry_df.empty:
         st.info("No agents match the selected registry filters.")
     else:
+        filtered_registry_df["category"] = filtered_registry_df["category"].apply(
+            lambda value: format_category_label(str(value))
+        )
         st.markdown("### Registry Table")
         st.dataframe(
             filtered_registry_df[registry_columns],
@@ -611,9 +1215,120 @@ with registry_tab:
     else:
         st.dataframe(validation_df[validation_columns], width="stretch", hide_index=True)
 
-with health_tab:
-    st.markdown("## Health Check")
-    st.write("Local filesystem readiness checks for public-showcase structure and documentation.")
+with signals_tab:
+    st.markdown("## Useful Signals")
+    st.write(
+        "A local decision panel that turns Agent metadata, project status, demo data, and action references into ranked useful signals. Recommended actions are text-only."
+    )
+
+    st.markdown("### Signal Metrics")
+    render_metric_cards(
+        [
+            ("Total signals", useful_signal_summary["total_signals"]),
+            ("High-value signals", useful_signal_summary["high_value_signals"]),
+            ("Needs action", useful_signal_summary["needs_action_signals"]),
+            ("Watchlist", useful_signal_summary["watchlist_signals"]),
+            ("Ignored / low priority", useful_signal_summary["ignored_low_priority_signals"]),
+            ("Avg usefulness", useful_signal_summary["average_usefulness_score"]),
+        ]
+    )
+    st.caption(
+        "HUB-V2-007 signals are local/demo/template-only recommendations. They do not execute actions or connect external services."
+    )
+
+    st.markdown("### Signal Filters")
+    signal_filter_cols = st.columns(4)
+    with signal_filter_cols[0]:
+        signal_category_filter = st.selectbox(
+            "Signal category",
+            get_signal_category_options(),
+            key="signal_category_filter",
+        )
+    with signal_filter_cols[1]:
+        signal_status_filter = st.selectbox(
+            "Signal status",
+            get_signal_status_options(),
+            key="signal_status_filter",
+        )
+    with signal_filter_cols[2]:
+        signal_source_options = ["All"] + sorted(
+            {signal.get("source_agent", "") for signal in useful_signal_registry if signal.get("source_agent")}
+        )
+        signal_source_filter = st.selectbox(
+            "Source agent",
+            signal_source_options,
+            key="signal_source_filter",
+        )
+    with signal_filter_cols[3]:
+        signal_min_score = st.slider(
+            "Min usefulness",
+            min_value=0,
+            max_value=100,
+            value=0,
+            step=5,
+            key="signal_min_score_filter",
+        )
+
+    filtered_signal_registry = filter_useful_signals(
+        useful_signal_registry,
+        category=signal_category_filter,
+        status=signal_status_filter,
+        source_agent=signal_source_filter,
+        min_usefulness_score=signal_min_score,
+    )
+    signal_buckets = group_signal_buckets(filtered_signal_registry)
+
+    st.markdown("### Top 5 Useful Signals")
+    render_useful_signal_cards(
+        signal_buckets["top"],
+        empty_message="No top signals match the current filters.",
+    )
+
+    st.markdown("### Needs Action")
+    render_useful_signal_cards(
+        signal_buckets["needs_action"],
+        empty_message="No needs-action signals match the current filters.",
+    )
+
+    st.markdown("### Watchlist")
+    render_useful_signal_cards(
+        signal_buckets["watchlist"],
+        empty_message="No watchlist signals match the current filters.",
+    )
+
+    with st.expander("Low Priority / Ignored", expanded=False):
+        render_useful_signal_cards(
+            signal_buckets["low_priority"],
+            empty_message="No low-priority signals match the current filters.",
+        )
+
+    st.markdown("### Signal Table")
+    signal_df = display_dataframe(filtered_signal_registry)
+    if signal_df.empty:
+        st.info("No signal rows match the current filters.")
+    else:
+        st.dataframe(
+            signal_df[
+                [
+                    "title",
+                    "source_agent",
+                    "source_type",
+                    "category",
+                    "usefulness_score",
+                    "relevance_score",
+                    "urgency_score",
+                    "actionability_score",
+                    "value_score",
+                    "risk_score",
+                    "recommended_action",
+                    "target_agent",
+                    "status",
+                    "bucket",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
 
     st.markdown("### Health Overview")
     render_metric_cards(
@@ -655,9 +1370,121 @@ with health_tab:
             st.write(f"Suggested fix: {safe_display(result.get('suggested_fix'))}")
             st.write(f"Last checked: {safe_display(result.get('last_checked_note'))}")
 
-with matrix_tab:
-    st.markdown("## Portfolio Matrix")
-    st.write("Capability clusters, strongest categories, category cards, and portfolio gaps.")
+with workflows_tab:
+    st.markdown("## My Workflows")
+    st.write(
+        "Workflow-level view for portfolio review, useful signal review, connector readiness review, Codex handoff, and future Agent integration."
+    )
+
+    st.markdown("### Local Workflow Simulation")
+    st.caption(
+        "Local simulation only. No live connector. No real action execution. No credentials loaded."
+    )
+    render_metric_cards(
+        [
+            ("Total demo workflows", workflow_simulation_summary["total_demo_workflows"]),
+            (
+                "Ready for manual review",
+                workflow_simulation_summary["ready_for_manual_review_workflows"],
+            ),
+            ("Blocked steps", workflow_simulation_summary["blocked_steps"]),
+            ("Manual-only steps", workflow_simulation_summary["manual_only_steps"]),
+            ("Template-only outputs", workflow_simulation_summary["template_only_outputs"]),
+            ("Approval gates required", workflow_simulation_summary["approval_gates_required"]),
+            (
+                "Avg workflow readiness",
+                workflow_simulation_summary["average_workflow_readiness_score"],
+            ),
+        ]
+    )
+
+    workflow_filter_cols = st.columns(2)
+    with workflow_filter_cols[0]:
+        workflow_type_filter = st.selectbox(
+            "Workflow type",
+            get_workflow_type_options(),
+            key="workflow_type_filter",
+        )
+    with workflow_filter_cols[1]:
+        workflow_status_filter = st.selectbox(
+            "Workflow status",
+            get_workflow_status_options(),
+            key="workflow_status_filter",
+        )
+
+    filtered_workflow_simulations = filter_workflow_simulations(
+        workflow_simulation_registry,
+        workflow_type=workflow_type_filter,
+        workflow_status=workflow_status_filter,
+    )
+    render_workflow_simulation_cards(filtered_workflow_simulations)
+
+    st.markdown("### Approval Gates")
+    st.caption(
+        f"Approval gates are metadata only. Total gates: {approval_gate_summary['total_approval_gates']}. "
+        f"Blocked gates: {approval_gate_summary['blocked_gates']}. "
+        "Allowed modes are display_only, manual_only, template_only, dry_run_only, or blocked."
+    )
+    approval_gate_df = display_dataframe(approval_gate_registry)
+    if approval_gate_df.empty:
+        st.info("No approval gates are available.")
+    else:
+        st.dataframe(
+            approval_gate_df[
+                [
+                    "workflow_name",
+                    "gate_name",
+                    "target_action_id",
+                    "target_connector_id",
+                    "risk_level",
+                    "approval_status",
+                    "required_checks",
+                    "allowed_execution_mode",
+                    "block_reason",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    st.markdown("### Workflow-Generated Useful Signals")
+    workflow_signal_df = display_dataframe(workflow_generated_signal_seeds)
+    if workflow_signal_df.empty:
+        st.info("No workflow-generated signals are available.")
+    else:
+        st.dataframe(
+            workflow_signal_df[
+                [
+                    "title",
+                    "category",
+                    "status",
+                    "risk_score",
+                    "recommended_action",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    render_demo_workflow_report_export(
+        agent_manifests=agent_manifests,
+        registry_summary=registry_summary,
+        onboarding_summary=onboarding_result["summary"],
+        action_rows=local_action_registry,
+        action_summary=local_action_summary,
+        useful_signals=useful_signal_registry,
+        useful_signal_summary=useful_signal_summary,
+        connector_readiness=connector_readiness_registry,
+        connector_readiness_summary=connector_readiness_summary,
+        workflow_simulations=workflow_simulation_registry,
+        workflow_simulation_summary=workflow_simulation_summary,
+        approval_gates=approval_gate_registry,
+        approval_gate_summary=approval_gate_summary,
+        validation_snapshot=report_validation_snapshot,
+    )
+
+    st.markdown("### Workflow Catalog")
+    render_workflow_cards(workflow_catalog)
 
     st.markdown("### Project Matrix View")
     matrix_cols = st.columns(2)
@@ -711,9 +1538,11 @@ with matrix_tab:
     for gap in portfolio_positioning["portfolio_gaps"]:
         st.markdown(f'<div class="note-box">{gap}</div>', unsafe_allow_html=True)
 
-with actions_tab:
-    st.markdown("## Next Actions")
-    st.write("Planning and tracking view for registry, health, screenshots, and pin decisions. No automation is executed.")
+with action_center_tab:
+    st.markdown("## Action Center")
+    st.write(
+        "Planning and tracking view for registry, health, screenshots, pin decisions, and schema-backed local actions. No automation is executed."
+    )
 
     st.markdown("### Priority Summary")
     render_metric_cards(
@@ -762,6 +1591,65 @@ with actions_tab:
 
     st.markdown(f'<div class="note-box">{priority_summary["pause_rule"]}</div>', unsafe_allow_html=True)
 
+    st.markdown("### Local Action Schema Metrics")
+    render_metric_cards(
+        [
+            ("Total actions", local_action_summary["total_actions"]),
+            ("Manual-only actions", local_action_summary["manual_only_actions"]),
+            ("Display-only actions", local_action_summary["display_only_actions"]),
+            ("Future connector actions", local_action_summary["future_connector_actions"]),
+            ("Requires approval", local_action_summary["requires_approval_actions"]),
+            ("Blocked actions", local_action_summary["blocked_actions"]),
+        ]
+    )
+    st.caption(
+        "HUB-V2-005 actions are metadata, instructions, command templates, links, report views, Codex prompts, or future connector placeholders only."
+    )
+
+    st.markdown("### Local Action Schema Table")
+    local_action_df = display_dataframe(local_action_registry)
+    st.dataframe(
+        local_action_df[
+            [
+                "agent_name",
+                "action_id",
+                "label",
+                "action_type",
+                "execution_mode",
+                "risk_level",
+                "requires_approval",
+                "status",
+                "connector_required",
+                "runbook_ref",
+            ]
+        ],
+        width="stretch",
+        hide_index=True,
+    )
+
+    st.markdown("### Local Action Cards")
+    render_local_action_cards(local_action_registry)
+
+    render_codex_prompt_generator(agent_manifests, local_action_registry)
+
+    st.markdown("### Available Actions")
+    action_center_df = display_dataframe(action_center_items)
+    st.dataframe(
+        action_center_df[
+            [
+                "agent_name",
+                "priority",
+                "status",
+                "health_status",
+                "next_recommended_action",
+                "available_actions",
+                "execution_policy",
+            ]
+        ],
+        width="stretch",
+        hide_index=True,
+    )
+
     action_columns = [
         "agent_name",
         "priority",
@@ -780,8 +1668,284 @@ with actions_tab:
     st.markdown("### Action Cards")
     render_action_cards(sorted_filtered_actions)
 
-with export_tab:
-    st.markdown("## Export Report")
+with connectors_tab:
+    st.markdown("## Connectors")
+    st.write(
+        "Connector Readiness Simulator. HUB-V2-008 evaluates future connector readiness with design-only metadata."
+    )
+    st.caption(
+        "No live connector is connected. Design-only readiness simulation. No credentials loaded."
+    )
+
+    st.markdown("### Connector Readiness Simulator")
+    render_metric_cards(
+        [
+            ("Total connectors", connector_readiness_summary["total_connectors"]),
+            ("Design-only connectors", connector_readiness_summary["design_only_connectors"]),
+            ("Ready for demo", connector_readiness_summary["ready_for_demo_connectors"]),
+            ("Needs review", connector_readiness_summary["needs_review_connectors"]),
+            (
+                "Blocked until approved",
+                connector_readiness_summary["blocked_until_approved_connectors"],
+            ),
+            ("High-risk connectors", connector_readiness_summary["high_risk_connectors"]),
+            ("Avg readiness", connector_readiness_summary["average_readiness_score"]),
+        ]
+    )
+
+    st.markdown("### Readiness Filters")
+    connector_filter_cols = st.columns(3)
+    with connector_filter_cols[0]:
+        connector_risk_filter = st.selectbox(
+            "Connector risk",
+            get_connector_risk_options(),
+            key="connector_risk_filter",
+        )
+    with connector_filter_cols[1]:
+        connector_status_filter = st.selectbox(
+            "Readiness status",
+            get_connector_status_options(),
+            key="connector_status_filter",
+        )
+    with connector_filter_cols[2]:
+        connector_provider_options = ["All"] + sorted(
+            {connector.get("provider", "") for connector in connector_readiness_registry if connector.get("provider")}
+        )
+        connector_provider_filter = st.selectbox(
+            "Provider",
+            connector_provider_options,
+            key="connector_provider_filter",
+        )
+
+    filtered_connector_readiness = filter_connector_readiness(
+        connector_readiness_registry,
+        risk_level=connector_risk_filter,
+        readiness_status=connector_status_filter,
+        provider=connector_provider_filter,
+    )
+
+    st.markdown("### Connector Cards")
+    render_connector_readiness_cards(filtered_connector_readiness)
+
+    st.markdown("### Readiness Table")
+    readiness_df = display_dataframe(filtered_connector_readiness)
+    if readiness_df.empty:
+        st.info("No connector readiness rows match the selected filters.")
+    else:
+        st.dataframe(
+            readiness_df[
+                [
+                    "connector_name",
+                    "provider",
+                    "purpose",
+                    "data_access_level",
+                    "write_access",
+                    "risk_level",
+                    "approval_required",
+                    "demo_mode_available",
+                    "read_only_mode_available",
+                    "readiness_score",
+                    "readiness_status",
+                    "live_connection_status",
+                    "recommended_next_step",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    st.markdown("### Connector-Generated Useful Signals")
+    connector_signal_df = display_dataframe(connector_generated_signal_seeds)
+    if connector_signal_df.empty:
+        st.info("No connector-generated signals are available.")
+    else:
+        st.dataframe(
+            connector_signal_df[
+                [
+                    "title",
+                    "category",
+                    "status",
+                    "risk_score",
+                    "recommended_action",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    st.markdown("### Existing Connector Overview")
+    st.write(
+        "Manifest-declared connector surfaces remain local, link-based, planned, optional, or not connected."
+    )
+
+    connector_df = display_dataframe(connector_overview)
+    st.dataframe(
+        connector_df[
+            [
+                "connector_id",
+                "label",
+                "status",
+                "mode",
+                "agent_count",
+                "safe_mode",
+            ]
+        ],
+        width="stretch",
+        hide_index=True,
+    )
+
+    st.markdown("### Connector Policy")
+    render_html_card(
+        "Current Boundary",
+        (
+            "Local filesystem checks, GitHub links, and Streamlit launch commands are available as safe display-only surfaces. "
+            "Live account connectors remain disabled until a future explicit integration stage."
+        ),
+    )
+    render_html_card(
+        "Planned Connectors",
+        "Gmail, Google Sheets, Google Drive, Notion, Airtable, Telegram, GitHub, n8n, Make, and Zapier are reserved for future opt-in connector work.",
+    )
+
+with plugin_tab:
+    st.markdown("## Future Plugin Interface")
+    st.write(
+        "Interface standard, manifest import, Agent onboarding, and report export surface for future Agents and Skills."
+    )
+
+    st.markdown("### Agent Onboarding")
+    st.caption(
+        "Scans immediate child folders under F:\\AIProjects for agent_manifest.json only. No child project scripts are executed."
+    )
+    render_onboarding_metrics(onboarding_result["summary"])
+    render_html_card(
+        "Recommended Fixes",
+        safe_list_join(onboarding_result["summary"]["recommended_fixes"]),
+    )
+
+    st.markdown("### Discovery Results")
+    project_rows_df = display_dataframe(onboarding_result["project_rows"])
+    if project_rows_df.empty:
+        st.info("No project folders were found under the scan root.")
+    else:
+        st.dataframe(
+            project_rows_df[
+                [
+                    "project_name",
+                    "manifest_status",
+                    "source",
+                    "imported_agents",
+                    "invalid_agents",
+                    "warnings",
+                    "recommended_fix",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    imported_agents_df = display_dataframe(onboarding_result["imported_agents"])
+    st.markdown("### Imported Agents")
+    if imported_agents_df.empty:
+        st.info("No valid local manifests were imported yet.")
+    else:
+        st.dataframe(
+            imported_agents_df[
+                [
+                    "agent_id",
+                    "agent_name",
+                    "source",
+                    "category",
+                    "status",
+                    "next_action",
+                ]
+            ],
+            width="stretch",
+            hide_index=True,
+        )
+
+    with st.expander("Local path details for manual review"):
+        st.caption(
+            "Path details are intentionally collapsed for public-safe screenshots."
+        )
+        if not project_rows_df.empty:
+            st.dataframe(
+                project_rows_df[["project_name", "project_path", "manifest_path"]],
+                width="stretch",
+                hide_index=True,
+            )
+
+    duplicate_ids_df = display_dataframe(onboarding_result["duplicate_agent_ids"])
+    st.markdown("### Duplicate Agent IDs")
+    if duplicate_ids_df.empty:
+        st.info("No duplicate agent_id conflicts found.")
+    else:
+        st.caption(
+            "Static registry overrides are expected while AgentHub keeps CSV data as a baseline and local manifests as the richer runtime source."
+        )
+        st.dataframe(duplicate_ids_df, width="stretch", hide_index=True)
+
+    missing_df = display_dataframe(onboarding_result["missing_manifest_projects"])
+    invalid_df = display_dataframe(onboarding_result["invalid_manifest_projects"])
+    missing_col, invalid_col = st.columns(2)
+    with missing_col:
+        st.markdown("### Missing Manifests")
+        if missing_df.empty:
+            st.info("No missing manifests.")
+        else:
+            st.dataframe(
+                missing_df[["project_name", "recommended_fix"]],
+                width="stretch",
+                hide_index=True,
+            )
+    with invalid_col:
+        st.markdown("### Invalid Manifests")
+        if invalid_df.empty:
+            st.info("No invalid manifests.")
+        else:
+            st.dataframe(
+                invalid_df[["project_name", "warnings", "recommended_fix"]],
+                width="stretch",
+                hide_index=True,
+            )
+
+    st.markdown("### Agent Contract")
+    contract_left, contract_right = st.columns(2)
+    with contract_left:
+        render_html_card(
+            "Required Fields",
+            safe_list_join(agent_contract["required_fields"]),
+        )
+        render_html_card(
+            "Execution Policy",
+            (
+                f"Default mode: {agent_contract['execution_policy']['default_mode']}<br>"
+                f"External API calls: {agent_contract['execution_policy']['external_api_calls']}<br>"
+                f"Actions: {agent_contract['execution_policy']['actions']}"
+            ),
+        )
+    with contract_right:
+        render_html_card(
+            "Connector Policy",
+            (
+                f"Current stage: {agent_contract['connector_policy']['current_stage']}<br>"
+                f"Live connectors: {agent_contract['connector_policy']['live_connectors']}<br>"
+                f"Planned: {safe_list_join(agent_contract['connector_policy']['planned_connectors'])}"
+            ),
+        )
+        render_html_card(
+            "Manifest Files",
+            "Use agent_manifest.json, agent_contract.json, docs/AGENT_INTERFACE_STANDARD.md, and docs/FUTURE_PLUGIN_INTERFACE.md as the onboarding baseline.",
+        )
+
+    st.markdown("### Plugin Interface Roadmap")
+    st.dataframe(
+        as_dataframe(future_plugin_interface),
+        width="stretch",
+        hide_index=True,
+    )
+
+    st.markdown("### Export Report")
     st.write("Generate and preview the enhanced local Markdown report.")
 
     report = build_portfolio_markdown_report(

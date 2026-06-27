@@ -6,7 +6,7 @@ import re
 
 
 def build_report_file_name(
-    stage: str = "HUB-005-REPORT",
+    stage: str = "HUB-V2-001-REPORT",
     report_date: date | str | None = None,
 ) -> str:
     """Build a Windows-safe Markdown report file name."""
