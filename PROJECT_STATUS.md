@@ -1,6 +1,301 @@
 # Project Status
 
-Current status: HUB-V2-015A-PORTFOLIO-POSITIONING-DOCS-COMMIT-COMPLETE
+Current status: HUB-V2-018-CROSS-PROJECT-BACKLINK-EXPLICIT-COMMIT-COMPLETE
+
+## HUB-V2-018 Checkpoint
+
+Checkpoint name: HUB-V2-018-CROSS-PROJECT-BACKLINK-EXPLICIT-COMMIT-COMPLETE
+
+## HUB-V2-018 Goal
+
+Commit and push the explicitly approved cross-project AgentHubControlCenter
+backlink and child `agent_manifest.json` updates repo by repo, using exact file
+paths only and excluding unrelated artifacts.
+
+This checkpoint is a controlled backlink publish stage. It does not add product
+features, does not run child project scripts, does not connect live providers,
+does not execute actions, does not modify git remotes, does not use
+`git add .`, and does not force push.
+
+## Completed In HUB-V2-018
+
+- Re-read the V2-017 backlink status, repo status, commit manifest, exclusion
+  manifest, and public release checklist.
+- Preflight checked 8 git child repos:
+  branch, sanitized remote presence, empty staged state, README backlink,
+  `agent_manifest.json` JSON loading, and public-safe scan.
+- Confirmed MarketSenseAgent and VideoExtractSkill are non-git local
+  directories and skipped commit/push for both.
+- Staged only `README.md` and `agent_manifest.json` in each eligible child
+  repo.
+- Created and pushed one normal commit per eligible child repo.
+- Kept IdeaScoreAgent deploy/report/bat artifacts untracked and unstaged.
+- Updated AgentHubControlCenter cross-project backlink result docs.
+- Added `docs/CROSS_PROJECT_BACKLINK_COMMIT_RESULTS.md`.
+
+## HUB-V2-018 Commit Results
+
+| Project | Commit Hash | Push Result | Final Status |
+| --- | --- | --- | --- |
+| BusinessOpsAgent | `e84117c100af5d6add64d390e7f58f5ef1ee24a9` | Pushed to `origin/main` | Clean |
+| CareerPilotAgent | `74ca0d0b46bff5df8c5b4726fcdfbb58063c6d53` | Pushed to `origin/main` | Clean |
+| IdeaScoreAgent | `ec95d78120ea2633701c3350935fae8241fd66bc` | Pushed to `origin/main` | Only excluded deploy/report/bat files remain untracked |
+| NewsSignalAgent | `1ecd78ee94b87b00f3a8c16c576c2146bc19aec9` | Pushed to `origin/main` | Clean |
+| NextOpsAgent | `852b3999a2f4923d7e66c52948eff75e50c25bff` | Pushed to `origin/main` | Clean |
+| PersonalKnowledgeAgent | `d0c0d3e790b9518d248583c3cbb7b5e751e41246` | Pushed to `origin/main` | Clean |
+| QuantLabAgent | `cc778721fca1063cf60e2b0929fa6cc76e5da446` | Pushed to `origin/main` | Clean |
+| SocialPainFinderAgent | `f80129c226efe2456dca22e40f3db3c999ac2d75` | Pushed to `origin/main` | Clean |
+| MarketSenseAgent | N/A | Skipped | Non-git local directory; backlink remains local |
+| VideoExtractSkill | N/A | Skipped | Non-git local directory; backlink remains local |
+
+## HUB-V2-018 Validation Results
+
+- `.venv\Scripts\python.exe -m pytest` passed: 103 tests passed.
+- `.venv\Scripts\python.exe -m compileall .` passed with exit code 0.
+- JSON validation passed:
+  - Root `agent_manifest.json` loads.
+  - Root `agent_contract.json` loads.
+  - 10 target child project `agent_manifest.json` files load.
+- README backlink check passed:
+  - 10 target child project READMEs exist.
+  - 10 target child project READMEs contain the AgentHubControlCenter backlink.
+  - Duplicate backlink violations: 0.
+- Public-safe check passed:
+  - README backlink text secret-like hits: 0.
+  - Child `agent_manifest.json` secret-like hits: 0.
+  - Cross-project docs secret-like hits: 0.
+- Git status check passed:
+  - 7 eligible child repos are clean after push.
+  - IdeaScoreAgent only has the explicitly excluded deploy/report/bat files
+    remaining untracked.
+  - MarketSenseAgent and VideoExtractSkill remain non-git local directories
+    with README backlinks present.
+
+## Safety Check Results For HUB-V2-018
+
+- `.env` was not read.
+- No secret, token, password, credential, or API key was printed.
+- No OAuth flow was created.
+- No external API was called except the explicitly approved `git push` to
+  existing remotes.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  n8n, Make, Zapier, or other provider connector was connected.
+- No child project script was run.
+- No real action was executed.
+- No user file deletion was performed.
+- Git remotes were not modified.
+- No force push was used.
+- `git add .` was not used.
+- `.venv` remains ignored and was not added to git.
+- `outputs/private/` was not read or written.
+- Generated reports and unrelated deploy/report/bat artifacts were not staged.
+- IdeaScoreAgent required repo-local git author identity before commit; global
+  git config and remote settings were not changed.
+
+## HUB-V2-019 Recommended Next Stage
+
+Recommended next stage: HUB-V2-019-PORTFOLIO-MATRIX-FINAL-REVIEW.
+
+Scope suggestion:
+
+- Review the public portfolio matrix after cross-project backlinks are live.
+- Confirm AgentHubControlCenter remains the main pinned hub and sibling repos
+  link back cleanly.
+- Keep the next stage review-only unless a specific public documentation polish
+  gap is found.
+
+## HUB-V2-017 Checkpoint
+
+Checkpoint name: HUB-V2-017-CROSS-PROJECT-BACKLINK-COMMIT-DECISION-COMPLETE
+
+## HUB-V2-017 Goal
+
+Review the cross-project backlink changes repo by repo and generate a commit
+decision package. This stage decides which files are safe to stage later, which
+files must be excluded, which local directories are non-git, and which repos
+need extra review before any later commit/push stage.
+
+This checkpoint is review and documentation only. It does not modify child
+project files, does not run child project scripts, does not connect live
+providers, does not execute actions, does not modify git remotes, does not run
+`git add`, does not commit, and does not push.
+
+## Completed In HUB-V2-017
+
+- Re-read the V2-016 backlink plan and status docs.
+- Reviewed AgentHubControlCenter and 10 target child project directories.
+- Checked git/non-git status for each target project.
+- Checked current branch and sanitized origin remote for each git repo.
+- Checked `git status --short`, `git diff --name-only`, and
+  `git diff --stat` for each git repo.
+- Confirmed 10 target child project READMEs contain AgentHubControlCenter
+  backlinks and duplicate backlink violations remain 0.
+- Confirmed root AgentHubControlCenter JSON files load.
+- Confirmed 10 child `agent_manifest.json` files load.
+- Ran public-safe scans on backlink READMEs, child manifests, and new decision
+  docs.
+- Added `docs/CROSS_PROJECT_BACKLINK_COMMIT_DECISION.md`.
+- Added `docs/CROSS_PROJECT_REPO_STATUS.md`.
+- Added `docs/CROSS_PROJECT_COMMIT_MANIFEST.md`.
+- Added `docs/CROSS_PROJECT_EXCLUSION_MANIFEST.md`.
+- Updated `docs/CROSS_PROJECT_BACKLINK_STATUS.md` with the V2-017 decision
+  addendum.
+
+## HUB-V2-017 Commit Decision Summary
+
+| Project | Decision | Recommended Later Stage Files |
+| --- | --- | --- |
+| AgentHubControlCenter | `ready_to_commit` | V2-016/V2-017 backlink decision docs and status updates. |
+| BusinessOpsAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| CareerPilotAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| IdeaScoreAgent | `needs_review` | `README.md`, `agent_manifest.json` only after excluding unrelated deploy/report/bat artifacts. |
+| MarketSenseAgent | `skip_non_git` | No git commit available from the current local folder. |
+| NewsSignalAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| NextOpsAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| PersonalKnowledgeAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| QuantLabAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| SocialPainFinderAgent | `ready_to_commit` | `README.md`, `agent_manifest.json`. |
+| VideoExtractSkill | `skip_non_git` | No git commit available from the current local folder. |
+
+## Validation Results For HUB-V2-017
+
+- `.venv\Scripts\python.exe -m pytest` passed: 103 tests passed.
+- `.venv\Scripts\python.exe -m compileall .` passed with exit code 0.
+- JSON validation passed:
+  - Root `agent_manifest.json` loads.
+  - Root `agent_contract.json` loads.
+  - 10 target child project `agent_manifest.json` files load.
+- README backlink check passed:
+  - 10 target child project READMEs exist.
+  - 10 target child project READMEs contain the AgentHubControlCenter backlink.
+  - Duplicate backlink violations: 0.
+- Public-safe check passed:
+  - README backlink text secret-like hits: 0.
+  - Child `agent_manifest.json` secret-like hits: 0.
+  - Decision docs secret-like hits: 0.
+- Git review completed for all git repos and non-git directories.
+
+## Safety Check Results For HUB-V2-017
+
+- `.env` was not read.
+- No secret, token, password, credential, or API key was printed.
+- No OAuth flow was created.
+- No external API was called.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  n8n, Make, Zapier, or other provider connector was connected.
+- No child project script was run.
+- No real action was executed.
+- No user file deletion was performed.
+- Git remote was not modified.
+- `git add`, `git commit`, and `git push` were not executed.
+- No force push was used.
+- `.venv` remains ignored and was not added to git.
+- `outputs/private/` was not read or written.
+- Generated reports and unrelated deploy/report/bat artifacts are excluded
+  from the recommended backlink commit plan.
+
+## HUB-V2-018 Recommended Next Stage
+
+Recommended next stage: HUB-V2-018-CROSS-PROJECT-BACKLINK-EXPLICIT-COMMIT.
+
+Scope suggestion:
+
+- Commit only explicitly approved backlink/manifest files repo by repo.
+- Use exact file paths only.
+- Do not use `git add .`.
+- Do not commit non-git directories.
+- Do not modify remotes or force push.
+
+## HUB-V2-016 Checkpoint
+
+Checkpoint name: HUB-V2-016-CROSS-PROJECT-BACKLINK-PLAN-COMPLETE
+
+## HUB-V2-016 Goal
+
+Add lightweight cross-project README backlinks from the completed child Agent
+and Skill projects back to AgentHubControlCenter, so the public portfolio reads
+as a connected project matrix rather than isolated repositories.
+
+This checkpoint is documentation-only. It does not add product features, does
+not modify child project code, does not run child project scripts, does not
+connect live providers, does not execute actions, does not modify git remotes,
+does not run `git add`, does not commit, and does not push.
+
+## Completed In HUB-V2-016
+
+- Added a small AgentHubControlCenter backlink section to 9 child project
+  READMEs that did not already mention AgentHubControlCenter.
+- Merged the backlink wording into the existing
+  `PersonalKnowledgeAgent` AgentHubControlCenter section instead of creating a
+  duplicate README section.
+- Added `docs/CROSS_PROJECT_BACKLINK_PLAN.md`.
+- Added `docs/CROSS_PROJECT_BACKLINK_STATUS.md`.
+- Updated `docs/PROJECT_PLAN.md` with the V2-016 backlink stage.
+- Preserved each child project's original positioning and feature scope.
+- Kept all backlink text public-safe, portfolio-oriented, and metadata-only.
+
+## HUB-V2-016 Backlink Targets
+
+| Project | README Result |
+| --- | --- |
+| BusinessOpsAgent | Added backlink section. |
+| CareerPilotAgent | Added backlink section. |
+| IdeaScoreAgent | Added backlink section. |
+| MarketSenseAgent | Added backlink section. |
+| NewsSignalAgent | Added backlink section. |
+| NextOpsAgent | Added backlink section. |
+| PersonalKnowledgeAgent | Merged backlink into existing AgentHubControlCenter section. |
+| QuantLabAgent | Added backlink section. |
+| SocialPainFinderAgent | Added backlink section. |
+| VideoExtractSkill | Added backlink section. |
+
+## Validation Results For HUB-V2-016
+
+- `.venv\Scripts\python.exe -m pytest` passed: 103 tests passed.
+- `.venv\Scripts\python.exe -m compileall .` passed with exit code 0.
+- JSON validation passed:
+  - Root `agent_manifest.json` loads.
+  - Root `agent_contract.json` loads.
+  - 10 target child project `agent_manifest.json` files load.
+- README backlink check passed:
+  - 10 target child project READMEs exist.
+  - 10 target child project READMEs contain the AgentHubControlCenter backlink.
+  - Duplicate backlink section violations: 0.
+- Public-safe check passed:
+  - Backlink and cross-project docs scanned: 14 files.
+  - Secret-like pattern hits: 0.
+- Git status was reviewed for AgentHubControlCenter and all 10 target child
+  projects. No staging, commit, or push was performed.
+
+## Safety Check Results For HUB-V2-016
+
+- `.env` was not read.
+- No secret, token, password, credential, or API key was printed.
+- No OAuth flow was created.
+- No external API was called.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  n8n, Make, Zapier, or other provider connector was connected.
+- No child project script was run.
+- No real action was executed.
+- No user file deletion was performed.
+- Git remote was not modified.
+- `git add`, `git commit`, and `git push` were not executed.
+- No force push was used.
+- `.venv` remains ignored and was not added to git.
+- `outputs/private/` was not read or written.
+- No generated reports were staged or submitted.
+
+## HUB-V2-017 Recommended Next Stage
+
+Recommended next stage: HUB-V2-017-CROSS-PROJECT-BACKLINK-COMMIT-DECISION.
+
+Scope suggestion:
+
+- Review the cross-project README changes and backlink status document.
+- If approved, commit each touched repository separately using explicit file
+  paths only.
+- Do not use `git add .`, do not modify remotes, do not force push, and do not
+  publish non-git folders without a separate user decision.
 
 ## HUB-V2-015A Checkpoint
 

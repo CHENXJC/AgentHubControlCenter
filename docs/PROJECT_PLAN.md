@@ -322,11 +322,61 @@ launch command visibility, and next actions.
   project edits, no external API calls, no live connectors, no real actions, no
   remote changes, no commit, and no push.
 
+## HUB-V2-016 Cross-Project Backlink Plan
+
+- Added lightweight README backlinks from 10 child Agent and Skill projects
+  back to AgentHubControlCenter.
+- Added `docs/CROSS_PROJECT_BACKLINK_PLAN.md` with the backlink goal, target
+  projects, standard template, per-project wording, safety boundary, and
+  future commit/push recommendation.
+- Added `docs/CROSS_PROJECT_BACKLINK_STATUS.md` with README existence,
+  backlink status, public-safe status, git repo status, local change status,
+  and follow-up commit/push recommendations for each child project.
+- Preserved each child project's existing positioning and did not modify child
+  code, manifests, generated outputs, remotes, or runtime behavior.
+- Kept this stage documentation-only: no child scripts, external APIs, live
+  connectors, real actions, `git add`, commit, push, or force push.
+
+## HUB-V2-017 Cross-Project Backlink Commit Decision
+
+- Reviewed AgentHubControlCenter and the 10 backlink target projects repo by
+  repo.
+- Checked git/non-git state, branch, sanitized origin remote, `git status`,
+  `git diff --name-only`, and `git diff --stat` where available.
+- Confirmed 10/10 child READMEs contain AgentHubControlCenter backlinks and
+  duplicate backlink violations remain 0.
+- Confirmed root JSON files and 10 child `agent_manifest.json` files load.
+- Added `docs/CROSS_PROJECT_BACKLINK_COMMIT_DECISION.md`.
+- Added `docs/CROSS_PROJECT_REPO_STATUS.md`.
+- Added `docs/CROSS_PROJECT_COMMIT_MANIFEST.md`.
+- Added `docs/CROSS_PROJECT_EXCLUSION_MANIFEST.md`.
+- Classified git repos as `ready_to_commit`, `needs_review`, or
+  `skip_non_git`.
+- Kept this stage review-only: no child scripts, external APIs, live
+  connectors, real actions, remote changes, `git add`, commit, push, or force
+  push.
+
+## HUB-V2-018 Cross-Project Backlink Explicit Commit
+
+- Processed eligible child git repos one by one with exact file paths only.
+- Staged only `README.md` and `agent_manifest.json` in BusinessOpsAgent,
+  CareerPilotAgent, IdeaScoreAgent, NewsSignalAgent, NextOpsAgent,
+  PersonalKnowledgeAgent, QuantLabAgent, and SocialPainFinderAgent.
+- Created and pushed one normal commit per eligible child repo to the existing
+  `origin/main`.
+- Skipped MarketSenseAgent and VideoExtractSkill because their current local
+  folders are not git repos.
+- Kept IdeaScoreAgent deploy/report/bat artifacts untracked and unstaged.
+- Added `docs/CROSS_PROJECT_BACKLINK_COMMIT_RESULTS.md` with staged files,
+  commit hashes, push results, final git statuses, non-git skips, and
+  IdeaScoreAgent exclusions.
+- Kept the stage bounded: no `git add .`, no remote changes, no force push, no
+  child scripts, no live connectors, and no real Agent actions.
+
 ## Later Stages
 
-- HUB-V2-016 Cross-Project Backlink Plan, only if the user wants selected
-  sibling project READMEs to link back to AgentHubControlCenter as the portfolio
-  hub.
+- HUB-V2-019 Portfolio Matrix Final Review, to verify the now-linked public
+  portfolio reads cleanly as a hub-and-spoke Agent ecosystem.
 
 ## Safety Boundary
 
