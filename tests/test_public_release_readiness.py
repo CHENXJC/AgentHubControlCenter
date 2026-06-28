@@ -146,7 +146,8 @@ def test_manifest_contract_and_immediate_project_manifests_load():
     manifest_paths = sorted(project_root.glob("*/agent_manifest.json"))
     loaded = [json.loads(path.read_text(encoding="utf-8")) for path in manifest_paths]
 
-    assert len(loaded) == 11
+    assert len(loaded) == 12
+    assert any(item.get("agent_id") == "client_delivery_kit_agent" for item in loaded)
 
 
 def test_launcher_keeps_local_venv_and_fixed_port():

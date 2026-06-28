@@ -6,9 +6,9 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-019-PORTFOLIO-MATRIX-FINAL-REVIEW-COMPLETE
+Current status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
 
-Portfolio positioning: this repo is the hub project for showing how 11
+Portfolio positioning: this repo is the hub project for showing how 12
 local-first AI Agents and Skills can be organized into one safe, inspectable
 AgentOps workflow system.
 
@@ -22,7 +22,7 @@ no child project script, and no real action execution.
 - Summarizes portfolio status, showcase coverage, pinned items, public-but-not-pinned projects, and paused/completed projects.
 - Checks whether each local project path contains expected public-project files.
 - Builds a capability matrix and positioning summary for the portfolio.
-- Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Knowledge Base, and Control Center / Meta Agent.
+- Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Client Delivery / AI Consulting, Knowledge Base, and Control Center / Meta Agent.
 - Plans prioritized next actions from validation, health, screenshots, and pin status.
 - Displays local command packs for manual launch, folder open, tests, and git status.
 - Generates an enhanced Markdown portfolio report for download or local saved export.
@@ -81,6 +81,7 @@ Agent and Skill portfolio.
 | AgentHubControlCenter | Hub / AgentOps Command Center | Main portfolio command center and review hub | Published | Hub project | Valid root manifest | Public-safe metadata only | Keep pinned as the main portfolio hub |
 | BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
 | CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
+| ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Local-only / not yet published | Planned / local README linked | Valid local manifest | Synthetic demo-only | Prepare public showcase and optional repo creation |
 | IdeaScoreAgent | Idea validation | Business idea scoring and validation node | Published | Backlink live | Valid manifest | Public-safe | Excluded deploy/report/bat artifacts remain local-only |
 | MarketSenseAgent | Market intelligence | Market watch and local automation node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
 | NewsSignalAgent | News intelligence | News signal analysis node | Published | Backlink live | Valid manifest | Public-safe | Keep as signal analysis example |
@@ -96,14 +97,14 @@ Agent and Skill portfolio.
 
 ![Command Center Overview](docs/images/01_command_overview.png)
 
-Public-safe command center home view with portfolio metrics, 11 available
+Public-safe command center home view with portfolio metrics, 12 available
 tools, and first-row Agent cards.
 
 ### Agent Registry
 
 ![Agent Registry](docs/images/02_agent_registry.png)
 
-My Tools / Agent Registry view showing 11 manifest-onboarded local Agents and
+My Tools / Agent Registry view showing 12 manifest-onboarded local Agents and
 Skills with source, demo-mode, safe-mode, action, and connector badges.
 
 ### Action Center
@@ -145,7 +146,7 @@ not-connected surfaces without enabling live account integrations.
 
 ![Agent Onboarding Metrics](docs/images/08_agent_onboarding_metrics.png)
 
-Agent onboarding metrics showing 11 manifests found, 11 valid manifests, 0
+Agent onboarding metrics showing 12 manifests found, 12 valid manifests, 0
 invalid manifests, and 0 missing manifests.
 
 ### Report Export
@@ -176,8 +177,8 @@ policy state for high-risk connector ideas.
 - Agent Onboarding section
 - Manifest discovery and validation
 - CSV + manifest runtime registry merge
-- Manifest-based Agent onboarding for 11 local Agents and Skills
-- HUB-V2-005 local action schema for 55 metadata-only actions across 11 Agents
+- Manifest-based Agent onboarding for 12 local Agents and Skills
+- HUB-V2-005+ local action schema for 66 metadata-only actions across 12 Agents
 - HUB-V2-006 Codex Prompt Generator for copy-ready text prompts
 - HUB-V2-007 Useful Signals Engine for scored local recommendations
 - HUB-V2-008 Connector Readiness Simulator for design-only connector planning
@@ -219,9 +220,9 @@ policy state for high-risk connector ideas.
 
 ## Current MVP Status
 
-HUB-V2-019 completes a final portfolio matrix review after the cross-project
-backlink commit stage. AgentHubControlCenter now clearly presents itself as the
-hub-and-spoke entry point for 11 local-first AI Agents and Skills, with
+CLIENTDELIVERYKIT-005 completes a maintain-only AgentHub import for
+ClientDeliveryKitAgent. AgentHubControlCenter now clearly presents itself as the
+hub-and-spoke entry point for 12 local-first AI Agents and Skills, with
 published child repo backlinks, local-only non-git project notes, valid
 manifests, public-safe boundaries, and no real execution.
 
@@ -282,21 +283,21 @@ remotes or using force push.
 
 Current local scan result:
 
-- Total projects scanned: 11
-- Manifests found: 11
-- Valid manifests: 11
+- Total projects scanned: 12
+- Manifests found: 12
+- Valid manifests: 12
 - Invalid manifests: 0
 - Missing manifests: 0
-- Imported agents: 11
+- Imported agents: 12
 - Duplicate agent IDs: 9 static registry overrides
 
 Current local action result:
 
-- Total actions: 56
-- Manual-only actions: 17
-- Display-only actions: 31
+- Total actions: 66
+- Manual-only actions: 19
+- Display-only actions: 34
 - Future connector actions: 0
-- Requires approval: 0
+- Requires approval: 3
 - Blocked actions: 0
 - Policy violations: 0
 
@@ -358,6 +359,7 @@ Current release readiness result:
 ## Registered Agents
 
 - AgentHubControlCenter
+- ClientDeliveryKitAgent
 - VideoExtractSkill
 - MarketSenseAgent
 - QuantLabAgent

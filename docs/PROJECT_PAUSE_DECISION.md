@@ -14,7 +14,7 @@ The project has reached the intended portfolio-hub milestone:
 - Public GitHub showcase is complete.
 - Profile pin and portfolio positioning are documented.
 - Cross-project backlinks are live for pushed child repos.
-- Portfolio Matrix covers 11/11 projects.
+- Portfolio Matrix covers 12/12 projects after the ClientDeliveryKitAgent import.
 - Hub-and-spoke navigation has been reviewed.
 - V2 command surfaces are complete enough for public demonstration.
 - Safety gates remain clear: metadata only, no live connector, no real action
@@ -48,6 +48,9 @@ Maintenance should stay narrow:
 - Fix broken links, stale project status text, or failed tests if discovered.
 - Add new projects to the registry only when a separate project reaches a stable
   local demo stage.
+- Maintain-only spoke imports are allowed when they update registry,
+  documentation, portfolio matrix, and public-safe metadata without adding new
+  AgentHub execution features.
 
 ## What Not To Build Next In AgentHub
 

@@ -20,7 +20,7 @@ does not stage files, does not commit, and does not push.
 | Public GitHub raw README accessible | Pass, HTTP 200 |
 | README states AgentHub is the portfolio hub | Pass |
 | README explains AgentOps / Command Center positioning | Pass |
-| README lists 11 projects in a matrix | Pass |
+| README lists 12 projects in a matrix | Pass |
 | README states public-safe / no live connector / no real execution boundary | Pass |
 
 Public README checked:
@@ -47,6 +47,7 @@ available.
 
 | Project | Reason | Local Backlink | Manifest JSON | Publish Status |
 | --- | --- | --- | --- | --- |
+| ClientDeliveryKitAgent | New local spoke; not yet a git repository | Pass | Pass | Local-only, not yet published |
 | MarketSenseAgent | Current local folder is not a git repo | Pass | Pass | Local-only, not published from this folder |
 | VideoExtractSkill | Current local folder is not a git repo | Pass | Pass | Local-only, not published from this folder |
 
@@ -71,6 +72,7 @@ The public portfolio now has a clear hub-and-spoke navigation pattern:
 - Local-only non-git projects are documented as local-only rather than
   overstated as published.
 - Manifest status is valid across the local project matrix.
+- ClientDeliveryKitAgent is now documented as a local-only spoke with a valid manifest and planned public showcase path.
 - Safety boundaries remain visible and consistent.
 
 ## Safety Notes

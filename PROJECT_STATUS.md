@@ -1,6 +1,97 @@
 # Project Status
 
-Current status: HUB-V2-021-AGENTHUB-PAUSE-DOCS-COMMIT-COMPLETE
+Current status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
+
+## CLIENTDELIVERYKIT-005A Checkpoint
+
+Checkpoint name: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
+
+## CLIENTDELIVERYKIT-005A Goal
+
+Commit and push the AgentHubControlCenter documentation, metadata, portfolio
+matrix, and tests that register ClientDeliveryKitAgent as a local-only spoke
+project.
+
+This checkpoint is commit/push only for AgentHubControlCenter. It does not
+initialize a ClientDeliveryKitAgent git repository, does not stage
+ClientDeliveryKitAgent files, does not add AgentHub feature expansion, does not
+connect live providers, does not execute actions, and does not modify git
+remotes.
+
+## Completed In CLIENTDELIVERYKIT-005A
+
+- Confirmed the AgentHub working tree only contains ClientDeliveryKitAgent
+  import, portfolio matrix, documentation, and test updates.
+- Confirmed ClientDeliveryKitAgent remains local-only and is not a git
+  repository.
+- Confirmed AgentHub manifest discovery still reports 12 scanned, 12 found, 12
+  valid, 0 invalid, and 0 missing manifests.
+- Confirmed ClientDeliveryKitAgent appears in the Client Delivery / AI
+  Consulting portfolio matrix group.
+- Confirmed Action Center policy violations remain 0 after the import.
+- Staged only the expected AgentHubControlCenter files for this import metadata
+  commit.
+- Pushed the AgentHubControlCenter commit to the existing `origin/main` remote.
+
+## CLIENTDELIVERYKIT-005A Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector, or
+  other external connector was connected.
+- No child project script was run.
+- No real action or client workflow was executed.
+- Git remote was not modified.
+- No force push was used.
+- `git add .` was not used.
+- ClientDeliveryKitAgent files were not staged or committed.
+
+## CLIENTDELIVERYKIT-006 Recommended Next Stage
+
+Recommended next stage: CLIENTDELIVERYKIT-006-PUBLIC-SHOWCASE-SCREENSHOT-AND-GITHUB-PREP.
+
+Prepare ClientDeliveryKitAgent public-safe screenshots, README first-screen
+polish, release checklist, and GitHub repository decision. Do not initialize or
+publish a ClientDeliveryKitAgent repo until that stage is explicitly requested.
+
+## CLIENTDELIVERYKIT-005 Checkpoint
+
+Checkpoint name: CLIENTDELIVERYKIT-005-AGENTHUB-IMPORT-AND-SHOWCASE-PREP-COMPLETE
+
+## CLIENTDELIVERYKIT-005 Goal
+
+Import ClientDeliveryKitAgent as a new AgentHub spoke project through existing
+manifest discovery, portfolio matrix documentation, and public-safe showcase
+metadata while keeping AgentHubControlCenter in maintain-only mode.
+
+## Completed In CLIENTDELIVERYKIT-005
+
+- Confirmed `F:\AIProjects\ClientDeliveryKitAgent\agent_manifest.json` is
+  discovered by the existing AgentHub manifest loader.
+- Confirmed total scanned local projects increased from 11 to 12.
+- Confirmed valid manifests = 12, invalid manifests = 0, missing manifests = 0.
+- Added ClientDeliveryKitAgent to the fixed portfolio matrix category mapping.
+- Updated README and portfolio docs to list ClientDeliveryKitAgent as a
+  local-only client delivery / AI automation consulting spoke.
+- Added `docs/CLIENTDELIVERYKIT_AGENTHUB_IMPORT.md`.
+- Kept the stage maintain-only: no AgentHub connector, action engine, workflow
+  engine, or real execution feature was added.
+
+## CLIENTDELIVERYKIT-005 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No external API or real connector was called.
+- No real action or client workflow was executed.
+- No git add, commit, push, remote edit, or force push was performed.
+
+## CLIENTDELIVERYKIT-006 Recommended Next Stage
+
+Recommended next stage: CLIENTDELIVERYKIT-006-PUBLIC-SHOWCASE-SCREENSHOT-AND-GITHUB-PREP.
+
+Prepare ClientDeliveryKitAgent public showcase screenshots, public-safe release
+docs, and an optional GitHub repository decision. Do not publish or initialize
+git unless the user explicitly requests that stage.
 
 ## HUB-V2-021 Checkpoint
 

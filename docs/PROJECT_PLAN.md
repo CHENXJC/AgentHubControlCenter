@@ -376,7 +376,7 @@ launch command visibility, and next actions.
 ## HUB-V2-019 Portfolio Matrix Final Review
 
 - Reviewed AgentHubControlCenter as the hub-and-spoke entry point for the
-  current 11-project AI Agent and Skill portfolio.
+  current 12-project AI Agent and Skill portfolio after ClientDeliveryKitAgent import.
 - Added a lightweight README Portfolio Matrix with project, category, role,
   GitHub status, backlink status, manifest status, public-safe status, and next
   note.
@@ -413,12 +413,22 @@ launch command visibility, and next actions.
   scripts, live connectors, real actions, remote changes, `git add`, commit,
   push, or force push.
 
+## CLIENTDELIVERYKIT-005 AgentHub Import And Showcase Prep
+
+- Imported ClientDeliveryKitAgent through existing local manifest discovery.
+- Confirmed total local projects increased from 11 to 12.
+- Added ClientDeliveryKitAgent to the portfolio matrix as a client-facing
+  delivery workflow spoke.
+- Kept AgentHubControlCenter in maintain-only mode; no connector, workflow, or
+  action execution feature was added.
+- Added `docs/CLIENTDELIVERYKIT_AGENTHUB_IMPORT.md`.
+
 ## Later Stages
 
 - HUB-V2-021 AgentHub Pause Docs Commit, only if the user explicitly approves a
   commit/push stage for the V2-020 decision docs.
-- ClientDeliveryKitAgent Planning, as a separate new project planning stage if
-  the user chooses to start the recommended next portfolio spoke.
+- ClientDeliveryKitAgent public showcase prep and optional repo creation as a
+  separate explicit stage if the user chooses to publish the new spoke.
 
 ## Safety Boundary
 

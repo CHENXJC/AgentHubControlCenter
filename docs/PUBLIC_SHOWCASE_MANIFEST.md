@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-020-PROJECT-PAUSE-AND-NEXT-PORTFOLIO-GAP-DECISION-COMPLETE
+Current local development status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -313,7 +313,7 @@ Placement status:
 
 | Area | Status | Notes |
 | --- | --- | --- |
-| Pin decision | Complete | `strongly recommend pin` because AgentHub is the portfolio hub for 11 local AI Agents and Skills. |
+| Pin decision | Complete | `strongly recommend pin` because AgentHub is the portfolio hub for 12 local AI Agents and Skills after ClientDeliveryKitAgent import. |
 | Repo About options | Complete | Three About description variants are documented in `docs/PROFILE_PIN_PORTFOLIO_DECISION.md`. |
 | Topic suggestions | Complete | AI Agents, AI automation, workflow automation, command center, approval gates, connector readiness, local-first, and portfolio dashboard topics are recommended. |
 | Portfolio positioning copy | Complete | `docs/PORTFOLIO_POSITIONING.md` includes one-line, summary, resume, LinkedIn/portfolio, and interview versions. |
@@ -335,7 +335,21 @@ Portfolio matrix status:
 | Explicit backlink commit | Complete | 8 git child repos were committed and pushed with exact files; 2 non-git folders were skipped. |
 | Local-only projects | Documented | MarketSenseAgent and VideoExtractSkill remain local-only non-git directories. |
 | IdeaScoreAgent exclusions | Documented | Deploy/report/bat artifacts remain untracked and excluded. |
-| Portfolio Matrix README section | Complete | README now lists 11/11 projects with category, role, GitHub status, backlink status, manifest status, public-safe status, and next note. |
+| Portfolio Matrix README section | Complete | README now lists 12/12 projects with category, role, GitHub status, backlink status, manifest status, public-safe status, and next note. |
+
+## CLIENTDELIVERYKIT-005 AgentHub Import And Showcase Prep
+
+ClientDeliveryKitAgent is now documented as a local-only spoke project in the
+AgentHub portfolio matrix. This is a maintain-only metadata update, not an
+AgentHub feature expansion.
+
+| Check | Status | Notes |
+| --- | --- | --- |
+| Manifest discovery | Complete | `F:\AIProjects\ClientDeliveryKitAgent\agent_manifest.json` loads as a valid local manifest. |
+| Portfolio matrix | Complete | Matrix now lists 12/12 local projects including ClientDeliveryKitAgent. |
+| GitHub status | Local-only | No repository was created and no git operation was performed. |
+| Public-safe status | Complete | ClientDeliveryKitAgent uses synthetic demo data only. |
+| Next note | Planned | Prepare public showcase screenshots and optional repo creation in a later explicit stage. |
 | Safety | Complete | No `.env`, credentials, live connectors, child scripts, real actions, remote changes, `git add`, commit, push, or force push in V2-019. |
 
 ## HUB-V2-020 Project Pause and Next Portfolio Gap Decision

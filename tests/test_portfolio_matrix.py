@@ -58,11 +58,32 @@ def test_build_project_matrix_view_returns_fixed_groups():
     groups = {item["category_group"]: item for item in matrix}
 
     assert "Finance / Market" in groups
+    assert "Client Delivery / AI Consulting" in groups
     assert "Knowledge Base" in groups
     assert "Control Center / Meta Agent" in groups
     assert groups["Finance / Market"]["projects"][0]["name"] == "QuantLabAgent"
     assert groups["Knowledge Base"]["projects"] == []
     assert groups["Control Center / Meta Agent"]["projects"][0]["name"] == "AgentHubControlCenter"
+
+
+def test_build_project_matrix_view_lists_client_delivery_spoke():
+    matrix = build_project_matrix_view(
+        [
+            {
+                "agent_name": "ClientDeliveryKitAgent",
+                "category": "client_delivery",
+                "status": "streamlit_consultant_dashboard_complete",
+                "showcase_status": "not_published_dashboard_demo",
+                "pin_status": "not_applicable",
+                "next_action": "CLIENTDELIVERYKIT-006-PUBLIC-SHOWCASE-PREP",
+                "portfolio_value": "Shows client-facing AI automation consulting delivery workflow.",
+            }
+        ]
+    )
+
+    groups = {item["category_group"]: item for item in matrix}
+
+    assert groups["Client Delivery / AI Consulting"]["projects"][0]["name"] == "ClientDeliveryKitAgent"
 
 
 def test_build_priority_summary_returns_portfolio_buckets():

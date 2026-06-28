@@ -40,6 +40,16 @@ PROJECT_MATRIX_GROUPS = [
         "empty_next_step": "No SME automation project is registered yet.",
     },
     {
+        "category_group": "Client Delivery / AI Consulting",
+        "categories": {
+            "client_delivery",
+            "Client Delivery",
+            "Client delivery / AI automation consulting",
+        },
+        "portfolio_role": "Client-facing AI automation consulting delivery workflow and report packaging.",
+        "empty_next_step": "No client delivery project is registered yet.",
+    },
+    {
         "category_group": "Knowledge Base",
         "categories": {"Knowledge Base", "knowledge_management"},
         "portfolio_role": "Future local personal knowledge base and retrieval workflow.",
@@ -293,6 +303,7 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
         "Career Automation": [],
         "News Intelligence": [],
         "Business Operations": [],
+        "Client Delivery": [],
         "AgentOps / PortfolioOps": ["AgentHubControlCenter"],
     }
 
@@ -313,6 +324,8 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
             capability_clusters["News Intelligence"].append(name)
         elif category in {"Business Operations", "sme_operations"}:
             capability_clusters["Business Operations"].append(name)
+        elif category in {"client_delivery", "Client Delivery", "Client delivery / AI automation consulting"}:
+            capability_clusters["Client Delivery"].append(name)
         elif category in {"Knowledge Base", "knowledge_management"}:
             capability_clusters.setdefault("Knowledge Management", []).append(name)
 
