@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-019-PORTFOLIO-MATRIX-FINAL-REVIEW-COMPLETE
+Current local development status: HUB-V2-020-PROJECT-PAUSE-AND-NEXT-PORTFOLIO-GAP-DECISION-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -337,6 +337,22 @@ Portfolio matrix status:
 | IdeaScoreAgent exclusions | Documented | Deploy/report/bat artifacts remain untracked and excluded. |
 | Portfolio Matrix README section | Complete | README now lists 11/11 projects with category, role, GitHub status, backlink status, manifest status, public-safe status, and next note. |
 | Safety | Complete | No `.env`, credentials, live connectors, child scripts, real actions, remote changes, `git add`, commit, push, or force push in V2-019. |
+
+## HUB-V2-020 Project Pause and Next Portfolio Gap Decision
+
+HUB-V2-020 pauses AgentHubControlCenter feature expansion after the portfolio
+hub reached showcase-ready status.
+
+Pause status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Pause decision | Complete | Decision is `pause_feature_expansion`. AgentHub should move to maintain-only mode. |
+| Current coverage review | Complete | The portfolio covers AgentOps, business operations, career operations, idea validation, market intelligence, news intelligence, knowledge management, quant research, opportunity discovery, and content extraction. |
+| Gap analysis | Complete | Main gap is client-facing delivery workflow and consultant-style handoff. |
+| Top 3 next candidates | Complete | Client Delivery Kit Agent, SME Automation Demo Kit, and Data-to-Insight Workflow Agent. |
+| Final recommendation | Complete | Start `ClientDeliveryKitAgent` as the next standalone spoke project if the user chooses to continue portfolio expansion. |
+| Safety | Complete | Planning/docs only; no new project code, live connector, child script, real action, remote change, commit, push, or force push. |
 
 ## HUB-005 Showcase Capabilities
 

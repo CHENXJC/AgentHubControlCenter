@@ -391,10 +391,34 @@ launch command visibility, and next actions.
 - Kept the stage review/documentation-only: no child scripts, live connectors,
   real actions, remote changes, `git add`, commit, push, or force push.
 
+## HUB-V2-020 Project Pause and Next Portfolio Gap Decision
+
+- Decided AgentHubControlCenter should pause feature expansion and move into
+  maintain-only mode.
+- Confirmed the current portfolio already covers AgentHub / AgentOps, business
+  operations, career operations, idea validation, market intelligence, news
+  intelligence, knowledge management, quant research, opportunity discovery,
+  and content extraction.
+- Compared six next portfolio directions: Live Connector Pilot, Client Delivery
+  Kit Agent, StudyOps / Monash Business Learning Agent, Career Application Ops
+  Agent V2, SME Automation Demo Kit, and Data-to-Insight Workflow Agent.
+- Selected the Top 3 next candidates: Client Delivery Kit Agent, SME Automation
+  Demo Kit, and Data-to-Insight Workflow Agent.
+- Recommended `ClientDeliveryKitAgent` as the next standalone spoke project
+  because it best demonstrates business-facing AI automation consulting.
+- Added `docs/PROJECT_PAUSE_DECISION.md`.
+- Added `docs/NEXT_PORTFOLIO_GAP_ANALYSIS.md`.
+- Added `docs/NEXT_PROJECT_RECOMMENDATION.md`.
+- Kept the stage decision/documentation-only: no new project code, child
+  scripts, live connectors, real actions, remote changes, `git add`, commit,
+  push, or force push.
+
 ## Later Stages
 
-- HUB-V2-020 Project Pause and Next Portfolio Gap Decision, to stop AgentHub
-  feature drift and choose the next separate portfolio gap intentionally.
+- HUB-V2-021 AgentHub Pause Docs Commit, only if the user explicitly approves a
+  commit/push stage for the V2-020 decision docs.
+- ClientDeliveryKitAgent Planning, as a separate new project planning stage if
+  the user chooses to start the recommended next portfolio spoke.
 
 ## Safety Boundary
 
