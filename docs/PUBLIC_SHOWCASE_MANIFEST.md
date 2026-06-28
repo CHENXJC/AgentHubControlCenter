@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-015-PROFILE-PIN-PORTFOLIO-PLACEMENT-DECISION-COMPLETE
+Current local development status: HUB-V2-019-PORTFOLIO-MATRIX-FINAL-REVIEW-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -320,6 +320,23 @@ Placement status:
 | README first-screen check | Complete | Current first screen passes; a compact portfolio positioning line was added near the top. |
 | Cross-project backlinks | Recommended next | Backlinks are useful, but should be handled in a separate explicit stage. |
 | Safety | Complete | No `.env`, credentials, secrets, live connectors, child scripts, external APIs, real actions, sibling repo edits, remote changes, commit, or push. |
+
+## HUB-V2-016 to HUB-V2-019 Portfolio Matrix Finalization
+
+HUB-V2-016 through HUB-V2-019 connect the public portfolio surface into a
+clearer hub-and-spoke system around AgentHubControlCenter.
+
+Portfolio matrix status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Cross-project backlink plan | Complete | Public-safe backlink wording was added to 10 child project READMEs. |
+| Commit decision | Complete | Repo-by-repo commit and exclusion manifests were documented before push. |
+| Explicit backlink commit | Complete | 8 git child repos were committed and pushed with exact files; 2 non-git folders were skipped. |
+| Local-only projects | Documented | MarketSenseAgent and VideoExtractSkill remain local-only non-git directories. |
+| IdeaScoreAgent exclusions | Documented | Deploy/report/bat artifacts remain untracked and excluded. |
+| Portfolio Matrix README section | Complete | README now lists 11/11 projects with category, role, GitHub status, backlink status, manifest status, public-safe status, and next note. |
+| Safety | Complete | No `.env`, credentials, live connectors, child scripts, real actions, remote changes, `git add`, commit, push, or force push in V2-019. |
 
 ## HUB-005 Showcase Capabilities
 

@@ -6,11 +6,14 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-015-PROFILE-PIN-PORTFOLIO-PLACEMENT-DECISION-COMPLETE
+Current status: HUB-V2-019-PORTFOLIO-MATRIX-FINAL-REVIEW-COMPLETE
 
 Portfolio positioning: this repo is the hub project for showing how 11
 local-first AI Agents and Skills can be organized into one safe, inspectable
 AgentOps workflow system.
+
+Safety mode: public-safe metadata only; no live connector, no credential load,
+no child project script, and no real action execution.
 
 ## What It Does
 
@@ -67,6 +70,25 @@ As the portfolio grows, each project needs a clear operational view: what exists
 where it lives, whether the local files are healthy, what it demonstrates, and
 what needs attention next. This app acts as a PortfolioOps dashboard for a
 local-first AI workflow ecosystem.
+
+## Portfolio Matrix
+
+AgentHubControlCenter is the hub-and-spoke entry point for the current local AI
+Agent and Skill portfolio.
+
+| Project | Category | Role in AgentHub | GitHub status | Backlink status | Manifest status | Public-safe status | Next note |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| AgentHubControlCenter | Hub / AgentOps Command Center | Main portfolio command center and review hub | Published | Hub project | Valid root manifest | Public-safe metadata only | Keep pinned as the main portfolio hub |
+| BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
+| CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
+| IdeaScoreAgent | Idea validation | Business idea scoring and validation node | Published | Backlink live | Valid manifest | Public-safe | Excluded deploy/report/bat artifacts remain local-only |
+| MarketSenseAgent | Market intelligence | Market watch and local automation node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
+| NewsSignalAgent | News intelligence | News signal analysis node | Published | Backlink live | Valid manifest | Public-safe | Keep as signal analysis example |
+| NextOpsAgent | SME next-action recommendations | Operational next-action recommendation node | Published | Backlink live | Valid manifest | Public-safe | Keep as next-action workflow example |
+| PersonalKnowledgeAgent | Knowledge management | Personal knowledge workflow node | Published | Backlink live | Valid manifest | Public-safe demo boundary | Keep knowledge workflow positioning clear |
+| QuantLabAgent | Quant research | Research, backtesting, and risk analysis node | Published | Backlink live | Valid manifest | Public-safe research/demo boundary | Keep investment disclaimer visible |
+| SocialPainFinderAgent | Opportunity discovery | Pain-point and opportunity discovery node | Published | Backlink live | Valid manifest | Public-safe | Keep as business opportunity discovery example |
+| VideoExtractSkill | Content intelligence | Video/image content extraction node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
 
 ## Screenshots
 
@@ -196,6 +218,18 @@ policy state for high-risk connector ideas.
 - Windows one-click command launcher
 
 ## Current MVP Status
+
+HUB-V2-019 completes a final portfolio matrix review after the cross-project
+backlink commit stage. AgentHubControlCenter now clearly presents itself as the
+hub-and-spoke entry point for 11 local-first AI Agents and Skills, with
+published child repo backlinks, local-only non-git project notes, valid
+manifests, public-safe boundaries, and no real execution.
+
+HUB-V2-018 completed the explicit cross-project backlink commit stage. Eight
+eligible child repos were committed and pushed with exact `README.md` and
+`agent_manifest.json` file paths; MarketSenseAgent and VideoExtractSkill remain
+local-only non-git directories; IdeaScoreAgent deploy/report/bat artifacts
+remain untracked and excluded.
 
 HUB-V2-015 completes the GitHub Profile pin / portfolio placement decision. The
 decision is to strongly recommend pinning AgentHubControlCenter because it is
@@ -412,4 +446,7 @@ showcase refresh only updates public-safe docs and screenshots.
 - HUB-V2-013 GitHub Showcase Update Decision: complete.
 - HUB-V2-014 Git Commit / Push / Live Showcase Verification: complete.
 - HUB-V2-015 Profile Pin / Portfolio Placement Decision: complete.
-- HUB-V2-016 Cross-Project Backlink Plan: optional next stage.
+- HUB-V2-016 Cross-Project Backlink Plan: complete.
+- HUB-V2-017 Cross-Project Backlink Commit Decision: complete.
+- HUB-V2-018 Cross-Project Backlink Explicit Commit: complete.
+- HUB-V2-019 Portfolio Matrix Final Review: complete.

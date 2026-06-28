@@ -373,10 +373,28 @@ launch command visibility, and next actions.
 - Kept the stage bounded: no `git add .`, no remote changes, no force push, no
   child scripts, no live connectors, and no real Agent actions.
 
+## HUB-V2-019 Portfolio Matrix Final Review
+
+- Reviewed AgentHubControlCenter as the hub-and-spoke entry point for the
+  current 11-project AI Agent and Skill portfolio.
+- Added a lightweight README Portfolio Matrix with project, category, role,
+  GitHub status, backlink status, manifest status, public-safe status, and next
+  note.
+- Confirmed 8 pushed child repos have public README backlinks to
+  AgentHubControlCenter and valid `agent_manifest.json` files.
+- Confirmed MarketSenseAgent and VideoExtractSkill remain local-only non-git
+  directories with local backlinks and valid local manifests.
+- Confirmed IdeaScoreAgent deploy/report/bat artifacts remain untracked and
+  excluded.
+- Added `docs/PORTFOLIO_MATRIX_FINAL_REVIEW.md`.
+- Added `docs/HUB_AND_SPOKE_NAVIGATION_CHECK.md`.
+- Kept the stage review/documentation-only: no child scripts, live connectors,
+  real actions, remote changes, `git add`, commit, push, or force push.
+
 ## Later Stages
 
-- HUB-V2-019 Portfolio Matrix Final Review, to verify the now-linked public
-  portfolio reads cleanly as a hub-and-spoke Agent ecosystem.
+- HUB-V2-020 Project Pause and Next Portfolio Gap Decision, to stop AgentHub
+  feature drift and choose the next separate portfolio gap intentionally.
 
 ## Safety Boundary
 
