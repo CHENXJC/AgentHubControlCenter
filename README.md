@@ -6,7 +6,7 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
+Current status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
 
 Portfolio positioning: this repo is the hub project for showing how 12
 local-first AI Agents and Skills can be organized into one safe, inspectable
@@ -81,7 +81,7 @@ Agent and Skill portfolio.
 | AgentHubControlCenter | Hub / AgentOps Command Center | Main portfolio command center and review hub | Published | Hub project | Valid root manifest | Public-safe metadata only | Keep pinned as the main portfolio hub |
 | BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
 | CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
-| ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Local-only / not yet published | Planned / local README linked | Valid local manifest | Synthetic demo-only | Prepare public showcase and optional repo creation |
+| ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Published: `https://github.com/CHENXJC/ClientDeliveryKitAgent` | Backlink live | Valid published manifest | Public-safe synthetic demo | Optional profile pin / maintain showcase |
 | IdeaScoreAgent | Idea validation | Business idea scoring and validation node | Published | Backlink live | Valid manifest | Public-safe | Excluded deploy/report/bat artifacts remain local-only |
 | MarketSenseAgent | Market intelligence | Market watch and local automation node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
 | NewsSignalAgent | News intelligence | News signal analysis node | Published | Backlink live | Valid manifest | Public-safe | Keep as signal analysis example |
@@ -220,11 +220,12 @@ policy state for high-risk connector ideas.
 
 ## Current MVP Status
 
-CLIENTDELIVERYKIT-005 completes a maintain-only AgentHub import for
-ClientDeliveryKitAgent. AgentHubControlCenter now clearly presents itself as the
-hub-and-spoke entry point for 12 local-first AI Agents and Skills, with
-published child repo backlinks, local-only non-git project notes, valid
-manifests, public-safe boundaries, and no real execution.
+CLIENTDELIVERYKIT-010 completes the published status sync for
+ClientDeliveryKitAgent after live GitHub showcase verification. AgentHubControlCenter
+now clearly presents itself as the hub-and-spoke entry point for 12 local-first
+AI Agents and Skills, with 9 published child repo backlinks, 2 local-only
+non-git project notes, valid manifests, public-safe boundaries, and no real
+execution.
 
 HUB-V2-018 completed the explicit cross-project backlink commit stage. Eight
 eligible child repos were committed and pushed with exact `README.md` and

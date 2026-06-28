@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
+Current local development status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -339,18 +339,29 @@ Portfolio matrix status:
 
 ## CLIENTDELIVERYKIT-005 AgentHub Import And Showcase Prep
 
-ClientDeliveryKitAgent is now documented as a local-only spoke project in the
-AgentHub portfolio matrix. This is a maintain-only metadata update, not an
+ClientDeliveryKitAgent is now documented as a published public spoke project in
+the AgentHub portfolio matrix. This is a maintain-only metadata update, not an
 AgentHub feature expansion.
 
 | Check | Status | Notes |
 | --- | --- | --- |
 | Manifest discovery | Complete | `F:\AIProjects\ClientDeliveryKitAgent\agent_manifest.json` loads as a valid local manifest. |
 | Portfolio matrix | Complete | Matrix now lists 12/12 local projects including ClientDeliveryKitAgent. |
-| GitHub status | Local-only | No repository was created and no git operation was performed. |
+| GitHub status | Published | `https://github.com/CHENXJC/ClientDeliveryKitAgent` |
+| Backlink status | Live | ClientDeliveryKitAgent README links back to AgentHubControlCenter. |
 | Public-safe status | Complete | ClientDeliveryKitAgent uses synthetic demo data only. |
-| Next note | Planned | Prepare public showcase screenshots and optional repo creation in a later explicit stage. |
-| Safety | Complete | No `.env`, credentials, live connectors, child scripts, real actions, remote changes, `git add`, commit, push, or force push in V2-019. |
+| Next note | Optional | Profile pin review or maintain-showcase decision only. |
+| Safety | Complete | No `.env`, credentials, live connectors, child scripts, real actions, remote changes, or force push in this maintain-only metadata sync. |
+
+## CLIENTDELIVERYKIT-010 Published Status Sync
+
+| Check | Status | Notes |
+| --- | --- | --- |
+| ClientDeliveryKitAgent live repo | Complete | Public repo verified at `https://github.com/CHENXJC/ClientDeliveryKitAgent`. |
+| AgentHub portfolio matrix | Complete | ClientDeliveryKitAgent row is now published with repo URL and live backlink status. |
+| Manifest status | Complete | Client manifest loads as `client_delivery_kit_agent` with `live_showcase_verified` public showcase status. |
+| Public-safe status | Complete | Public-safe synthetic demo only; no real client data or live connector. |
+| Next note | Complete | Optional profile pin / maintain showcase. |
 
 ## HUB-V2-020 Project Pause and Next Portfolio Gap Decision
 

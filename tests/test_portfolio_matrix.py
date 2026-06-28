@@ -72,10 +72,10 @@ def test_build_project_matrix_view_lists_client_delivery_spoke():
             {
                 "agent_name": "ClientDeliveryKitAgent",
                 "category": "client_delivery",
-                "status": "streamlit_consultant_dashboard_complete",
-                "showcase_status": "not_published_dashboard_demo",
-                "pin_status": "not_applicable",
-                "next_action": "CLIENTDELIVERYKIT-006-PUBLIC-SHOWCASE-PREP",
+                "status": "github_live_showcase_verified",
+                "showcase_status": "live_showcase_verified",
+                "pin_status": "recommend_pin",
+                "next_action": "CLIENTDELIVERYKIT-011-PROFILE-PIN-OR-MAINTAIN-SHOWCASE-DECISION",
                 "portfolio_value": "Shows client-facing AI automation consulting delivery workflow.",
             }
         ]
@@ -84,6 +84,9 @@ def test_build_project_matrix_view_lists_client_delivery_spoke():
     groups = {item["category_group"]: item for item in matrix}
 
     assert groups["Client Delivery / AI Consulting"]["projects"][0]["name"] == "ClientDeliveryKitAgent"
+    assert groups["Client Delivery / AI Consulting"]["projects"][0]["showcase_status"] == "live_showcase_verified"
+    assert "1 public showcase" in groups["Client Delivery / AI Consulting"]["status_summary"]
+    assert "Review GitHub profile pin decision for ClientDeliveryKitAgent" in groups["Client Delivery / AI Consulting"]["next_step"]
 
 
 def test_build_priority_summary_returns_portfolio_buckets():

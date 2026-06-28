@@ -427,8 +427,21 @@ launch command visibility, and next actions.
 
 - HUB-V2-021 AgentHub Pause Docs Commit, only if the user explicitly approves a
   commit/push stage for the V2-020 decision docs.
-- ClientDeliveryKitAgent public showcase prep and optional repo creation as a
-  separate explicit stage if the user chooses to publish the new spoke.
+- ClientDeliveryKitAgent profile pin or maintain-showcase decision as a
+  separate explicit stage if the user chooses to review placement after
+  publication.
+
+## CLIENTDELIVERYKIT-010 Published Status Sync
+
+- Synced AgentHub metadata after ClientDeliveryKitAgent live GitHub showcase
+  verification.
+- Marked ClientDeliveryKitAgent as a published portfolio spoke with repo URL:
+  <https://github.com/CHENXJC/ClientDeliveryKitAgent>.
+- Marked backlink status as live and manifest status as valid published
+  manifest.
+- Kept AgentHubControlCenter in maintain-only mode; no connector, workflow, or
+  real action execution feature was added.
+- Added `docs/CLIENTDELIVERYKIT_PUBLISHED_STATUS_SYNC.md`.
 
 ## Safety Boundary
 

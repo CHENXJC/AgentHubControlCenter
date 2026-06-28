@@ -1,6 +1,74 @@
 # Project Status
 
-Current status: CLIENTDELIVERYKIT-005A-AGENTHUB-IMPORT-DOCS-METADATA-COMMIT-COMPLETE
+Current status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
+
+## CLIENTDELIVERYKIT-010 AgentHub Published Status Sync
+
+Checkpoint name:
+CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
+
+## CLIENTDELIVERYKIT-010 Goal
+
+Sync AgentHubControlCenter metadata and portfolio docs after
+ClientDeliveryKitAgent completed live GitHub showcase verification at:
+`https://github.com/CHENXJC/ClientDeliveryKitAgent`.
+
+This checkpoint is maintain-only. It does not add AgentHub product features,
+does not run child project scripts, does not connect live providers, does not
+execute actions, does not modify git remotes, and does not force push.
+
+## Completed In CLIENTDELIVERYKIT-010
+
+- Updated ClientDeliveryKitAgent from local-only/not yet published to published
+  public portfolio spoke in the README portfolio matrix.
+- Recorded the live GitHub repository URL for ClientDeliveryKitAgent.
+- Marked ClientDeliveryKitAgent backlink status as live.
+- Marked ClientDeliveryKitAgent manifest status as valid published manifest.
+- Marked ClientDeliveryKitAgent public-safe status as public-safe synthetic
+  demo.
+- Updated hub-and-spoke docs so ClientDeliveryKitAgent appears with the
+  published child repo group.
+- Added a dedicated ClientDeliveryKitAgent published status sync document.
+- Updated portfolio matrix tests so `live_showcase_verified` counts as a public
+  showcase status.
+
+## CLIENTDELIVERYKIT-010 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector, or
+  OAuth flow was connected.
+- No child project script was run.
+- No real action or client workflow was executed.
+- Git remote was not modified.
+- No force push was used.
+- `git add .` was not used.
+- Only AgentHub metadata/docs/tests were changed in this repository.
+
+## CLIENTDELIVERYKIT-010 Validation Results
+
+Validation completed for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| `.venv\Scripts\python.exe -m pytest` | Passed; 104 tests |
+| `.venv\Scripts\python.exe -m compileall .` | Passed |
+| Root JSON validation | Passed; `agent_manifest.json` and `agent_contract.json` load |
+| Manifest discovery | Passed; 12 scanned, 12 found, 12 valid, 0 invalid, 0 missing |
+| Portfolio matrix check | Passed; 12/12 projects listed and ClientDeliveryKitAgent marked `live_showcase_verified` |
+| Public-safe scan | Passed; secret-value hits = 0 |
+| Streamlit smoke check | Passed; `http://localhost:8525` returned HTTP 200 |
+| Launcher smoke check | Passed; `launch_command_center.cmd` returned HTTP 200 on port 8525 |
+| Live URL check | Passed; AgentHub README, ClientDeliveryKitAgent repo, and ClientDeliveryKitAgent raw README returned HTTP 200 |
+
+## CLIENTDELIVERYKIT-011 Recommended Next Stage
+
+Recommended next stage:
+CLIENTDELIVERYKIT-011-PROFILE-PIN-OR-MAINTAIN-SHOWCASE-DECISION.
+
+Decide whether ClientDeliveryKitAgent should be pinned if a profile slot is
+available. Keep AgentHubControlCenter as the primary pinned hub and avoid
+AgentHub feature expansion unless explicitly requested.
 
 ## CLIENTDELIVERYKIT-005A Checkpoint
 

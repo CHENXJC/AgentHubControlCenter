@@ -42,6 +42,7 @@ PUBLIC_DOCS = [
     "docs/GITHUB_SHOWCASE_UPDATE_DECISION.md",
     "docs/PUBLIC_COMMIT_FILE_MANIFEST.md",
     "docs/PUBLIC_EXCLUSION_MANIFEST.md",
+    "docs/CLIENTDELIVERYKIT_PUBLISHED_STATUS_SYNC.md",
 ]
 
 SECRET_LIKE_PATTERNS = [
@@ -147,7 +148,12 @@ def test_manifest_contract_and_immediate_project_manifests_load():
     loaded = [json.loads(path.read_text(encoding="utf-8")) for path in manifest_paths]
 
     assert len(loaded) == 12
-    assert any(item.get("agent_id") == "client_delivery_kit_agent" for item in loaded)
+    client_manifest = next(
+        item for item in loaded if item.get("agent_id") == "client_delivery_kit_agent"
+    )
+    assert client_manifest["github_repo"] == "https://github.com/CHENXJC/ClientDeliveryKitAgent"
+    assert client_manifest["public_showcase_status"] == "live_showcase_verified"
+    assert client_manifest["pin_status"] == "recommend_pin"
 
 
 def test_launcher_keeps_local_venv_and_fixed_port():

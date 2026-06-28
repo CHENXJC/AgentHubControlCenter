@@ -36,6 +36,7 @@ available.
 | --- | --- | --- | --- | --- | --- |
 | BusinessOpsAgent | Pass | 200 | Pass | Pass | Clean |
 | CareerPilotAgent | Pass | 200 | Pass | Pass | Clean |
+| ClientDeliveryKitAgent | Pass | 200 | Pass | Pass | Clean |
 | IdeaScoreAgent | Pass | 200 | Pass | Pass | Only excluded deploy/report/bat files remain untracked |
 | NewsSignalAgent | Pass | 200 | Pass | Pass | Clean |
 | NextOpsAgent | Pass | 200 | Pass | Pass | Clean |
@@ -47,7 +48,6 @@ available.
 
 | Project | Reason | Local Backlink | Manifest JSON | Publish Status |
 | --- | --- | --- | --- | --- |
-| ClientDeliveryKitAgent | New local spoke; not yet a git repository | Pass | Pass | Local-only, not yet published |
 | MarketSenseAgent | Current local folder is not a git repo | Pass | Pass | Local-only, not published from this folder |
 | VideoExtractSkill | Current local folder is not a git repo | Pass | Pass | Local-only, not published from this folder |
 
@@ -72,7 +72,7 @@ The public portfolio now has a clear hub-and-spoke navigation pattern:
 - Local-only non-git projects are documented as local-only rather than
   overstated as published.
 - Manifest status is valid across the local project matrix.
-- ClientDeliveryKitAgent is now documented as a local-only spoke with a valid manifest and planned public showcase path.
+- ClientDeliveryKitAgent is now documented as a published public spoke with a valid manifest, live backlink, and public-safe synthetic demo boundary.
 - Safety boundaries remain visible and consistent.
 
 ## Safety Notes

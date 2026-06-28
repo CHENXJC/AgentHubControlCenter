@@ -76,7 +76,14 @@ CONTROL_CENTER_VIRTUAL_PROJECT = {
 
 
 def _is_public_showcase(agent: dict) -> bool:
-    return agent.get("showcase_status", "").strip().lower() == "github public showcase"
+    public_statuses = {
+        "github public showcase",
+        "live_showcase_verified",
+        "public_repo_first_commit_complete",
+        "public showcase verified",
+        "published public showcase",
+    }
+    return agent.get("showcase_status", "").strip().lower() in public_statuses
 
 
 def _is_pinned(agent: dict) -> bool:

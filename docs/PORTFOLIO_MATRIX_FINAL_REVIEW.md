@@ -21,7 +21,7 @@ AgentHubControlCenter is suitable as the portfolio hub because it now presents:
 
 - 12 local-first AI Agents and Skills in one matrix after ClientDeliveryKitAgent import.
 - AgentHubControlCenter as the Hub / AgentOps Command Center.
-- 8 published child repos with public README backlinks.
+- 9 published child repos with public README backlinks after ClientDeliveryKitAgent publication.
 - 2 local-only non-git projects clearly marked.
 - Valid local `agent_manifest.json` metadata for all 11 child projects plus the AgentHub root manifest.
 - Public-safe / no-live-connector / no-real-execution boundaries.
@@ -33,7 +33,7 @@ AgentHubControlCenter is suitable as the portfolio hub because it now presents:
 | AgentHubControlCenter | Hub / AgentOps Command Center | Main portfolio command center and review hub | Published | Hub project | Valid root manifest | Public-safe metadata only | Keep pinned as the main portfolio hub |
 | BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
 | CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
-| ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Local-only / not yet published | Planned / local README linked | Valid local manifest | Synthetic demo-only | Prepare public showcase and optional repo creation |
+| ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Published: `https://github.com/CHENXJC/ClientDeliveryKitAgent` | Backlink live | Valid published manifest | Public-safe synthetic demo | Optional profile pin / maintain showcase |
 | IdeaScoreAgent | Idea validation | Business idea scoring and validation node | Published | Backlink live | Valid manifest | Public-safe | Excluded deploy/report/bat artifacts remain local-only |
 | MarketSenseAgent | Market intelligence | Market watch and local automation node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
 | NewsSignalAgent | News intelligence | News signal analysis node | Published | Backlink live | Valid manifest | Public-safe | Keep as signal analysis example |
@@ -58,7 +58,7 @@ AgentHubControlCenter is suitable as the portfolio hub because it now presents:
 | Check | Result |
 | --- | --- |
 | 12/12 projects listed | Pass |
-| 8/8 pushed child repos marked published | Pass |
+| 9/9 pushed child repos marked published | Pass |
 | 2/2 non-git projects marked local-only | Pass |
 | AgentHub marked as hub project | Pass |
 | Child manifest status shown | Pass |
@@ -72,7 +72,7 @@ AgentHubControlCenter is suitable as the portfolio hub because it now presents:
 - Root `agent_contract.json` loads.
 - 10/10 child `agent_manifest.json` files load.
 - 10/10 child READMEs contain the AgentHubControlCenter backlink locally.
-- 8/8 pushed child remote READMEs are accessible and contain the backlink.
+- 9/9 pushed child remote READMEs are accessible and contain the backlink.
 - Duplicate backlink violations: 0.
 - README / docs / child manifest secret-like hits: 0.
 
