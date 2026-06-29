@@ -45,6 +45,7 @@ PUBLIC_DOCS = [
     "docs/CLIENTDELIVERYKIT_PUBLISHED_STATUS_SYNC.md",
     "docs/BILINGUAL_UI_GUIDE.md",
     "docs/STAGE_STATUS_SYNC.md",
+    "docs/CHINESE_UI_COVERAGE_CHECKLIST.md",
 ]
 
 SECRET_LIKE_PATTERNS = [
@@ -141,10 +142,12 @@ def test_manifest_contract_and_immediate_project_manifests_load():
     root_manifest = json.loads((ROOT / "agent_manifest.json").read_text(encoding="utf-8"))
     root_contract = json.loads((ROOT / "agent_contract.json").read_text(encoding="utf-8"))
 
-    assert root_manifest["manifest_version"] == "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE"
-    assert root_contract["contract_version"] == "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE"
-    assert root_contract["execution_policy"]["current_stage"] == "bilingual_ui_toggle_stage_sync_check"
+    assert root_manifest["manifest_version"] == "HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE"
+    assert root_contract["contract_version"] == "HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE"
+    assert root_contract["execution_policy"]["current_stage"] == "deep_chinese_ui_coverage_check"
     assert root_contract["bilingual_ui"]["default_language"] == "zh"
+    assert root_contract["bilingual_ui"]["current_stage"] == "HUB-V2-024"
+    assert root_manifest["agents"][0]["status"] == "deep_chinese_ui_coverage_ready"
 
     project_root = ROOT.parent
     manifest_paths = sorted(project_root.glob("*/agent_manifest.json"))

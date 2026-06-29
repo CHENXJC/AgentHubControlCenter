@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE
+Current local development status: HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -395,6 +395,25 @@ UI/display status:
 | Stage status sync | Complete | Sidebar shows Product Status, Latest Checkpoint, and Manifest Version separately; stale `HUB-V2-014` hard-code removed. |
 | Stage status helper | Complete | `agent_hub/stage_status.py` reads `PROJECT_STATUS.md` and `agent_manifest.json` only. |
 | Public-safe boundary | Complete | UI/display-only; no live connector, child script, external API, command execution, credential read, git remote change, commit, push, or force push. |
+
+## HUB-V2-024 Deep Chinese UI Coverage Check
+
+HUB-V2-024 deepens the Chinese display layer for public demo review and local
+daily use. It does not add execution, connector, OAuth, API, or automation
+capability.
+
+UI/display status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Dynamic translation helpers | Complete | `agent_hub/ui_i18n.py` exposes display-layer helpers for categories, statuses, badges, actions, connectors, next steps, filters, Agent names, Agent descriptions, and table columns. |
+| Agent cards and filters | Complete | Chinese mode localizes dynamic category/status/source/action/connector values while preserving internal IDs. |
+| Action Center | Complete | Action labels, action metadata fields, risk/status values, expected output, safety notes, and runbook labels render through the display translation layer. |
+| Connectors and workflows | Complete | Connector cards, workflow cards, approval-gate tables, and useful-signal rows use localized display values. |
+| Portfolio and plugin surfaces | Complete | Portfolio matrix cards, Future Plugin Interface tables, report previews, and local manifest summaries use localized display values. |
+| English mode | Complete | English mode remains unchanged for public review and technical traceability. |
+| Technical identifiers | Preserved | Repository names, project paths, `agent_id`, `action_id`, `connector_id`, JSON keys, schema fields, file names, and code variables remain English/internal. |
+| Public-safe boundary | Complete | Display-only UI polish; no live connector, child script, external API, command execution, credential read, git remote change, commit, push, or force push. |
 
 ## HUB-005 Showcase Capabilities
 

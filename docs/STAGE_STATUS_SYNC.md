@@ -1,7 +1,7 @@
 # Stage Status Sync
 
 Checkpoint:
-`HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE`
+`HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE`
 
 ## Purpose
 
@@ -35,12 +35,12 @@ The hero badge uses Product Status, not Latest Checkpoint.
 | Field | Current value |
 | --- | --- |
 | Product Status | `Maintain / Showcase Ready` |
-| Latest Checkpoint | `HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE` |
-| Manifest Version | `HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE` |
+| Latest Checkpoint | `HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE` |
+| Manifest Version | `HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE` |
 
 The latest checkpoint is allowed to move forward during commit-only closeout
-stages. The manifest version remains the HUB-V2-022 UI/stage-sync feature
-version until a future metadata feature stage changes it.
+stages. In HUB-V2-024 the manifest version moves forward because the root
+manifest now declares the deep Chinese UI coverage metadata.
 
 ## Cross-Project Checkpoint Rule
 

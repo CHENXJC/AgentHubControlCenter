@@ -1,6 +1,144 @@
 # Project Status
 
-Current status: HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE
+Current status: HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT-COMPLETE
+
+## HUB-V2-025 Deep Chinese UI Docs Commit
+
+Checkpoint name:
+HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT-COMPLETE
+
+## HUB-V2-025 Goal
+
+Commit and push the completed HUB-V2-024 deep Chinese UI coverage, docs, tests,
+manifest metadata, and contract metadata updates to the existing `origin/main`
+branch.
+
+This checkpoint is a commit/push closeout only. It does not expand AgentHub
+features, does not connect live providers, does not execute real actions, does
+not run child project scripts, does not modify git remotes, and does not force
+push.
+
+## Completed In HUB-V2-025
+
+- Confirmed the working tree only contains the expected HUB-V2-024 UI, docs,
+  metadata, and test files.
+- Re-ran final validation before staging.
+- Re-ran public-safe checks before and after staging.
+- Staged only the expected 19 files.
+- Committed the deep Chinese UI coverage update.
+- Pushed the commit to the existing `origin/main` remote.
+
+## HUB-V2-025 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No OAuth flow was created.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  or other external connector was connected.
+- No child project script was run.
+- No real Agent action was executed.
+- Git remote was not modified.
+- No force push was performed.
+- No `outputs/private` file was written.
+- `git add .` was not used.
+
+## HUB-V2-025 Validation Results
+
+Validation completed for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| Full pytest | Passed; 118 tests |
+| Compileall | Passed |
+| JSON validation | Passed; root `agent_manifest.json` and `agent_contract.json` load |
+| Manifest discovery | Passed; 12 found, 12 valid, 0 invalid, 0 missing |
+| AppTest bilingual UI check | Passed; Chinese and English modes rendered with 0 Streamlit exceptions |
+| README screenshot path check | Passed; 10/10 canonical screenshot paths exist |
+| Public-safe scan | Passed; secret-value hits = 0 and `outputs/private` is absent |
+
+## HUB-V2-026 Recommended Next Stage
+
+Recommended next stage:
+HUB-V2-026-MAINTAIN-SHOWCASE-ONLY, only if a future explicit maintenance task is
+needed.
+
+Keep AgentHubControlCenter in maintain-only mode. Do not expand product
+features unless a new portfolio gap requires it.
+
+## HUB-V2-024 Deep Chinese UI Coverage Check
+
+Checkpoint name:
+HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE
+
+## HUB-V2-024 Goal
+
+Deepen Chinese UI coverage beyond the original navigation/sidebar/header
+translation pass. Chinese mode should localize user-visible dynamic values such
+as categories, status labels, badges, action labels, connector labels, next
+steps, filter options, table columns, Agent display names, and Agent
+descriptions while preserving internal identifiers, project names, repository
+names, action IDs, connector IDs, schema fields, and code variables.
+
+This checkpoint is display-layer UI polish only. It does not add product
+features, does not connect live providers, does not execute real actions, does
+not run child project scripts, does not modify git remotes, and does not push.
+
+## Completed In HUB-V2-024
+
+- Added display-layer translation helpers for categories, statuses, badges,
+  actions, connectors, next steps, filter options, Agent display names, Agent
+  descriptions, and table column labels.
+- Applied dynamic value translation across Agent cards, filters, action cards,
+  connector cards, workflow cards, useful signal cards, portfolio matrix cards,
+  local tables, and Future Plugin Interface summaries.
+- Kept English mode unchanged for public review and GitHub-facing proper nouns.
+- Updated root manifest and contract metadata to HUB-V2-024.
+- Added a Chinese UI coverage checklist document for future screenshot/review
+  passes.
+- Added focused tests for dynamic UI translations and Chinese/English AppTest
+  coverage.
+
+## HUB-V2-024 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No OAuth flow was created.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  or other external connector was connected.
+- No child project script was run.
+- No real Agent action was executed.
+- Command templates and generated prompts remain display/copy text only.
+- Git remote was not modified.
+- No git push or force push was performed.
+- No `outputs/private` file was written.
+- `git add .` was not used.
+
+## HUB-V2-024 Validation Results
+
+Final validation was rerun for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| Full pytest | Passed; 118 tests |
+| Compileall | Passed |
+| Streamlit smoke check | Passed; `http://localhost:8525/` returned HTTP 200 |
+| Launcher smoke check | Passed; `launch_command_center.cmd` returned HTTP 200 |
+| AppTest bilingual UI check | Passed; Chinese and English modes rendered with 0 Streamlit exceptions |
+| Chinese dynamic residual check | Passed; expected Chinese dynamic labels visible and residual English dynamic labels = 0 |
+| JSON validation | Passed; root `agent_manifest.json` and `agent_contract.json` load |
+| Manifest discovery | Passed; 12 found, 12 valid, 0 invalid, 0 missing |
+| Action policy check | Passed; 66 actions, unsafe modes = 0, real actions = 0, policy violations = 0 |
+| README screenshot path check | Passed; 10/10 canonical screenshot paths exist |
+| Public-safe scan | Passed; secret-value hits = 0 and `outputs/private` is absent |
+
+## HUB-V2-025 Recommended Next Stage
+
+Recommended next stage:
+HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT, only if the user explicitly wants to
+commit and push the HUB-V2-024 display-layer UI and documentation update.
+
+Keep AgentHubControlCenter in maintain-only mode. Do not expand product
+features unless a new portfolio gap requires it.
 
 ## HUB-V2-023 Bilingual UI Docs Commit
 
@@ -55,14 +193,11 @@ Validation completed for this checkpoint:
 | README screenshot path check | Passed; 10/10 canonical screenshot paths exist |
 | Public-safe scan | Passed; secret-value hits = 0 and `outputs/private` is absent |
 
-## HUB-V2-024 Recommended Next Stage
+## HUB-V2-023 Historical Next-Stage Note
 
-Recommended next stage:
-HUB-V2-024-MAINTAIN-SHOWCASE-ONLY, only if a future explicit maintenance task is
-needed.
-
-Keep AgentHubControlCenter in maintain-only mode. Do not expand product
-features unless a new portfolio gap requires it.
+At HUB-V2-023 closeout, the project was recommended to stay in maintain-only
+mode unless a bounded UI/doc sync was explicitly requested. The later explicit
+HUB-V2-024 stage became the deep Chinese UI coverage check recorded above.
 
 ## HUB-V2-022 Bilingual UI Toggle And Stage Sync Check
 

@@ -1,13 +1,12 @@
 # Bilingual UI Guide
 
 Checkpoint:
-`HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE`
+`HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE`
 
 ## Purpose
 
-This stage adds a local Chinese / English UI toggle to AgentHubControlCenter and
-fixes the Project Stage display so the app no longer depends on a hard-coded
-older stage label.
+This guide covers the local Chinese / English UI toggle, stage status sync, and
+HUB-V2-024 deep Chinese UI coverage for user-facing dynamic display values.
 
 This is a UI display layer only. It does not add action execution, connector
 activation, child project scripts, external API calls, OAuth, git remote changes,
@@ -37,6 +36,17 @@ It exposes:
 - `get_language()`
 - `set_language()`
 - `t(key, language)`
+- `display_text(value, language, domain="generic")`
+- `translate_category(value, language)`
+- `translate_status(value, language)`
+- `translate_badge(value, language)`
+- `translate_action_label(value, language)`
+- `translate_connector(value, language)`
+- `translate_next_step(value, language)`
+- `translate_filter_option(value, language)`
+- `translate_agent_display_name(value, language)`
+- `translate_agent_description(value, language)`
+- `translate_column_label(value, language)`
 
 Translations use a local dictionary only. No external translation API is called.
 
@@ -71,9 +81,22 @@ The bilingual layer covers the major visible navigation and product UI text:
 - Demo Workflow Report Export
 - Safety and disclaimer text
 
-Agent names, project names, schema values, connector IDs, action IDs, and
-technical terms are not forcibly translated because they are part of the public
-portfolio metadata.
+HUB-V2-024 also covers dynamic values loaded from manifests, registries, and
+demo metadata:
+
+- Agent display names and descriptions
+- Category labels and category filters
+- Status labels and status filters
+- Manifest/source badges
+- Action labels and action card fields
+- Connector labels, provider names, and connector card fields
+- Next-step and recommendation copy
+- Table column labels and common table cell values
+- Useful Signal, workflow, portfolio matrix, and Future Plugin Interface copy
+
+Internal identifiers remain unchanged. The UI display layer does not translate
+`agent_id`, `action_id`, `connector_id`, file names, repository names, schema
+field names, code variables, or JSON keys.
 
 ## Stage Status Source
 
@@ -85,7 +108,7 @@ The sidebar separates product status from checkpoint metadata:
 | Latest Checkpoint | `PROJECT_STATUS.md` line matching `Current status: ...` | Exact latest checkpoint, including cross-project sync checkpoints |
 | Manifest Version | `agent_manifest.json` `manifest_version`, then first Agent `version` | Root manifest metadata version |
 
-In HUB-V2-022 the sidebar displays:
+In HUB-V2-024 the sidebar displays:
 
 - Product Status from `agent_hub/stage_status.py`
 - Latest Checkpoint from `PROJECT_STATUS.md`
@@ -129,8 +152,12 @@ Expected UI evidence:
 
 - Chinese mode shows `总控概览`, `我的工具 / 智能体注册表`, `有用信号`, `操作中心`,
   `连接器`, and `未来插件接口`.
+- Chinese mode shows dynamic values such as `本地 Manifest`, `演示模式 / 安全模式`,
+  `可公开展示`, `查看项目状态`, and `暂无立即行动`.
 - English mode shows `Command Overview`, `My Tools / Agent Registry`,
   `Useful Signals`, `Action Center`, `Connectors`, and
   `Future Plugin Interface`.
+- English mode still shows dynamic values such as `Local Manifest`,
+  `Demo Mode / Safe Mode`, and `View project status`.
 - Project Stage is not `HUB-V2-014`.
 - All actions remain display/manual/template/planned metadata only.

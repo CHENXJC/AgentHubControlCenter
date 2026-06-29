@@ -1,5 +1,5 @@
 {
-  "manifest_version": "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE",
+  "manifest_version": "HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE",
   "mode": "demo_static_contract",
   "description": "Standard Agent manifest example for AgentHubControlCenter V2.",
   "agents": [
@@ -9,8 +9,8 @@
       "category": "AgentOps / PortfolioOps",
       "description": "Personal AI Command Center for viewing, planning, and connecting local-first AI Agents and Skills.",
       "project_path": "F:\\AIProjects\\AgentHubControlCenter",
-      "status": "bilingual_ui_stage_sync_ready",
-      "version": "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE",
+      "status": "deep_chinese_ui_coverage_ready",
+      "version": "HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE",
       "inputs": [
         "agent_registry",
         "project_status",
@@ -40,7 +40,9 @@
         "public_release_checklist",
         "v2_release_readiness_report",
         "bilingual_ui_toggle",
-        "project_stage_sync_check"
+        "project_stage_sync_check",
+        "deep_chinese_ui_coverage",
+        "localized_dynamic_ui_values"
       ],
       "actions": [
         {
@@ -184,7 +186,8 @@
       "showcase_screenshot_refresh_version": "HUB-V2-011",
       "public_release_check_version": "HUB-V2-012",
       "bilingual_ui_version": "HUB-V2-022",
-      "stage_sync_version": "HUB-V2-022"
+      "stage_sync_version": "HUB-V2-022",
+      "deep_chinese_ui_coverage_version": "HUB-V2-024"
     }
   ],
   "future_agent_template": {
@@ -282,5 +285,6 @@
   "showcase_screenshot_refresh_version": "HUB-V2-011",
   "public_release_check_version": "HUB-V2-012",
   "bilingual_ui_version": "HUB-V2-022",
-  "stage_sync_version": "HUB-V2-022"
+  "stage_sync_version": "HUB-V2-022",
+  "deep_chinese_ui_coverage_version": "HUB-V2-024"
 }

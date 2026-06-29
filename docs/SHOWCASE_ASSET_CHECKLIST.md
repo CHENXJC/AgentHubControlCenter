@@ -265,6 +265,17 @@ Use this checklist before preparing or publishing the GitHub public showcase.
 | Screenshot requirement | No refresh required | Existing 10 canonical screenshots remain valid; future captures can use either language mode. |
 | Safety | Complete | Translation is local dictionary display only; no translation API, live connector, child script, real action, commit, or push. |
 
+## HUB-V2-024 Deep Chinese UI Coverage Status
+
+| Asset / Release Item | Status | Location / Notes |
+| --- | --- | --- |
+| Dynamic display helpers | Complete | `agent_hub/ui_i18n.py` covers categories, statuses, badges, action labels, connectors, next steps, filters, Agent display names, Agent descriptions, and table columns. |
+| Chinese mode dynamic values | Complete | Agent cards, filters, action cards, connector cards, workflow cards, useful signal cards, portfolio matrix cards, and tables use localized display values. |
+| Proper noun preservation | Complete | Repo names, project paths, `agent_id`, `action_id`, `connector_id`, schema fields, file names, and code variables remain unchanged. |
+| Coverage checklist | Complete | `docs/CHINESE_UI_COVERAGE_CHECKLIST.md` records future review points. |
+| Screenshot requirement | No refresh required | Existing 10 canonical screenshots remain valid; future Chinese captures should include dynamic value examples such as `本地 Manifest`, `可公开展示`, and `查看项目状态`. |
+| Safety | Complete | Display-only UI polish; no translation API, live connector, child script, real action, commit, or push. |
+
 ## Public-Safe Asset Rules
 
 - Do not include `.env`, credentials, tokens, customer data, private documents,

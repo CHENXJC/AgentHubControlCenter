@@ -71,15 +71,23 @@ from agent_hub.report_exporter import build_report_file_name, save_markdown_repo
 from agent_hub.stage_status import get_stage_snapshot
 from agent_hub.ui_i18n import (
     LANGUAGE_LABELS,
+    display_text,
     get_language,
     set_language,
     t,
+    translate_action_label,
+    translate_agent_description,
+    translate_agent_display_name,
+    translate_category,
+    translate_column_label,
+    translate_connector,
+    translate_filter_option,
+    translate_list_values,
+    translate_next_step,
+    translate_status,
 )
 from agent_hub.ui_helpers import (
     build_metric_display_value,
-    render_health_label_text,
-    render_priority_label_text,
-    render_status_label_text,
     safe_display,
     safe_list_join,
     truncate_text,
@@ -310,6 +318,99 @@ def format_cell(value: object) -> object:
     return value
 
 
+COLUMN_VALUE_DOMAINS = {
+    "agent_name": "agent",
+    "source_agent": "agent",
+    "target_agent": "agent",
+    "source": "source",
+    "source_type": "source",
+    "category": "category",
+    "category_label": "category",
+    "status": "status",
+    "showcase_status": "showcase",
+    "pin_status": "pin",
+    "health_status": "health",
+    "priority": "priority",
+    "next_action": "next_step",
+    "next_recommended_action": "next_step",
+    "recommended_action": "next_step",
+    "suggested_fix": "next_step",
+    "recommended_fix": "next_step",
+    "label": "action_label",
+    "action_type": "generic",
+    "execution_mode": "generic",
+    "risk_level": "generic",
+    "requires_approval": "generic",
+    "approval_required": "generic",
+    "approval_status": "status",
+    "connector_required": "connector",
+    "connector_name": "connector",
+    "provider": "connector",
+    "readiness_status": "status",
+    "live_connection_status": "status",
+    "data_access_level": "generic",
+    "write_access": "generic",
+    "demo_mode_available": "generic",
+    "read_only_mode_available": "generic",
+    "manifest_status": "status",
+    "available_actions": "generic",
+    "execution_policy": "generic",
+    "workflow_status": "status",
+    "allowed_execution_mode": "generic",
+    "required_checks": "generic",
+    "warnings": "generic",
+    "validation_notes": "generic",
+    "missing_required_fields": "generic",
+    "missing_items": "generic",
+    "title": "generic",
+    "purpose": "generic",
+    "reason": "generic",
+    "related_issue": "generic",
+}
+
+
+def display_list(values, language: str, domain: str = "generic") -> str:
+    """Translate and join list values for UI display."""
+    translated = translate_list_values(list(values or []), language, domain=domain)
+    return safe_list_join(translated)
+
+
+def display_value(value, language: str, domain: str = "generic") -> str:
+    """Translate one dynamic display value without mutating source data."""
+    if isinstance(value, list):
+        return display_list(value, language, domain=domain)
+    if isinstance(value, tuple):
+        return display_list(list(value), language, domain=domain)
+    if isinstance(value, set):
+        return display_list(sorted(value), language, domain=domain)
+    return safe_display(display_text(value, language, domain=domain))
+
+
+def display_agent_title(agent_name: str, language: str) -> str:
+    """Return the localized Agent title while preserving repo names."""
+    if language == "zh":
+        return translate_agent_display_name(agent_name, language)
+    return format_agent_card_title(agent_name)
+
+
+def localize_dataframe(
+    df: pd.DataFrame,
+    language: str,
+    domains: dict[str, str] | None = None,
+) -> pd.DataFrame:
+    """Return a copy of a dataframe with localized display values and headers."""
+    if df.empty:
+        return df.copy()
+    domains = domains or {}
+    localized = df.copy()
+    for column in localized.columns:
+        domain = domains.get(column) or COLUMN_VALUE_DOMAINS.get(column, "generic")
+        localized[column] = localized[column].map(
+            lambda value, current_domain=domain: display_value(value, language, current_domain)
+        )
+    return localized.rename(columns=lambda column: translate_column_label(column, language))
+
+
 def render_html_card(title: str, body: str, class_name: str = "section-card") -> None:
     """Render a small HTML card through Streamlit markdown."""
     st.markdown(
@@ -345,12 +446,12 @@ def render_manifest_cards(manifests: list[dict], max_items: int | None = None) -
     columns = st.columns(3)
     for index, manifest in enumerate(visible_manifests):
         actions = [
-            action.get("label", "")
+            translate_action_label(action.get("label", ""), language)
             for action in manifest.get("actions", [])
             if action.get("enabled")
         ]
         connectors = [
-            connector.get("label", "")
+            translate_connector(connector.get("label", ""), language)
             for connector in manifest.get("connectors", [])
             if connector.get("status") in {"available_local", "available_link", "manual_launch"}
         ]
@@ -366,17 +467,17 @@ def render_manifest_cards(manifests: list[dict], max_items: int | None = None) -
         safety_label += f" / {t('safe_mode', language)}" if manifest.get("safe_mode") else f" / {t('review_required', language)}"
         with columns[index % 3]:
             render_html_card(
-                format_agent_card_title(manifest.get("agent_name", "Unknown Agent")),
+                display_agent_title(manifest.get("agent_name", "Unknown Agent"), language),
                 (
-                    f"<strong>{safe_display(manifest.get('category_label') or format_category_label(manifest.get('category', '')))}</strong><br>"
+                    f"<strong>{translate_category(manifest.get('category_label') or format_category_label(manifest.get('category', '')), language)}</strong><br>"
                     f"<span class='badge'>{safe_display(source_label)}</span>"
                     f"<span class='badge'>{safe_display(safety_label)}</span><br>"
-                    f"{truncate_text(manifest.get('description', ''), 140)}<br>"
-                    f"<strong>{t('field_status', language)}:</strong> {safe_display(manifest.get('status'))} | "
-                    f"{safe_display(manifest.get('health_status'))}<br>"
+                    f"{truncate_text(translate_agent_description(manifest.get('description', ''), language), 140)}<br>"
+                    f"<strong>{t('field_status', language)}:</strong> {translate_status(manifest.get('status'), language)} | "
+                    f"{translate_status(manifest.get('health_status'), language)}<br>"
                     f"<strong>{t('field_can_do', language)}:</strong> {safe_list_join(actions)}<br>"
                     f"<strong>{t('field_connectors', language)}:</strong> {safe_list_join(connectors)}<br>"
-                    f"<strong>{t('field_next', language)}:</strong> {truncate_text(manifest.get('next_recommended_action', ''), 120)}"
+                    f"<strong>{t('field_next', language)}:</strong> {truncate_text(translate_next_step(manifest.get('next_recommended_action', ''), language), 120)}"
                 ),
                 "mini-card",
             )
@@ -389,12 +490,12 @@ def render_workflow_cards(workflows: list[dict]) -> None:
     for index, workflow in enumerate(workflows):
         with columns[index % 3]:
             render_html_card(
-                workflow.get("workflow_name", "Workflow"),
+                display_value(workflow.get("workflow_name", "Workflow"), language),
                 (
-                    f"{safe_display(workflow.get('description'))}<br>"
-                    f"<strong>{t('field_status', language)}:</strong> {safe_display(workflow.get('status'))}<br>"
-                    f"<strong>Scope:</strong> {safe_list_join(workflow.get('agents', []))}<br>"
-                    f"<strong>{t('field_next', language)}:</strong> {safe_display(workflow.get('next_step'))}"
+                    f"{display_value(workflow.get('description'), language)}<br>"
+                    f"<strong>{t('field_status', language)}:</strong> {translate_status(workflow.get('status'), language)}<br>"
+                    f"<strong>{display_text('Scope', language)}:</strong> {display_list(workflow.get('agents', []), language, 'agent')}<br>"
+                    f"<strong>{t('field_next', language)}:</strong> {translate_next_step(workflow.get('next_step'), language)}"
                 ),
                 "section-card",
             )
@@ -410,23 +511,25 @@ def render_workflow_simulation_cards(workflows: list[dict]) -> None:
     columns = st.columns(2)
     for index, workflow in enumerate(workflows):
         gate_results = [
-            f"{gate.get('gate_name', '')}: {gate.get('approval_status', '')} / {gate.get('allowed_execution_mode', '')}"
+            f"{display_value(gate.get('gate_name', ''), language)}: "
+            f"{translate_status(gate.get('approval_status', ''), language)} / "
+            f"{display_value(gate.get('allowed_execution_mode', ''), language)}"
             for gate in workflow.get("approval_gates", [])
         ]
         with columns[index % 2]:
             render_html_card(
-                workflow.get("workflow_name", "Workflow Simulation"),
+                display_value(workflow.get("workflow_name", "Workflow Simulation"), language),
                 (
-                    f"<strong>Input source:</strong> {safe_display(workflow.get('input_source'))}<br>"
-                    f"<strong>Connected agents:</strong> {safe_list_join(workflow.get('source_agents', []))}<br>"
-                    f"<strong>Signals used:</strong> {safe_list_join(workflow.get('signals_used', []))}<br>"
-                    f"<strong>Recommended actions:</strong> {safe_list_join(workflow.get('recommended_actions', []))}<br>"
-                    f"<strong>Approval gate result:</strong> {safe_list_join(gate_results)}<br>"
-                    f"<strong>Blocked steps:</strong> {safe_list_join(workflow.get('blocked_steps', [])) or 'None'}<br>"
-                    f"<strong>Generated outputs:</strong> {safe_list_join(workflow.get('generated_outputs', []))}<br>"
-                    f"<strong>Readiness:</strong> {safe_display(workflow.get('workflow_readiness_score'))} / "
-                    f"{safe_display(workflow.get('workflow_status'))}<br>"
-                    f"<strong>{t('field_next', language)}:</strong> {safe_display(workflow.get('next_recommended_step'))}"
+                    f"<strong>{display_text('Input source', language)}:</strong> {display_value(workflow.get('input_source'), language)}<br>"
+                    f"<strong>{display_text('Connected agents', language)}:</strong> {display_list(workflow.get('source_agents', []), language, 'agent')}<br>"
+                    f"<strong>{display_text('Signals used', language)}:</strong> {display_list(workflow.get('signals_used', []), language)}<br>"
+                    f"<strong>{display_text('Recommended actions', language)}:</strong> {display_list(workflow.get('recommended_actions', []), language, 'action')}<br>"
+                    f"<strong>{display_text('Approval gate result', language)}:</strong> {safe_list_join(gate_results)}<br>"
+                    f"<strong>{display_text('Blocked steps', language)}:</strong> {display_list(workflow.get('blocked_steps', []), language) or translate_status('None', language)}<br>"
+                    f"<strong>{display_text('Generated outputs', language)}:</strong> {display_list(workflow.get('generated_outputs', []), language)}<br>"
+                    f"<strong>{display_text('Readiness', language)}:</strong> {safe_display(workflow.get('workflow_readiness_score'))} / "
+                    f"{translate_status(workflow.get('workflow_status'), language)}<br>"
+                    f"<strong>{t('field_next', language)}:</strong> {translate_next_step(workflow.get('next_recommended_step'), language)}"
                 ),
                 "section-card",
             )
@@ -454,18 +557,18 @@ def render_demo_workflow_report_export(
     st.markdown(f"### {t('demo_workflow_report_export', language)}")
     st.caption(t("report_export_caption", language))
 
-    section_label_to_id = {
-        f"{item['label']} ({item['section_id']})": item["section_id"]
+    section_id_to_label = {
+        item["section_id"]: f"{item['label']} ({item['section_id']})"
         for item in REPORT_SECTION_OPTIONS
     }
-    default_labels = list(section_label_to_id)
-    selected_labels = st.multiselect(
+    default_section_ids = list(section_id_to_label)
+    selected_section_ids = st.multiselect(
         t("report_sections", language),
-        options=default_labels,
-        default=default_labels,
+        options=default_section_ids,
+        default=default_section_ids,
+        format_func=lambda section_id: display_text(section_id_to_label[section_id], language),
         key="demo_report_export_sections",
     )
-    selected_section_ids = [section_label_to_id[label] for label in selected_labels]
 
     report_package = build_demo_report_package(
         agent_manifests=agent_manifests,
@@ -491,7 +594,10 @@ def render_demo_workflow_report_export(
         [
             (t("available_report_sections", language), len(REPORT_SECTION_OPTIONS)),
             (t("export_formats", language), len(REPORT_FORMATS)),
-            (t("public_safe_status", language), "Pass" if report_package.get("schema_valid") else "Review"),
+            (
+                t("public_safe_status", language),
+                translate_status("Pass" if report_package.get("schema_valid") else "Review", language),
+            ),
             (t("last_generated_report_path", language), str(public_report_dir.relative_to(BASE_DIR))),
         ]
     )
@@ -543,7 +649,7 @@ def render_demo_workflow_report_export(
     st.markdown(f"#### {t('report_safety_checklist', language)}")
     checklist_cols = st.columns(5)
     for index, note in enumerate(report_package.get("safety_notes", [])):
-        checklist_cols[index % 5].metric(note, "OK")
+        checklist_cols[index % 5].metric(display_text(note, language), translate_status("Pass", language))
 
 
 def render_signal_cards(signals: list[dict]) -> None:
@@ -566,23 +672,23 @@ def render_useful_signal_cards(signals: list[dict], empty_message: str = "No sig
     for index, signal in enumerate(signals):
         with columns[index % 2]:
             render_html_card(
-                signal.get("title", "Useful signal"),
+                display_value(signal.get("title", "Useful signal"), language),
                 (
                     f"<strong>{t('field_score', language)}:</strong> {signal.get('usefulness_score', 0)} "
                     f"(R {signal.get('relevance_score', 0)} / "
                     f"U {signal.get('urgency_score', 0)} / "
                     f"A {signal.get('actionability_score', 0)} / "
                     f"V {signal.get('value_score', 0)} / "
-                    f"Risk {signal.get('risk_score', 0)})<br>"
-                    f"<strong>{t('field_source', language)}:</strong> {safe_display(signal.get('source_agent'))} "
-                    f"/ {safe_display(signal.get('source_type'))}<br>"
-                    f"<strong>{t('category', language)}:</strong> {safe_display(signal.get('category'))} | "
-                    f"<strong>{t('field_status', language)}:</strong> {safe_display(signal.get('status'))}<br>"
-                    f"<strong>{t('field_why_important', language)}:</strong> {safe_display(signal.get('why_important'))}<br>"
-                    f"<strong>{t('field_recommended_next_step', language)}:</strong> {safe_display(signal.get('suggested_next_step'))}<br>"
-                    f"<strong>{t('field_related_agent', language)}:</strong> {safe_display(signal.get('target_agent'))}<br>"
+                    f"{t('field_risk', language)} {signal.get('risk_score', 0)})<br>"
+                    f"<strong>{t('field_source', language)}:</strong> {translate_agent_display_name(signal.get('source_agent'), language)} "
+                    f"/ {display_value(signal.get('source_type'), language, 'source')}<br>"
+                    f"<strong>{t('category', language)}:</strong> {translate_category(signal.get('category'), language)} | "
+                    f"<strong>{t('field_status', language)}:</strong> {translate_status(signal.get('status'), language)}<br>"
+                    f"<strong>{t('field_why_important', language)}:</strong> {display_value(signal.get('why_important'), language)}<br>"
+                    f"<strong>{t('field_recommended_next_step', language)}:</strong> {translate_next_step(signal.get('suggested_next_step'), language)}<br>"
+                    f"<strong>{t('field_related_agent', language)}:</strong> {translate_agent_display_name(signal.get('target_agent'), language)}<br>"
                     f"<strong>{t('field_action_reference', language)}:</strong> {safe_display(signal.get('related_action_id') or 'none')}<br>"
-                    f"<strong>{t('field_policy', language)}:</strong> {safe_display(signal.get('execution_policy'))}"
+                    f"<strong>{t('field_policy', language)}:</strong> {display_value(signal.get('execution_policy'), language)}"
                 ),
                 "section-card",
             )
@@ -602,22 +708,22 @@ def render_connector_readiness_cards(
     for index, connector in enumerate(connectors):
         with columns[index % 2]:
             render_html_card(
-                connector.get("connector_name", "Connector readiness"),
+                translate_connector(connector.get("connector_name", "Connector readiness"), language),
                 (
-                    f"<strong>Purpose:</strong> {safe_display(connector.get('purpose'))}<br>"
-                    f"<strong>{t('field_risk', language)}:</strong> {safe_display(connector.get('risk_level'))} | "
+                    f"<strong>{display_text('Purpose', language)}:</strong> {display_value(connector.get('purpose'), language)}<br>"
+                    f"<strong>{t('field_risk', language)}:</strong> {display_value(connector.get('risk_level'), language)} | "
                     f"<strong>{t('field_score', language)}:</strong> {safe_display(connector.get('readiness_score'))} | "
-                    f"<strong>{t('field_status', language)}:</strong> {safe_display(connector.get('readiness_status'))}<br>"
-                    f"<strong>Provider:</strong> {safe_display(connector.get('provider'))} | "
-                    f"<strong>Data access:</strong> {safe_display(connector.get('data_access_level'))}<br>"
-                    f"<strong>Approval required:</strong> {safe_display(connector.get('approval_required'))} | "
-                    f"<strong>Live status:</strong> {safe_display(connector.get('live_connection_status'))}<br>"
-                    f"<strong>Permissions:</strong> {safe_list_join(connector.get('required_permissions', []))}<br>"
-                    f"<strong>Safety gates:</strong> {safe_list_join(connector.get('safety_gates', []))}<br>"
-                    f"<strong>Rollback plan:</strong> {safe_list_join(connector.get('rollback_plan', []))}<br>"
-                    f"<strong>Test plan:</strong> {safe_list_join(connector.get('test_plan', []))}<br>"
-                    f"<strong>{t('field_recommended_next_step', language)}:</strong> {safe_display(connector.get('recommended_next_step'))}<br>"
-                    f"<strong>{t('field_policy', language)}:</strong> {safe_display(connector.get('execution_policy'))}"
+                    f"<strong>{t('field_status', language)}:</strong> {translate_status(connector.get('readiness_status'), language)}<br>"
+                    f"<strong>{display_text('Provider', language)}:</strong> {translate_connector(connector.get('provider'), language)} | "
+                    f"<strong>{display_text('Data access', language)}:</strong> {display_value(connector.get('data_access_level'), language)}<br>"
+                    f"<strong>{display_text('Approval required', language)}:</strong> {display_value(connector.get('approval_required'), language)} | "
+                    f"<strong>{display_text('Live status', language)}:</strong> {translate_status(connector.get('live_connection_status'), language)}<br>"
+                    f"<strong>{display_text('Permissions', language)}:</strong> {display_list(connector.get('required_permissions', []), language)}<br>"
+                    f"<strong>{display_text('Safety gates', language)}:</strong> {display_list(connector.get('safety_gates', []), language)}<br>"
+                    f"<strong>{display_text('Rollback plan', language)}:</strong> {display_list(connector.get('rollback_plan', []), language)}<br>"
+                    f"<strong>{display_text('Test plan', language)}:</strong> {display_list(connector.get('test_plan', []), language)}<br>"
+                    f"<strong>{t('field_recommended_next_step', language)}:</strong> {translate_next_step(connector.get('recommended_next_step'), language)}<br>"
+                    f"<strong>{t('field_policy', language)}:</strong> {display_value(connector.get('execution_policy'), language)}"
                 ),
                 "section-card",
             )
@@ -628,9 +734,9 @@ def render_onboarding_metrics(summary: dict) -> None:
     language = get_language()
     render_metric_cards(
         [
-            ("Projects Scanned", summary.get("total_projects_scanned", 0)),
-            ("Manifests Found", summary.get("manifests_found", 0)),
-            ("Valid Manifests", summary.get("valid_manifests", 0)),
+            (display_text("Projects Scanned", language), summary.get("total_projects_scanned", 0)),
+            (display_text("Manifests Found", language), summary.get("manifests_found", 0)),
+            (display_text("Valid Manifests", language), summary.get("valid_manifests", 0)),
             (t("imported_agents", language), summary.get("imported_agents", 0)),
         ]
     )
@@ -638,7 +744,7 @@ def render_onboarding_metrics(summary: dict) -> None:
         [
             (t("invalid_manifests", language), summary.get("invalid_manifests", 0)),
             (t("missing_manifests", language), summary.get("missing_manifests", 0)),
-            ("Static Overrides", summary.get("duplicate_agent_ids", 0)),
+            (display_text("Static Overrides", language), summary.get("duplicate_agent_ids", 0)),
         ]
     )
 
@@ -687,7 +793,7 @@ def render_command_pack(command_pack: dict) -> None:
         st.markdown(
             f"""
             <div class="command-card">
-                <strong>{label}</strong><br>{safe_display(command)}
+                <strong>{display_value(label, language, 'action')}</strong><br>{safe_display(command)}
             </div>
             """,
             unsafe_allow_html=True,
@@ -714,19 +820,19 @@ def render_action_cards(action_rows: list[dict]) -> None:
         ("No Immediate Action", "None"),
     ]
     for group_title, priority in groups:
-        st.markdown(f"### {group_title}")
+        st.markdown(f"### {display_text(group_title, language)}")
         group_rows = [row for row in action_rows if row.get("priority") == priority]
         if not group_rows:
             st.caption(t("no_items_group", language))
             continue
         for row in group_rows:
             render_html_card(
-                row.get("agent_name", "Unknown Agent"),
+                display_agent_title(row.get("agent_name", "Unknown Agent"), language),
                 (
-                    f"<strong>{render_priority_label_text(priority)}</strong><br>"
-                    f"{safe_display(row.get('recommended_action'))}<br>"
-                    f"Reason: {safe_display(row.get('reason'))}<br>"
-                    f"Issue: {safe_display(row.get('related_issue'))}"
+                    f"<strong>{display_text('Priority', language)}: {translate_status(priority, language)}</strong><br>"
+                    f"{translate_next_step(row.get('recommended_action'), language)}<br>"
+                    f"{display_text('Reason', language)}: {display_value(row.get('reason'), language)}<br>"
+                    f"{display_text('Issue', language)}: {display_value(row.get('related_issue'), language)}"
                 ),
                 f"section-card {priority_class(priority)}",
             )
@@ -739,7 +845,7 @@ def render_local_action_cards(action_rows: list[dict]) -> None:
     for group in grouped_actions:
         actions = group.get("actions", [])
         with st.expander(
-            f"{group.get('agent_name', 'Unknown Agent')} - {len(actions)} actions",
+            f"{display_agent_title(group.get('agent_name', 'Unknown Agent'), language)} - {len(actions)} {t('available_actions', language)}",
             expanded=False,
         ):
             action_columns = st.columns(2)
@@ -747,16 +853,16 @@ def render_local_action_cards(action_rows: list[dict]) -> None:
                 approval = t("approval_required", language) if action.get("requires_approval") else t("approval_not_required", language)
                 with action_columns[index % 2]:
                     render_html_card(
-                        action.get("label", "Action"),
+                        translate_action_label(action.get("label", "Action"), language),
                         (
-                            f"<strong>{t('field_type', language)}:</strong> {safe_display(action.get('action_type'))}<br>"
-                            f"<strong>{t('field_execution_mode', language)}:</strong> {safe_display(action.get('execution_mode'))}<br>"
-                            f"<strong>{t('field_risk_level', language)}:</strong> {safe_display(action.get('risk_level'))}<br>"
+                            f"<strong>{t('field_type', language)}:</strong> {display_value(action.get('action_type'), language)}<br>"
+                            f"<strong>{t('field_execution_mode', language)}:</strong> {display_value(action.get('execution_mode'), language)}<br>"
+                            f"<strong>{t('field_risk_level', language)}:</strong> {display_value(action.get('risk_level'), language)}<br>"
                             f"<strong>{t('field_approval', language)}:</strong> {approval}<br>"
-                            f"<strong>{t('field_status', language)}:</strong> {safe_display(action.get('status'))}<br>"
-                            f"<strong>{t('field_expected_output', language)}:</strong> {safe_display(action.get('expected_output'))}<br>"
+                            f"<strong>{t('field_status', language)}:</strong> {translate_status(action.get('status'), language)}<br>"
+                            f"<strong>{t('field_expected_output', language)}:</strong> {display_value(action.get('expected_output'), language)}<br>"
                             f"<strong>{t('field_runbook', language)}:</strong> {safe_display(action.get('runbook_ref'))}<br>"
-                            f"<strong>{t('field_safety', language)}:</strong> {safe_display(action.get('safety_note'))}"
+                            f"<strong>{t('field_safety', language)}:</strong> {display_value(action.get('safety_note'), language)}"
                         ),
                         "section-card",
                     )
@@ -777,12 +883,12 @@ def render_codex_prompt_generator(manifests: list[dict], action_rows: list[dict]
     st.caption(t("codex_prompt_caption", language))
 
     if not manifests:
-        st.info("No Agent manifests are available for prompt generation.")
+        st.info(display_text("No Agent manifests are available for prompt generation.", language))
         return
 
     sorted_manifests = sorted(manifests, key=lambda item: item.get("agent_name", "").lower())
     agent_options = {
-        f"{manifest.get('agent_name', 'Unknown Agent')} ({manifest.get('agent_id', 'unknown')})": manifest
+        f"{display_agent_title(manifest.get('agent_name', 'Unknown Agent'), language)} ({manifest.get('agent_id', 'unknown')})": manifest
         for manifest in sorted_manifests
     }
 
@@ -819,10 +925,10 @@ def render_codex_prompt_generator(manifests: list[dict], action_rows: list[dict]
         render_html_card(
             t("selected_agent", language),
             (
-                f"<strong>Project path:</strong> {safe_display(selected_manifest.get('project_path'))}<br>"
-                f"<strong>{t('category', language)}:</strong> {safe_display(selected_manifest.get('category_label') or selected_manifest.get('category'))}<br>"
-                f"<strong>{t('field_status', language)}:</strong> {safe_display(selected_manifest.get('status'))}<br>"
-                f"<strong>Checkpoint:</strong> {safe_display(prompt_package.get('current_checkpoint'))}"
+                f"<strong>{display_text('Project path', language)}:</strong> {safe_display(selected_manifest.get('project_path'))}<br>"
+                f"<strong>{t('category', language)}:</strong> {translate_category(selected_manifest.get('category_label') or selected_manifest.get('category'), language)}<br>"
+                f"<strong>{t('field_status', language)}:</strong> {translate_status(selected_manifest.get('status'), language)}<br>"
+                f"<strong>{display_text('Checkpoint', language)}:</strong> {safe_display(prompt_package.get('current_checkpoint'))}"
             ),
             "section-card",
         )
@@ -830,10 +936,10 @@ def render_codex_prompt_generator(manifests: list[dict], action_rows: list[dict]
         render_html_card(
             t("next_recommended_action", language),
             (
-                f"{safe_display(selected_manifest.get('next_recommended_action'))}<br>"
+                f"{translate_next_step(selected_manifest.get('next_recommended_action'), language)}<br>"
                 f"<strong>{t('available_actions', language)}:</strong> {len(selected_actions)}<br>"
-                f"<strong>Codex prompt actions:</strong> {len(codex_prompt_actions)}<br>"
-                "<strong>Execution:</strong> template-only / no execution"
+                f"<strong>{display_text('Codex prompt actions', language)}:</strong> {len(codex_prompt_actions)}<br>"
+                f"<strong>{display_text('Execution', language)}:</strong> {display_text('template-only / no execution', language)}"
             ),
             "section-card",
         )
@@ -845,19 +951,22 @@ def render_codex_prompt_generator(manifests: list[dict], action_rows: list[dict]
     st.markdown(f"#### {t('available_actions', language)}")
     selected_action_df = display_dataframe(selected_actions)
     if selected_action_df.empty:
-        st.info("This Agent has no declared action rows.")
+        st.info(display_text("This Agent has no declared action rows.", language))
     else:
         st.dataframe(
-            selected_action_df[
-                [
-                    "action_id",
-                    "label",
-                    "action_type",
-                    "execution_mode",
-                    "risk_level",
-                    "status",
-                ]
-            ],
+            localize_dataframe(
+                selected_action_df[
+                    [
+                        "action_id",
+                        "label",
+                        "action_type",
+                        "execution_mode",
+                        "risk_level",
+                        "status",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -997,7 +1106,7 @@ with st.sidebar:
     st.caption(t("language_caption", language))
 
     st.markdown(f"### {t('sidebar_title', language)}")
-    st.write(f"{t('product_status', language)}: {PRODUCT_STATUS}")
+    st.write(f"{t('product_status', language)}: {translate_status(PRODUCT_STATUS, language)}")
     st.write(f"{t('latest_checkpoint', language)}: {LATEST_CHECKPOINT}")
     st.write(f"{t('manifest_version', language)}: {MANIFEST_VERSION}")
     st.write(f"{t('mode', language)}: {t('local_demo_safe_mode', language)}")
@@ -1014,11 +1123,36 @@ with st.sidebar:
     health_options = ["All"] + sorted({row.get("health_status", "") for row in health_results if row.get("health_status")})
     priority_options = ["All", "High", "Medium", "Low", "None"]
 
-    category_filter = st.selectbox(t("category", language), category_options, key="category_filter")
-    status_filter = st.selectbox(t("status", language), status_options, key="status_filter")
-    pin_status_filter = st.selectbox(t("pin_status", language), pin_options, key="pin_status_filter")
-    health_status_filter = st.selectbox(t("health_status", language), health_options, key="health_status_filter")
-    action_priority_filter = st.selectbox(t("action_priority", language), priority_options, key="action_priority_filter")
+    category_filter = st.selectbox(
+        t("category", language),
+        category_options,
+        format_func=lambda value: translate_category(value, language) if value != "All" else translate_filter_option(value, language),
+        key="category_filter",
+    )
+    status_filter = st.selectbox(
+        t("status", language),
+        status_options,
+        format_func=lambda value: translate_filter_option(value, language),
+        key="status_filter",
+    )
+    pin_status_filter = st.selectbox(
+        t("pin_status", language),
+        pin_options,
+        format_func=lambda value: translate_filter_option(value, language),
+        key="pin_status_filter",
+    )
+    health_status_filter = st.selectbox(
+        t("health_status", language),
+        health_options,
+        format_func=lambda value: translate_filter_option(value, language),
+        key="health_status_filter",
+    )
+    action_priority_filter = st.selectbox(
+        t("action_priority", language),
+        priority_options,
+        format_func=lambda value: translate_filter_option(value, language),
+        key="action_priority_filter",
+    )
 
 filtered_agents = filter_agents(agents, category_filter, status_filter, pin_status_filter)
 filtered_names = {agent.get("agent_name", "") for agent in filtered_agents}
@@ -1038,7 +1172,7 @@ st.markdown(
         <div class="hero-copy">
             {t('hero_copy', language)}
         </div>
-        <span class="badge">{PRODUCT_STATUS}</span>
+        <span class="badge">{translate_status(PRODUCT_STATUS, language)}</span>
         <span class="badge">{t('badge_local_first', language)}</span>
         <span class="badge">{t('badge_agent_os', language)}</span>
         <span class="badge">{t('badge_safe_demo', language)}</span>
@@ -1089,29 +1223,29 @@ with command_overview_tab:
     st.markdown(f"### {t('command_center_summary', language)}")
     summary_left, summary_right = st.columns(2)
     with summary_left:
-        render_html_card(t("portfolio_overview", language), command_center_summary["portfolio_overview"])
-        render_html_card(t("health_snapshot", language), command_center_summary["health_snapshot"])
-        render_html_card(t("strategic_summary", language), command_center_summary["strategic_summary"])
+        render_html_card(t("portfolio_overview", language), display_value(command_center_summary["portfolio_overview"], language))
+        render_html_card(t("health_snapshot", language), display_value(command_center_summary["health_snapshot"], language))
+        render_html_card(t("strategic_summary", language), display_value(command_center_summary["strategic_summary"], language))
     with summary_right:
-        render_html_card(t("showcase_status", language), command_center_summary["showcase_status"])
-        render_html_card(t("priority_actions", language), command_center_summary["priority_actions"])
-        render_html_card(t("next_best_move", language), command_center_summary["next_best_move"])
+        render_html_card(t("showcase_status", language), display_value(command_center_summary["showcase_status"], language))
+        render_html_card(t("priority_actions", language), display_value(command_center_summary["priority_actions"], language))
+        render_html_card(t("next_best_move", language), translate_next_step(command_center_summary["next_best_move"], language))
 
     render_html_card(
         t("portfolio_positioning", language),
-        portfolio_positioning["positioning_statement"],
+        display_value(portfolio_positioning["positioning_statement"], language),
     )
 
     col_strengths, col_gaps = st.columns(2)
     with col_strengths:
         render_html_card(
             t("showcase_strengths", language),
-            safe_list_join(portfolio_positioning["showcase_strengths"]),
+            display_list(portfolio_positioning["showcase_strengths"], language),
         )
     with col_gaps:
         render_html_card(
             t("portfolio_gaps", language),
-            safe_list_join(portfolio_positioning["portfolio_gaps"]),
+            display_list(portfolio_positioning["portfolio_gaps"], language),
         )
 
     st.markdown(f"### {t('capability_overview', language)}")
@@ -1121,11 +1255,11 @@ with command_overview_tab:
             st.markdown(
                 f"""
                 <div class="mini-card">
-                    <div class="mini-card-title">{item.get('category', 'Uncategorized')}</div>
+                    <div class="mini-card-title">{translate_category(item.get('category', 'Uncategorized'), language)}</div>
                     <div class="mini-card-meta">
-                        Agents: {item.get('agent_count', 0)}<br>
-                        Showcase: {item.get('showcase_count', 0)}<br>
-                        Pinned: {item.get('pinned_count', 0)}
+                        {display_text('Agents', language)}: {item.get('agent_count', 0)}<br>
+                        {display_text('Showcase', language)}: {item.get('showcase_count', 0)}<br>
+                        {translate_status('Pinned', language)}: {item.get('pinned_count', 0)}
                     </div>
                 </div>
                 """,
@@ -1135,10 +1269,10 @@ with command_overview_tab:
     st.markdown(f"### {t('next_action_snapshot', language)}")
     render_metric_cards(
         [
-            ("High", action_summary["high_priority"]),
-            ("Medium", action_summary["medium_priority"]),
-            ("Low", action_summary["low_priority"]),
-            ("None", action_summary["no_action_needed"]),
+            (translate_status("High", language), action_summary["high_priority"]),
+            (translate_status("Medium", language), action_summary["medium_priority"]),
+            (translate_status("Low", language), action_summary["low_priority"]),
+            (translate_status("None", language), action_summary["no_action_needed"]),
         ]
     )
 
@@ -1176,7 +1310,7 @@ with tools_tab:
         )
         st.markdown(f"### {t('registry_table', language)}")
         st.dataframe(
-            filtered_registry_df[registry_columns],
+            localize_dataframe(filtered_registry_df[registry_columns], language),
             width="stretch",
             hide_index=True,
         )
@@ -1185,6 +1319,7 @@ with tools_tab:
         selected_agent_name = st.selectbox(
             t("select_agent", language),
             filtered_registry_df["agent_name"].tolist(),
+            format_func=lambda value: display_agent_title(value, language),
             key="agent_detail_select",
         )
         selected_agent = next(
@@ -1198,25 +1333,29 @@ with tools_tab:
                 {},
             )
             detail_cols = st.columns(3)
-            detail_cols[0].markdown(f"**{render_status_label_text(selected_agent.get('status', ''))}**")
-            detail_cols[1].markdown(f"**Pin: {safe_display(selected_agent.get('pin_status'))}**")
+            detail_cols[0].markdown(
+                f"**{t('field_status', language)}: {translate_status(selected_agent.get('status', ''), language)}**"
+            )
+            detail_cols[1].markdown(
+                f"**{t('pin_status', language)}: {translate_status(selected_agent.get('pin_status'), language)}**"
+            )
             detail_cols[2].markdown(
-                f"**{render_health_label_text(agent_health.get('health_status', ''))}**"
+                f"**{t('health_status', language)}: {translate_status(agent_health.get('health_status', ''), language)}**"
             )
 
             detail_left, detail_right = st.columns([1.2, 1])
             with detail_left:
                 render_html_card(
                     t("capability", language),
-                    truncate_text(selected_agent.get("primary_capability", ""), 260),
+                    truncate_text(display_value(selected_agent.get("primary_capability", ""), language, "description"), 260),
                 )
                 render_html_card(
                     t("portfolio_value", language),
-                    truncate_text(selected_agent.get("portfolio_value", ""), 260),
+                    truncate_text(display_value(selected_agent.get("portfolio_value", ""), language), 260),
                 )
                 render_html_card(
                     t("notes", language),
-                    truncate_text(selected_agent.get("notes", ""), 220),
+                    truncate_text(display_value(selected_agent.get("notes", ""), language), 220),
                 )
             with detail_right:
                 render_html_card(t("tech_stack", language), safe_display(selected_agent.get("tech_stack")))
@@ -1241,7 +1380,11 @@ with tools_tab:
     if validation_df.empty:
         st.info(t("no_validation_rows", language))
     else:
-        st.dataframe(validation_df[validation_columns], width="stretch", hide_index=True)
+        st.dataframe(
+            localize_dataframe(validation_df[validation_columns], language),
+            width="stretch",
+            hide_index=True,
+        )
 
 with signals_tab:
     st.markdown(f"## {t('useful_signals_title', language)}")
@@ -1250,30 +1393,32 @@ with signals_tab:
     st.markdown(f"### {t('signal_metrics', language)}")
     render_metric_cards(
         [
-            ("Total signals", useful_signal_summary["total_signals"]),
-            ("High-value signals", useful_signal_summary["high_value_signals"]),
-            ("Needs action", useful_signal_summary["needs_action_signals"]),
-            ("Watchlist", useful_signal_summary["watchlist_signals"]),
-            ("Ignored / low priority", useful_signal_summary["ignored_low_priority_signals"]),
-            ("Avg usefulness", useful_signal_summary["average_usefulness_score"]),
+            (display_text("Total signals", language), useful_signal_summary["total_signals"]),
+            (display_text("High-value signals", language), useful_signal_summary["high_value_signals"]),
+            (display_text("Needs action", language), useful_signal_summary["needs_action_signals"]),
+            (display_text("Watchlist", language), useful_signal_summary["watchlist_signals"]),
+            (display_text("Ignored / low priority", language), useful_signal_summary["ignored_low_priority_signals"]),
+            (display_text("Avg usefulness", language), useful_signal_summary["average_usefulness_score"]),
         ]
     )
     st.caption(
-        "HUB-V2-007 signals are local/demo/template-only recommendations. They do not execute actions or connect external services."
+        display_text("HUB-V2-007 signals are local/demo/template-only recommendations. They do not execute actions or connect external services.", language)
     )
 
     st.markdown(f"### {t('signal_filters', language)}")
     signal_filter_cols = st.columns(4)
     with signal_filter_cols[0]:
         signal_category_filter = st.selectbox(
-            "Signal category",
+            display_text("Signal category", language),
             get_signal_category_options(),
+            format_func=lambda value: translate_category(value, language) if value != "All" else translate_filter_option(value, language),
             key="signal_category_filter",
         )
     with signal_filter_cols[1]:
         signal_status_filter = st.selectbox(
-            "Signal status",
+            display_text("Signal status", language),
             get_signal_status_options(),
+            format_func=lambda value: translate_status(value, language),
             key="signal_status_filter",
         )
     with signal_filter_cols[2]:
@@ -1281,13 +1426,14 @@ with signals_tab:
             {signal.get("source_agent", "") for signal in useful_signal_registry if signal.get("source_agent")}
         )
         signal_source_filter = st.selectbox(
-            "Source agent",
+            display_text("Source agent", language),
             signal_source_options,
+            format_func=lambda value: translate_filter_option(value, language) if value == "All" else translate_agent_display_name(value, language),
             key="signal_source_filter",
         )
     with signal_filter_cols[3]:
         signal_min_score = st.slider(
-            "Min usefulness",
+            display_text("Min usefulness", language),
             min_value=0,
             max_value=100,
             value=0,
@@ -1307,25 +1453,25 @@ with signals_tab:
     st.markdown(f"### {t('top_useful_signals', language)}")
     render_useful_signal_cards(
         signal_buckets["top"],
-        empty_message="No top signals match the current filters.",
+        empty_message=display_text("No top signals match the current filters.", language),
     )
 
     st.markdown(f"### {t('needs_action', language)}")
     render_useful_signal_cards(
         signal_buckets["needs_action"],
-        empty_message="No needs-action signals match the current filters.",
+        empty_message=display_text("No needs-action signals match the current filters.", language),
     )
 
     st.markdown(f"### {t('watchlist', language)}")
     render_useful_signal_cards(
         signal_buckets["watchlist"],
-        empty_message="No watchlist signals match the current filters.",
+        empty_message=display_text("No watchlist signals match the current filters.", language),
     )
 
     with st.expander(t("low_priority_ignored", language), expanded=False):
         render_useful_signal_cards(
             signal_buckets["low_priority"],
-            empty_message="No low-priority signals match the current filters.",
+            empty_message=display_text("No low-priority signals match the current filters.", language),
         )
 
     st.markdown(f"### {t('signal_table', language)}")
@@ -1334,24 +1480,27 @@ with signals_tab:
         st.info(t("no_signals_match", language))
     else:
         st.dataframe(
-            signal_df[
-                [
-                    "title",
-                    "source_agent",
-                    "source_type",
-                    "category",
-                    "usefulness_score",
-                    "relevance_score",
-                    "urgency_score",
-                    "actionability_score",
-                    "value_score",
-                    "risk_score",
-                    "recommended_action",
-                    "target_agent",
-                    "status",
-                    "bucket",
-                ]
-            ],
+            localize_dataframe(
+                signal_df[
+                    [
+                        "title",
+                        "source_agent",
+                        "source_type",
+                        "category",
+                        "usefulness_score",
+                        "relevance_score",
+                        "urgency_score",
+                        "actionability_score",
+                        "value_score",
+                        "risk_score",
+                        "recommended_action",
+                        "target_agent",
+                        "status",
+                        "bucket",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -1359,10 +1508,10 @@ with signals_tab:
     st.markdown(f"### {t('health_overview', language)}")
     render_metric_cards(
         [
-            ("Showcase Ready", health_summary["Showcase Ready"]),
-            ("Healthy", health_summary["Healthy"]),
-            ("Partial", health_summary["Partial"]),
-            ("Missing / Incomplete", health_summary["Missing or Incomplete"]),
+            (translate_status("Showcase Ready", language), health_summary["Showcase Ready"]),
+            (translate_status("Healthy", language), health_summary["Healthy"]),
+            (translate_status("Partial", language), health_summary["Partial"]),
+            (translate_status("Missing / Incomplete", language), health_summary["Missing or Incomplete"]),
         ]
     )
 
@@ -1384,17 +1533,24 @@ with signals_tab:
     health_df = display_dataframe(filtered_health)
     st.markdown(f"### {t('health_table', language)}")
     if health_df.empty:
-        st.info("No health rows match the selected filters.")
+        st.info(display_text("No health rows match the selected filters.", language))
     else:
-        st.dataframe(health_df[health_columns], width="stretch", hide_index=True)
+        st.dataframe(
+            localize_dataframe(health_df[health_columns], language),
+            width="stretch",
+            hide_index=True,
+        )
 
     st.markdown(f"### {t('health_detail', language)}")
     for result in filtered_health:
-        with st.expander(f"{result.get('agent_name', 'Unknown Agent')} - {result.get('health_status', '')}"):
-            st.write(f"Missing items: {safe_list_join(result.get('missing_items', []))}")
-            st.write(f"Warnings: {safe_display(result.get('warnings'))}")
-            st.write(f"Suggested fix: {safe_display(result.get('suggested_fix'))}")
-            st.write(f"Last checked: {safe_display(result.get('last_checked_note'))}")
+        with st.expander(
+            f"{display_agent_title(result.get('agent_name', 'Unknown Agent'), language)} - "
+            f"{translate_status(result.get('health_status', ''), language)}"
+        ):
+            st.write(f"{display_text('Missing items', language)}: {display_list(result.get('missing_items', []), language)}")
+            st.write(f"{display_text('Warnings', language)}: {display_value(result.get('warnings'), language)}")
+            st.write(f"{display_text('Suggested fix', language)}: {display_value(result.get('suggested_fix'), language)}")
+            st.write(f"{display_text('Last checked', language)}: {display_value(result.get('last_checked_note'), language)}")
 
 with workflows_tab:
     st.markdown(f"## {t('workflows_title', language)}")
@@ -1404,17 +1560,17 @@ with workflows_tab:
     st.caption(t("local_simulation_caption", language))
     render_metric_cards(
         [
-            ("Total demo workflows", workflow_simulation_summary["total_demo_workflows"]),
+            (display_text("Total demo workflows", language), workflow_simulation_summary["total_demo_workflows"]),
             (
-                "Ready for manual review",
+                display_text("Ready for manual review", language),
                 workflow_simulation_summary["ready_for_manual_review_workflows"],
             ),
-            ("Blocked steps", workflow_simulation_summary["blocked_steps"]),
-            ("Manual-only steps", workflow_simulation_summary["manual_only_steps"]),
-            ("Template-only outputs", workflow_simulation_summary["template_only_outputs"]),
-            ("Approval gates required", workflow_simulation_summary["approval_gates_required"]),
+            (display_text("Blocked steps", language), workflow_simulation_summary["blocked_steps"]),
+            (display_text("Manual-only steps", language), workflow_simulation_summary["manual_only_steps"]),
+            (display_text("Template-only outputs", language), workflow_simulation_summary["template_only_outputs"]),
+            (display_text("Approval gates required", language), workflow_simulation_summary["approval_gates_required"]),
             (
-                "Avg workflow readiness",
+                display_text("Avg workflow readiness", language),
                 workflow_simulation_summary["average_workflow_readiness_score"],
             ),
         ]
@@ -1423,14 +1579,16 @@ with workflows_tab:
     workflow_filter_cols = st.columns(2)
     with workflow_filter_cols[0]:
         workflow_type_filter = st.selectbox(
-            "Workflow type",
+            display_text("Workflow type", language),
             get_workflow_type_options(),
+            format_func=lambda value: translate_filter_option(value, language),
             key="workflow_type_filter",
         )
     with workflow_filter_cols[1]:
         workflow_status_filter = st.selectbox(
-            "Workflow status",
+            display_text("Workflow status", language),
             get_workflow_status_options(),
+            format_func=lambda value: translate_status(value, language),
             key="workflow_status_filter",
         )
 
@@ -1443,28 +1601,34 @@ with workflows_tab:
 
     st.markdown(f"### {t('approval_gates', language)}")
     st.caption(
-        f"Approval gates are metadata only. Total gates: {approval_gate_summary['total_approval_gates']}. "
-        f"Blocked gates: {approval_gate_summary['blocked_gates']}. "
-        "Allowed modes are display_only, manual_only, template_only, dry_run_only, or blocked."
+        display_text(
+            f"Approval gates are metadata only. Total gates: {approval_gate_summary['total_approval_gates']}. "
+            f"Blocked gates: {approval_gate_summary['blocked_gates']}. "
+            "Allowed modes are display_only, manual_only, template_only, dry_run_only, or blocked.",
+            language,
+        )
     )
     approval_gate_df = display_dataframe(approval_gate_registry)
     if approval_gate_df.empty:
-        st.info("No approval gates are available.")
+        st.info(display_text("No approval gates are available.", language))
     else:
         st.dataframe(
-            approval_gate_df[
-                [
-                    "workflow_name",
-                    "gate_name",
-                    "target_action_id",
-                    "target_connector_id",
-                    "risk_level",
-                    "approval_status",
-                    "required_checks",
-                    "allowed_execution_mode",
-                    "block_reason",
-                ]
-            ],
+            localize_dataframe(
+                approval_gate_df[
+                    [
+                        "workflow_name",
+                        "gate_name",
+                        "target_action_id",
+                        "target_connector_id",
+                        "risk_level",
+                        "approval_status",
+                        "required_checks",
+                        "allowed_execution_mode",
+                        "block_reason",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -1472,18 +1636,21 @@ with workflows_tab:
     st.markdown(f"### {t('workflow_generated_signals', language)}")
     workflow_signal_df = display_dataframe(workflow_generated_signal_seeds)
     if workflow_signal_df.empty:
-        st.info("No workflow-generated signals are available.")
+        st.info(display_text("No workflow-generated signals are available.", language))
     else:
         st.dataframe(
-            workflow_signal_df[
-                [
-                    "title",
-                    "category",
-                    "status",
-                    "risk_score",
-                    "recommended_action",
-                ]
-            ],
+            localize_dataframe(
+                workflow_signal_df[
+                    [
+                        "title",
+                        "category",
+                        "status",
+                        "risk_score",
+                        "recommended_action",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -1512,15 +1679,15 @@ with workflows_tab:
     matrix_cols = st.columns(2)
     for index, item in enumerate(project_matrix_view):
         project_names = [project.get("name", "") for project in item.get("projects", [])]
-        projects_text = safe_list_join(project_names) if project_names else "No registered project yet."
+        projects_text = display_list(project_names, language, "agent") if project_names else display_text("No registered project yet.", language)
         with matrix_cols[index % 2]:
             render_html_card(
-                item.get("category_group", "Uncategorized"),
+                translate_category(item.get("category_group", "Uncategorized"), language),
                 (
-                    f"<strong>Projects:</strong> {projects_text}<br>"
-                    f"<strong>Status:</strong> {safe_display(item.get('status_summary'))}<br>"
-                    f"<strong>Next:</strong> {safe_display(item.get('next_step'))}<br>"
-                    f"<strong>Role:</strong> {safe_display(item.get('portfolio_role'))}"
+                    f"<strong>{display_text('Projects', language)}:</strong> {projects_text}<br>"
+                    f"<strong>{display_text('Status', language)}:</strong> {display_value(item.get('status_summary'), language)}<br>"
+                    f"<strong>{display_text('Next', language)}:</strong> {translate_next_step(item.get('next_step'), language)}<br>"
+                    f"<strong>{display_text('Role', language)}:</strong> {display_value(item.get('portfolio_role'), language)}"
                 ),
             )
 
@@ -1532,8 +1699,8 @@ with workflows_tab:
             st.markdown(
                 f"""
                 <div class="mini-card">
-                    <div class="mini-card-title">{cluster}</div>
-                    <div class="mini-card-meta">{safe_list_join(agent_names)}</div>
+                    <div class="mini-card-title">{translate_category(cluster, language)}</div>
+                    <div class="mini-card-meta">{display_list(agent_names, language, "agent")}</div>
                 </div>
                 """,
                 unsafe_allow_html=True,
@@ -1541,18 +1708,18 @@ with workflows_tab:
 
     render_html_card(
         t("strongest_categories", language),
-        safe_list_join(portfolio_positioning["strongest_categories"]),
+        display_list(portfolio_positioning["strongest_categories"], language, "category"),
     )
 
     st.markdown(f"### {t('category_matrix', language)}")
     for item in capability_summary:
         render_html_card(
-            item.get("category", "Uncategorized"),
+            translate_category(item.get("category", "Uncategorized"), language),
             (
-                f"Agents: {safe_list_join(item.get('agents', []))}<br>"
-                f"Capabilities: {safe_list_join(item.get('capabilities', []))}<br>"
-                f"Showcase count: {item.get('showcase_count', 0)} | "
-                f"Pinned count: {item.get('pinned_count', 0)}"
+                f"{display_text('Agents', language)}: {display_list(item.get('agents', []), language, 'agent')}<br>"
+                f"{display_text('Capabilities', language)}: {display_list(item.get('capabilities', []), language, 'description')}<br>"
+                f"{display_text('Showcase count', language)}: {item.get('showcase_count', 0)} | "
+                f"{display_text('Pinned count', language)}: {item.get('pinned_count', 0)}"
             ),
         )
 
@@ -1567,10 +1734,10 @@ with action_center_tab:
     st.markdown(f"### {t('priority_summary', language)}")
     render_metric_cards(
         [
-            ("High", action_summary["high_priority"]),
-            ("Medium", action_summary["medium_priority"]),
-            ("Low", action_summary["low_priority"]),
-            ("None", action_summary["no_action_needed"]),
+            (translate_status("High", language), action_summary["high_priority"]),
+            (translate_status("Medium", language), action_summary["medium_priority"]),
+            (translate_status("Low", language), action_summary["low_priority"]),
+            (translate_status("None", language), action_summary["no_action_needed"]),
         ]
     )
 
@@ -1579,17 +1746,17 @@ with action_center_tab:
         render_html_card(
             t("current_next_project", language),
             (
-                f"{priority_summary['next_best_project']}<br>"
-                f"{priority_summary['next_best_action']}"
+                f"{display_agent_title(priority_summary['next_best_project'], language)}<br>"
+                f"{translate_next_step(priority_summary['next_best_action'], language)}"
             ),
         )
         render_html_card(
             t("paused_projects", language),
-            safe_list_join(priority_summary["paused_projects"]),
+            display_list(priority_summary["paused_projects"], language, "agent"),
         )
         render_html_card(
             t("github_showcase_projects", language),
-            safe_list_join(priority_summary["github_showcase_projects"]),
+            display_list(priority_summary["github_showcase_projects"], language, "agent"),
         )
     with priority_right:
         commercial_names = [
@@ -1598,18 +1765,18 @@ with action_center_tab:
         ]
         render_html_card(
             t("portfolio_follow_up", language),
-            priority_summary["portfolio_follow_up"],
+            translate_next_step(priority_summary["portfolio_follow_up"], language),
         )
         render_html_card(
             t("future_commercial_candidates", language),
-            safe_list_join(commercial_names),
+            display_list(commercial_names, language, "agent"),
         )
         render_html_card(
             t("future_agenthub_integration", language),
-            safe_list_join(priority_summary["agenthub_integration_candidates"]),
+            display_list(priority_summary["agenthub_integration_candidates"], language, "agent"),
         )
 
-    st.markdown(f'<div class="note-box">{priority_summary["pause_rule"]}</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="note-box">{display_value(priority_summary["pause_rule"], language)}</div>', unsafe_allow_html=True)
 
     st.markdown(f"### {t('local_action_schema_metrics', language)}")
     render_metric_cards(
@@ -1623,26 +1790,32 @@ with action_center_tab:
         ]
     )
     st.caption(
-        "HUB-V2-005 actions are metadata, instructions, command templates, links, report views, Codex prompts, or future connector placeholders only."
+        display_text(
+            "HUB-V2-005 actions are metadata, instructions, command templates, links, report views, Codex prompts, or future connector placeholders only.",
+            language,
+        )
     )
 
     st.markdown(f"### {t('local_action_schema_table', language)}")
     local_action_df = display_dataframe(local_action_registry)
     st.dataframe(
-        local_action_df[
-            [
-                "agent_name",
-                "action_id",
-                "label",
-                "action_type",
-                "execution_mode",
-                "risk_level",
-                "requires_approval",
-                "status",
-                "connector_required",
-                "runbook_ref",
-            ]
-        ],
+        localize_dataframe(
+            local_action_df[
+                [
+                    "agent_name",
+                    "action_id",
+                    "label",
+                    "action_type",
+                    "execution_mode",
+                    "risk_level",
+                    "requires_approval",
+                    "status",
+                    "connector_required",
+                    "runbook_ref",
+                ]
+            ],
+            language,
+        ),
         width="stretch",
         hide_index=True,
     )
@@ -1655,17 +1828,20 @@ with action_center_tab:
     st.markdown(f"### {t('available_actions', language)}")
     action_center_df = display_dataframe(action_center_items)
     st.dataframe(
-        action_center_df[
-            [
-                "agent_name",
-                "priority",
-                "status",
-                "health_status",
-                "next_recommended_action",
-                "available_actions",
-                "execution_policy",
-            ]
-        ],
+        localize_dataframe(
+            action_center_df[
+                [
+                    "agent_name",
+                    "priority",
+                    "status",
+                    "health_status",
+                    "next_recommended_action",
+                    "available_actions",
+                    "execution_policy",
+                ]
+            ],
+            language,
+        ),
         width="stretch",
         hide_index=True,
     )
@@ -1681,9 +1857,13 @@ with action_center_tab:
     action_df = display_dataframe(sorted_filtered_actions)
     st.markdown(f"### {t('action_plan_table', language)}")
     if action_df.empty:
-        st.info("No action rows match the selected filters.")
+        st.info(display_text("No action rows match the selected filters.", language))
     else:
-        st.dataframe(action_df[action_columns], width="stretch", hide_index=True)
+        st.dataframe(
+            localize_dataframe(action_df[action_columns], language),
+            width="stretch",
+            hide_index=True,
+        )
 
     st.markdown(f"### {t('action_cards', language)}")
     render_action_cards(sorted_filtered_actions)
@@ -1696,16 +1876,16 @@ with connectors_tab:
     st.markdown(f"### {t('connector_readiness_simulator', language)}")
     render_metric_cards(
         [
-            ("Total connectors", connector_readiness_summary["total_connectors"]),
-            ("Design-only connectors", connector_readiness_summary["design_only_connectors"]),
-            ("Ready for demo", connector_readiness_summary["ready_for_demo_connectors"]),
-            ("Needs review", connector_readiness_summary["needs_review_connectors"]),
+            (display_text("Total connectors", language), connector_readiness_summary["total_connectors"]),
+            (display_text("Design-only connectors", language), connector_readiness_summary["design_only_connectors"]),
+            (display_text("Ready for demo", language), connector_readiness_summary["ready_for_demo_connectors"]),
+            (display_text("Needs review", language), connector_readiness_summary["needs_review_connectors"]),
             (
-                "Blocked until approved",
+                display_text("Blocked until approved", language),
                 connector_readiness_summary["blocked_until_approved_connectors"],
             ),
-            ("High-risk connectors", connector_readiness_summary["high_risk_connectors"]),
-            ("Avg readiness", connector_readiness_summary["average_readiness_score"]),
+            (display_text("High-risk connectors", language), connector_readiness_summary["high_risk_connectors"]),
+            (display_text("Avg readiness", language), connector_readiness_summary["average_readiness_score"]),
         ]
     )
 
@@ -1713,14 +1893,16 @@ with connectors_tab:
     connector_filter_cols = st.columns(3)
     with connector_filter_cols[0]:
         connector_risk_filter = st.selectbox(
-            "Connector risk",
+            display_text("Connector risk", language),
             get_connector_risk_options(),
+            format_func=lambda value: translate_filter_option(value, language),
             key="connector_risk_filter",
         )
     with connector_filter_cols[1]:
         connector_status_filter = st.selectbox(
-            "Readiness status",
+            display_text("Readiness status", language),
             get_connector_status_options(),
+            format_func=lambda value: translate_status(value, language),
             key="connector_status_filter",
         )
     with connector_filter_cols[2]:
@@ -1728,8 +1910,9 @@ with connectors_tab:
             {connector.get("provider", "") for connector in connector_readiness_registry if connector.get("provider")}
         )
         connector_provider_filter = st.selectbox(
-            "Provider",
+            display_text("Provider", language),
             connector_provider_options,
+            format_func=lambda value: translate_filter_option(value, language) if value == "All" else translate_connector(value, language),
             key="connector_provider_filter",
         )
 
@@ -1749,26 +1932,29 @@ with connectors_tab:
     st.markdown(f"### {t('readiness_table', language)}")
     readiness_df = display_dataframe(filtered_connector_readiness)
     if readiness_df.empty:
-        st.info("No connector readiness rows match the selected filters.")
+        st.info(display_text("No connector readiness rows match the selected filters.", language))
     else:
         st.dataframe(
-            readiness_df[
-                [
-                    "connector_name",
-                    "provider",
-                    "purpose",
-                    "data_access_level",
-                    "write_access",
-                    "risk_level",
-                    "approval_required",
-                    "demo_mode_available",
-                    "read_only_mode_available",
-                    "readiness_score",
-                    "readiness_status",
-                    "live_connection_status",
-                    "recommended_next_step",
-                ]
-            ],
+            localize_dataframe(
+                readiness_df[
+                    [
+                        "connector_name",
+                        "provider",
+                        "purpose",
+                        "data_access_level",
+                        "write_access",
+                        "risk_level",
+                        "approval_required",
+                        "demo_mode_available",
+                        "read_only_mode_available",
+                        "readiness_score",
+                        "readiness_status",
+                        "live_connection_status",
+                        "recommended_next_step",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -1776,39 +1962,46 @@ with connectors_tab:
     st.markdown(f"### {t('connector_generated_signals', language)}")
     connector_signal_df = display_dataframe(connector_generated_signal_seeds)
     if connector_signal_df.empty:
-        st.info("No connector-generated signals are available.")
+        st.info(display_text("No connector-generated signals are available.", language))
     else:
         st.dataframe(
-            connector_signal_df[
-                [
-                    "title",
-                    "category",
-                    "status",
-                    "risk_score",
-                    "recommended_action",
-                ]
-            ],
+            localize_dataframe(
+                connector_signal_df[
+                    [
+                        "title",
+                        "category",
+                        "status",
+                        "risk_score",
+                        "recommended_action",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
 
     st.markdown(f"### {t('existing_connector_overview', language)}")
     st.write(
-        "Manifest-declared connector surfaces remain local, link-based, planned, optional, or not connected."
+        display_text("Manifest-declared connector surfaces remain local, link-based, planned, optional, or not connected.", language)
     )
 
     connector_df = display_dataframe(connector_overview)
     st.dataframe(
-        connector_df[
-            [
-                "connector_id",
-                "label",
-                "status",
-                "mode",
-                "agent_count",
-                "safe_mode",
-            ]
-        ],
+        localize_dataframe(
+            connector_df[
+                [
+                    "connector_id",
+                    "label",
+                    "status",
+                    "mode",
+                    "agent_count",
+                    "safe_mode",
+                ]
+            ],
+            language,
+            domains={"label": "connector"},
+        ),
         width="stretch",
         hide_index=True,
     )
@@ -1816,14 +2009,18 @@ with connectors_tab:
     st.markdown(f"### {t('connector_policy', language)}")
     render_html_card(
         t("current_boundary", language),
-        (
+        display_text(
             "Local filesystem checks, GitHub links, and Streamlit launch commands are available as safe display-only surfaces. "
-            "Live account connectors remain disabled until a future explicit integration stage."
+            "Live account connectors remain disabled until a future explicit integration stage.",
+            language,
         ),
     )
     render_html_card(
         t("planned_connectors", language),
-        "Gmail, Google Sheets, Google Drive, Notion, Airtable, Telegram, GitHub, n8n, Make, and Zapier are reserved for future opt-in connector work.",
+        display_text(
+            "Gmail, Google Sheets, Google Drive, Notion, Airtable, Telegram, GitHub, n8n, Make, and Zapier are reserved for future opt-in connector work.",
+            language,
+        ),
     )
 
 with plugin_tab:
@@ -1834,27 +2031,30 @@ with plugin_tab:
     st.caption(t("agent_onboarding_caption", language))
     render_onboarding_metrics(onboarding_result["summary"])
     render_html_card(
-        "Recommended Fixes",
-        safe_list_join(onboarding_result["summary"]["recommended_fixes"]),
+        display_text("Recommended Fixes", language),
+        display_list(onboarding_result["summary"]["recommended_fixes"], language, "next_step"),
     )
 
     st.markdown(f"### {t('discovery_results', language)}")
     project_rows_df = display_dataframe(onboarding_result["project_rows"])
     if project_rows_df.empty:
-        st.info("No project folders were found under the scan root.")
+        st.info(display_text("No project folders were found under the scan root.", language))
     else:
         st.dataframe(
-            project_rows_df[
-                [
-                    "project_name",
-                    "manifest_status",
-                    "source",
-                    "imported_agents",
-                    "invalid_agents",
-                    "warnings",
-                    "recommended_fix",
-                ]
-            ],
+            localize_dataframe(
+                project_rows_df[
+                    [
+                        "project_name",
+                        "manifest_status",
+                        "source",
+                        "imported_agents",
+                        "invalid_agents",
+                        "warnings",
+                        "recommended_fix",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
@@ -1862,30 +2062,36 @@ with plugin_tab:
     imported_agents_df = display_dataframe(onboarding_result["imported_agents"])
     st.markdown(f"### {t('imported_agents', language)}")
     if imported_agents_df.empty:
-        st.info("No valid local manifests were imported yet.")
+        st.info(display_text("No valid local manifests were imported yet.", language))
     else:
         st.dataframe(
-            imported_agents_df[
-                [
-                    "agent_id",
-                    "agent_name",
-                    "source",
-                    "category",
-                    "status",
-                    "next_action",
-                ]
-            ],
+            localize_dataframe(
+                imported_agents_df[
+                    [
+                        "agent_id",
+                        "agent_name",
+                        "source",
+                        "category",
+                        "status",
+                        "next_action",
+                    ]
+                ],
+                language,
+            ),
             width="stretch",
             hide_index=True,
         )
 
-    with st.expander("Local path details for manual review"):
+    with st.expander(display_text("Local path details for manual review", language)):
         st.caption(
-            "Path details are intentionally collapsed for public-safe screenshots."
+            display_text("Path details are intentionally collapsed for public-safe screenshots.", language)
         )
         if not project_rows_df.empty:
             st.dataframe(
-                project_rows_df[["project_name", "project_path", "manifest_path"]],
+                localize_dataframe(
+                    project_rows_df[["project_name", "project_path", "manifest_path"]],
+                    language,
+                ),
                 width="stretch",
                 hide_index=True,
             )
@@ -1893,12 +2099,12 @@ with plugin_tab:
     duplicate_ids_df = display_dataframe(onboarding_result["duplicate_agent_ids"])
     st.markdown(f"### {t('duplicate_agent_ids', language)}")
     if duplicate_ids_df.empty:
-        st.info("No duplicate agent_id conflicts found.")
+        st.info(display_text("No duplicate agent_id conflicts found.", language))
     else:
         st.caption(
-            "Static registry overrides are expected while AgentHub keeps CSV data as a baseline and local manifests as the richer runtime source."
+            display_text("Static registry overrides are expected while AgentHub keeps CSV data as a baseline and local manifests as the richer runtime source.", language)
         )
-        st.dataframe(duplicate_ids_df, width="stretch", hide_index=True)
+        st.dataframe(localize_dataframe(duplicate_ids_df, language), width="stretch", hide_index=True)
 
     missing_df = display_dataframe(onboarding_result["missing_manifest_projects"])
     invalid_df = display_dataframe(onboarding_result["invalid_manifest_projects"])
@@ -1906,20 +2112,20 @@ with plugin_tab:
     with missing_col:
         st.markdown(f"### {t('missing_manifests', language)}")
         if missing_df.empty:
-            st.info("No missing manifests.")
+            st.info(display_text("No missing manifests.", language))
         else:
             st.dataframe(
-                missing_df[["project_name", "recommended_fix"]],
+                localize_dataframe(missing_df[["project_name", "recommended_fix"]], language),
                 width="stretch",
                 hide_index=True,
             )
     with invalid_col:
         st.markdown(f"### {t('invalid_manifests', language)}")
         if invalid_df.empty:
-            st.info("No invalid manifests.")
+            st.info(display_text("No invalid manifests.", language))
         else:
             st.dataframe(
-                invalid_df[["project_name", "warnings", "recommended_fix"]],
+                localize_dataframe(invalid_df[["project_name", "warnings", "recommended_fix"]], language),
                 width="stretch",
                 hide_index=True,
             )
@@ -1928,34 +2134,34 @@ with plugin_tab:
     contract_left, contract_right = st.columns(2)
     with contract_left:
         render_html_card(
-            "Required Fields",
-            safe_list_join(agent_contract["required_fields"]),
+            display_text("Required Fields", language),
+            display_list(agent_contract["required_fields"], language),
         )
         render_html_card(
-            "Execution Policy",
+            display_text("Execution Policy", language),
             (
-                f"Default mode: {agent_contract['execution_policy']['default_mode']}<br>"
-                f"External API calls: {agent_contract['execution_policy']['external_api_calls']}<br>"
-                f"Actions: {agent_contract['execution_policy']['actions']}"
+                f"{display_text('Default mode', language)}: {display_value(agent_contract['execution_policy']['default_mode'], language)}<br>"
+                f"{display_text('External API calls', language)}: {display_value(agent_contract['execution_policy']['external_api_calls'], language)}<br>"
+                f"{display_text('Actions', language)}: {display_value(agent_contract['execution_policy']['actions'], language)}"
             ),
         )
     with contract_right:
         render_html_card(
-            "Connector Policy",
+            display_text("Connector Policy", language),
             (
-                f"Current stage: {agent_contract['connector_policy']['current_stage']}<br>"
-                f"Live connectors: {agent_contract['connector_policy']['live_connectors']}<br>"
-                f"Planned: {safe_list_join(agent_contract['connector_policy']['planned_connectors'])}"
+                f"{display_text('Current stage', language)}: {translate_status(agent_contract['connector_policy']['current_stage'], language)}<br>"
+                f"{display_text('Live connectors', language)}: {display_value(agent_contract['connector_policy']['live_connectors'], language)}<br>"
+                f"{display_text('Planned', language)}: {display_list(agent_contract['connector_policy']['planned_connectors'], language, 'connector')}"
             ),
         )
         render_html_card(
-            "Manifest Files",
-            "Use agent_manifest.json, agent_contract.json, docs/AGENT_INTERFACE_STANDARD.md, and docs/FUTURE_PLUGIN_INTERFACE.md as the onboarding baseline.",
+            display_text("Manifest Files", language),
+            display_text("Use agent_manifest.json, agent_contract.json, docs/AGENT_INTERFACE_STANDARD.md, and docs/FUTURE_PLUGIN_INTERFACE.md as the onboarding baseline.", language),
         )
 
     st.markdown(f"### {t('plugin_interface_roadmap', language)}")
     st.dataframe(
-        as_dataframe(future_plugin_interface),
+        localize_dataframe(display_dataframe(future_plugin_interface), language),
         width="stretch",
         hide_index=True,
     )
@@ -1977,21 +2183,21 @@ with plugin_tab:
     st.markdown(f"### {t('command_center_export_summary', language)}")
     render_metric_cards(
         [
-            ("Tracked Agents", command_center_summary["tracked_agents"]),
-            ("Public Showcase", command_center_summary["public_showcase_agents"]),
-            ("Showcase Ready", command_center_summary["showcase_ready_agents"]),
-            ("High Priority", command_center_summary["high_priority_actions"]),
+            (display_text("Tracked Agents", language), command_center_summary["tracked_agents"]),
+            (display_text("Public Showcase", language), command_center_summary["public_showcase_agents"]),
+            (translate_status("Showcase Ready", language), command_center_summary["showcase_ready_agents"]),
+            (display_text("High Priority", language), command_center_summary["high_priority_actions"]),
         ]
     )
 
     render_html_card(
-        "Report Summary",
+        display_text("Report Summary", language),
         (
-            f"Agents: {registry_summary['total_agents']} | "
-            f"Actions: {action_summary['total_actions']} | "
-            f"Showcase Ready: {health_summary['Showcase Ready']} | "
-            f"Partial: {health_summary['Partial']} | "
-            f"Missing / Incomplete: {health_summary['Missing or Incomplete']}"
+            f"{display_text('Agents', language)}: {registry_summary['total_agents']} | "
+            f"{display_text('Actions', language)}: {action_summary['total_actions']} | "
+            f"{translate_status('Showcase Ready', language)}: {health_summary['Showcase Ready']} | "
+            f"{translate_status('Partial', language)}: {health_summary['Partial']} | "
+            f"{translate_status('Missing / Incomplete', language)}: {health_summary['Missing or Incomplete']}"
         ),
     )
 
@@ -2009,18 +2215,18 @@ with plugin_tab:
         if st.button(t("save_report_local_outputs", language)):
             try:
                 saved_path = save_markdown_report(report, OUTPUTS_DIR, report_file_name)
-                st.success(f"Saved local report: {saved_path}")
+                st.success(f"{display_text('Saved local report', language)}: {saved_path}")
             except OSError as exc:
-                st.error(f"Could not save local report: {exc}")
+                st.error(f"{display_text('Could not save local report', language)}: {exc}")
 
     st.caption(t("saved_report_caption", language))
 
     st.markdown(f"### {t('showcase_asset_checklist', language)}")
     st.dataframe(
-        as_dataframe(showcase_asset_checklist),
+        localize_dataframe(display_dataframe(showcase_asset_checklist), language),
         width="stretch",
         hide_index=True,
     )
 
     st.markdown(f"### {t('markdown_report_preview', language)}")
-    st.markdown(report)
+    st.markdown(display_value(report, language))

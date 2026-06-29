@@ -133,6 +133,11 @@ history, but the README should use the V2-011 canonical 10-image set above.
   `outputs/private/`.
 - Use the sidebar language toggle to confirm Chinese and English labels before
   any future bilingual screenshot refresh.
+- For HUB-V2-024 Chinese-mode refreshes, also confirm dynamic values are
+  localized, including source badges, action labels, connector labels, status
+  labels, next steps, filters, table columns, Agent display names, and Agent
+  descriptions. Technical identifiers such as repo names, `agent_id`,
+  `action_id`, file names, and schema fields should remain unchanged.
 
 ## Manual Refresh Procedure
 

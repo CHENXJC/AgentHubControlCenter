@@ -6,7 +6,7 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE
+Current status: HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT-COMPLETE
 
 Portfolio positioning: this repo is the hub project for showing how 12
 local-first AI Agents and Skills can be organized into one safe, inspectable
@@ -25,6 +25,9 @@ no child project script, and no real action execution.
 - Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Client Delivery / AI Consulting, Knowledge Base, and Control Center / Meta Agent.
 - Plans prioritized next actions from validation, health, screenshots, and pin status.
 - Provides a local Chinese / English UI toggle for the main command center surfaces.
+- Deepens Chinese mode coverage for dynamic display values such as categories,
+  statuses, badges, actions, connectors, next steps, filters, tables, and Agent
+  descriptions while preserving technical IDs and repo names.
 - Shows Product Status, Latest Checkpoint, and Manifest Version separately instead of a stale hard-coded stage label.
 - Displays local command packs for manual launch, folder open, tests, and git status.
 - Generates an enhanced Markdown portfolio report for download or local saved export.
@@ -198,6 +201,8 @@ policy state for high-risk connector ideas.
   positioning copy
 - HUB-V2-022 bilingual UI toggle and Project Stage sync check
 - HUB-V2-023 bilingual UI docs commit and remote sync
+- HUB-V2-024 deep Chinese UI coverage check for dynamic AgentHub values
+- HUB-V2-025 deep Chinese UI docs commit and remote sync
 - Manual runbook references for safe human operation
 - Action safety policy for blocked or approval-required action classes
 - Reviewed V2 Agent cards with category, source, demo-mode, safe-mode, action,
@@ -224,7 +229,15 @@ policy state for high-risk connector ideas.
 
 ## Current MVP Status
 
-HUB-V2-022 completes the bilingual UI toggle and stage status sync check. The
+HUB-V2-024 completes the deep Chinese UI coverage check. Chinese mode now
+localizes user-facing dynamic values across Agent cards, filters, action cards,
+connector cards, workflow cards, useful signals, portfolio matrix cards, local
+tables, and Future Plugin Interface summaries. English mode remains available
+for public review, and technical proper nouns such as repository names,
+`agent_id`, action IDs, connector IDs, schema fields, and file names are
+preserved.
+
+HUB-V2-022 completed the bilingual UI toggle and stage status sync check. The
 Streamlit sidebar now offers `中文` and `English`, defaults to Chinese, and
 keeps all translations local through `agent_hub/ui_i18n.py`. The sidebar now
 separates Product Status, Latest Checkpoint, and Manifest Version through
@@ -470,3 +483,6 @@ UI toggle uses a local dictionary only and does not call translation APIs.
 - HUB-V2-020 Project Pause and Next Portfolio Gap Decision: complete.
 - HUB-V2-021 AgentHub Pause Docs Commit: complete.
 - HUB-V2-022 Bilingual UI Toggle and Stage Sync Check: complete.
+- HUB-V2-023 Bilingual UI Docs Commit: complete.
+- HUB-V2-024 Deep Chinese UI Coverage Check: complete.
+- HUB-V2-025 Deep Chinese UI Docs Commit: complete.

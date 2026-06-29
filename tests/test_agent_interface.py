@@ -92,7 +92,7 @@ def test_format_category_label_handles_standard_manifest_categories():
 def test_build_agent_contract_disables_live_external_actions_by_default():
     contract = build_agent_contract()
 
-    assert contract["contract_version"] == "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE"
+    assert contract["contract_version"] == "HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE"
     assert contract["required_fields"] == STANDARD_AGENT_FIELDS
     assert contract["optional_fields"] == OPTIONAL_AGENT_FIELDS
     assert "action_schema_fields" in contract
@@ -108,7 +108,7 @@ def test_build_agent_contract_disables_live_external_actions_by_default():
     assert contract["execution_policy"]["workflow_simulation"] == "local_simulation_only_no_live_connector_no_real_action_no_credentials"
     assert contract["execution_policy"]["approval_gates"] == "approval_gate_metadata_only_no_execution"
     assert contract["execution_policy"]["report_export"] == "public_safe_demo_report_metadata_only_no_execution"
-    assert contract["connector_policy"]["current_stage"] == "bilingual_ui_toggle_stage_sync_check"
+    assert contract["connector_policy"]["current_stage"] == "deep_chinese_ui_coverage_check"
     assert contract["codex_prompt_generator"]["current_stage"] == "HUB-V2-006"
     assert "continue_next_stage" in contract["codex_prompt_generator"]["supported_prompt_types"]
     assert contract["useful_signals_engine"]["current_stage"] == "HUB-V2-007"
@@ -121,10 +121,11 @@ def test_build_agent_contract_disables_live_external_actions_by_default():
     assert contract["showcase_screenshot_refresh"]["canonical_screenshot_count"] == 10
     assert contract["public_release_check"]["current_stage"] == "HUB-V2-012"
     assert contract["public_release_check"]["readiness_report"] == "docs/V2_RELEASE_READINESS_REPORT.md"
-    assert contract["bilingual_ui"]["current_stage"] == "HUB-V2-022"
+    assert contract["bilingual_ui"]["current_stage"] == "HUB-V2-024"
     assert contract["bilingual_ui"]["default_language"] == "zh"
     assert contract["bilingual_ui"]["translation_policy"] == "local_dictionary_only_no_external_translation_api"
     assert contract["bilingual_ui"]["stage_status_helper"] == "agent_hub/stage_status.py"
+    assert "agent_display_name" in contract["bilingual_ui"]["dynamic_display_translation"]
     assert "risk_warning" in contract["useful_signal_categories"]
     assert "needs_action" in contract["useful_signal_status_enum"]
     assert "blocked_until_approved" in contract["connector_readiness_status_enum"]

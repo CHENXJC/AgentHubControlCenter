@@ -425,8 +425,8 @@ launch command visibility, and next actions.
 
 ## Later Stages
 
-- HUB-V2-023 Bilingual UI Docs Commit, only if the user explicitly approves a
-  commit/push stage for the V2-022 UI/display metadata update.
+- HUB-V2-025 Deep Chinese UI Docs Commit, only if the user explicitly approves a
+  commit/push stage for the V2-024 display-layer UI and documentation update.
 - Keep AgentHubControlCenter in maintain-only mode unless the user explicitly
   requests a bounded UI/doc sync stage.
 
@@ -460,6 +460,24 @@ launch command visibility, and next actions.
 - Updated root manifest and contract metadata to HUB-V2-022.
 - Added `docs/BILINGUAL_UI_GUIDE.md`.
 - Added `docs/STAGE_STATUS_SYNC.md`.
+- Kept the stage display-only: no live connector, child script, real action,
+  external API, git remote change, commit, push, or force push.
+
+## HUB-V2-024 Deep Chinese UI Coverage Check
+
+- Added display-layer translation helpers for dynamic AgentHub values:
+  category, status, badge, action label, connector, next step, filter option,
+  Agent display name, Agent description, and table column labels.
+- Applied Chinese dynamic value rendering across Agent cards, filters, action
+  cards, connector cards, workflow cards, useful signal cards, portfolio matrix
+  cards, registry tables, Future Plugin Interface summaries, and local report
+  preview text.
+- Preserved English mode and technical proper nouns: repository names,
+  project paths, `agent_id`, `action_id`, `connector_id`, schema keys, file
+  names, and code variables remain unchanged.
+- Updated root manifest and contract metadata to
+  `HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE`.
+- Added `docs/CHINESE_UI_COVERAGE_CHECKLIST.md`.
 - Kept the stage display-only: no live connector, child script, real action,
   external API, git remote change, commit, push, or force push.
 

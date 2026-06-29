@@ -79,7 +79,9 @@ def get_product_status_label(project_root: str | Path) -> str:
         "hub-v2-020",
         "hub-v2-021",
         "hub-v2-022",
+        "hub-v2-024",
         "bilingual_ui_stage_sync_ready",
+        "deep_chinese_ui_coverage_ready",
     )
     if any(marker in checkpoint for marker in maintain_markers):
         return DEFAULT_PRODUCT_STATUS
