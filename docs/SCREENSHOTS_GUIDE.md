@@ -15,6 +15,12 @@ HUB-V2-014 live showcase verification: the same 10 canonical screenshot files
 are committed and verified from GitHub after push. No new screenshot set is
 required for V2-014.
 
+HUB-V2-022 bilingual UI status: the app now defaults to Chinese and supports an
+English mode through the sidebar language toggle. No new screenshot set is
+required for V2-022, but future screenshot refreshes can capture either Chinese
+default UI or English public-review UI as long as the 10 canonical filenames
+remain stable.
+
 The public showcase screenshots are saved under `docs/images/` and are intended
 for the GitHub README screenshot section. The V2-011 set was captured from the
 local Streamlit demo app on port `8525` using manifest-onboarded Agent metadata.
@@ -125,6 +131,8 @@ history, but the README should use the V2-011 canonical 10-image set above.
 - The Report Export screenshot shows public-safe preview/download surfaces only.
 - The visible export path remains `outputs/public_reports/`; do not use
   `outputs/private/`.
+- Use the sidebar language toggle to confirm Chinese and English labels before
+  any future bilingual screenshot refresh.
 
 ## Manual Refresh Procedure
 

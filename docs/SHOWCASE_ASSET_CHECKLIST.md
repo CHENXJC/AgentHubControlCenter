@@ -252,6 +252,19 @@ Use this checklist before preparing or publishing the GitHub public showcase.
 | Live README and screenshot check | Complete | GitHub README and canonical screenshot assets are verified after push. |
 | Remote unsafe artifact check | Complete | Remote tree checked for `.env`, credentials, `.venv`, private outputs, caches, and generated reports. |
 
+## HUB-V2-022 Bilingual UI And Stage Sync Status
+
+| Asset / Release Item | Status | Location / Notes |
+| --- | --- | --- |
+| Bilingual UI helper | Complete | `agent_hub/ui_i18n.py` |
+| Stage status helper | Complete | `agent_hub/stage_status.py` |
+| UI language toggle | Complete | Sidebar supports `中文` and `English`; Chinese is the default local UI. |
+| Stage sync source | Complete | Sidebar separates Product Status, Latest Checkpoint from `PROJECT_STATUS.md`, and Manifest Version from `agent_manifest.json`. |
+| Stale stage removal | Complete | `app.py` no longer hard-codes `HUB-V2-014` as Project Stage. |
+| Bilingual UI guide | Complete | `docs/BILINGUAL_UI_GUIDE.md` |
+| Screenshot requirement | No refresh required | Existing 10 canonical screenshots remain valid; future captures can use either language mode. |
+| Safety | Complete | Translation is local dictionary display only; no translation API, live connector, child script, real action, commit, or push. |
+
 ## Public-Safe Asset Rules
 
 - Do not include `.env`, credentials, tokens, customer data, private documents,

@@ -425,11 +425,10 @@ launch command visibility, and next actions.
 
 ## Later Stages
 
-- HUB-V2-021 AgentHub Pause Docs Commit, only if the user explicitly approves a
-  commit/push stage for the V2-020 decision docs.
-- ClientDeliveryKitAgent profile pin or maintain-showcase decision as a
-  separate explicit stage if the user chooses to review placement after
-  publication.
+- HUB-V2-023 Bilingual UI Docs Commit, only if the user explicitly approves a
+  commit/push stage for the V2-022 UI/display metadata update.
+- Keep AgentHubControlCenter in maintain-only mode unless the user explicitly
+  requests a bounded UI/doc sync stage.
 
 ## CLIENTDELIVERYKIT-010 Published Status Sync
 
@@ -442,6 +441,27 @@ launch command visibility, and next actions.
 - Kept AgentHubControlCenter in maintain-only mode; no connector, workflow, or
   real action execution feature was added.
 - Added `docs/CLIENTDELIVERYKIT_PUBLISHED_STATUS_SYNC.md`.
+
+## HUB-V2-022 Bilingual UI Toggle And Stage Sync Check
+
+- Added `agent_hub/ui_i18n.py` with local Chinese / English translation
+  dictionary support.
+- Added `agent_hub/stage_status.py` to separate Product Status, Latest
+  Checkpoint, and Manifest Version.
+- Added a Streamlit sidebar language toggle using `st.session_state`.
+- Defaulted the UI to Chinese while preserving an English mode.
+- Localized the main visible UI surfaces: sidebar, hero, metrics, tabs, Command
+  Overview, My Tools / Agent Registry, My Workflows, Useful Signals, Action
+  Center, Connectors, Future Plugin Interface, Agent Onboarding, Codex Prompt
+  Generator, Report Export, and safety/disclaimer copy.
+- Fixed stage display so the sidebar shows Product Status, Latest Checkpoint,
+  and Manifest Version separately instead of treating a checkpoint as the
+  product stage.
+- Updated root manifest and contract metadata to HUB-V2-022.
+- Added `docs/BILINGUAL_UI_GUIDE.md`.
+- Added `docs/STAGE_STATUS_SYNC.md`.
+- Kept the stage display-only: no live connector, child script, real action,
+  external API, git remote change, commit, push, or force push.
 
 ## Safety Boundary
 

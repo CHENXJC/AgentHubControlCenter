@@ -6,7 +6,7 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
+Current status: HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE
 
 Portfolio positioning: this repo is the hub project for showing how 12
 local-first AI Agents and Skills can be organized into one safe, inspectable
@@ -24,6 +24,8 @@ no child project script, and no real action execution.
 - Builds a capability matrix and positioning summary for the portfolio.
 - Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Client Delivery / AI Consulting, Knowledge Base, and Control Center / Meta Agent.
 - Plans prioritized next actions from validation, health, screenshots, and pin status.
+- Provides a local Chinese / English UI toggle for the main command center surfaces.
+- Shows Product Status, Latest Checkpoint, and Manifest Version separately instead of a stale hard-coded stage label.
 - Displays local command packs for manual launch, folder open, tests, and git status.
 - Generates an enhanced Markdown portfolio report for download or local saved export.
 - Builds a Command Center Summary and public-safe showcase asset checklist.
@@ -194,6 +196,8 @@ policy state for high-risk connector ideas.
   verification
 - HUB-V2-015 Profile Pin / Portfolio Placement Decision with portfolio
   positioning copy
+- HUB-V2-022 bilingual UI toggle and Project Stage sync check
+- HUB-V2-023 bilingual UI docs commit and remote sync
 - Manual runbook references for safe human operation
 - Action safety policy for blocked or approval-required action classes
 - Reviewed V2 Agent cards with category, source, demo-mode, safe-mode, action,
@@ -219,6 +223,15 @@ policy state for high-risk connector ideas.
 - Windows one-click command launcher
 
 ## Current MVP Status
+
+HUB-V2-022 completes the bilingual UI toggle and stage status sync check. The
+Streamlit sidebar now offers `中文` and `English`, defaults to Chinese, and
+keeps all translations local through `agent_hub/ui_i18n.py`. The sidebar now
+separates Product Status, Latest Checkpoint, and Manifest Version through
+`agent_hub/stage_status.py`, so the UI no longer displays the stale hard-coded
+`HUB-V2-014` value or treats a cross-project sync checkpoint as the product
+stage. This is display-only UI polish; it does not execute actions or connect
+live providers.
 
 CLIENTDELIVERYKIT-010 completes the published status sync for
 ClientDeliveryKitAgent after live GitHub showcase verification. AgentHubControlCenter
@@ -428,7 +441,8 @@ metadata and do not load credentials or call provider APIs. Workflow simulations
 and Approval Gates are metadata-only and do not execute real actions. Demo
 Workflow Report Export writes only public-safe text under `outputs/public_reports/`
 when local file export is used, and does not write `outputs/private/`. The
-showcase refresh only updates public-safe docs and screenshots.
+showcase refresh only updates public-safe docs and screenshots. The bilingual
+UI toggle uses a local dictionary only and does not call translation APIs.
 
 ## Roadmap
 
@@ -453,3 +467,6 @@ showcase refresh only updates public-safe docs and screenshots.
 - HUB-V2-017 Cross-Project Backlink Commit Decision: complete.
 - HUB-V2-018 Cross-Project Backlink Explicit Commit: complete.
 - HUB-V2-019 Portfolio Matrix Final Review: complete.
+- HUB-V2-020 Project Pause and Next Portfolio Gap Decision: complete.
+- HUB-V2-021 AgentHub Pause Docs Commit: complete.
+- HUB-V2-022 Bilingual UI Toggle and Stage Sync Check: complete.

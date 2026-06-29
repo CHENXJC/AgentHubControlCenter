@@ -1,6 +1,159 @@
 # Project Status
 
-Current status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
+Current status: HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE
+
+## HUB-V2-023 Bilingual UI Docs Commit
+
+Checkpoint name:
+HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT-COMPLETE
+
+## HUB-V2-023 Goal
+
+Commit and push the completed HUB-V2-022 bilingual UI, stage status sync,
+documentation, and test updates to the existing `origin/main` branch.
+
+This checkpoint is a commit/push closeout only. It does not expand AgentHub
+features, does not connect live providers, does not execute real actions, does
+not run child project scripts, does not modify git remotes, and does not force
+push.
+
+## Completed In HUB-V2-023
+
+- Confirmed the working tree only contains HUB-V2-022 UI, stage sync,
+  documentation, metadata, and test updates.
+- Re-ran full validation before staging.
+- Re-ran public-safe checks before staging.
+- Staged only the expected HUB-V2-022 files.
+- Committed the bilingual UI and stage status sync update.
+- Pushed the commit to the existing `origin/main` remote.
+
+## HUB-V2-023 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No OAuth flow was created.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub connector,
+  or other external connector was connected.
+- No child project script was run.
+- No real Agent action was executed.
+- Git remote was not modified.
+- No force push was performed.
+- No `outputs/private` file was written.
+- `git add .` was not used.
+
+## HUB-V2-023 Validation Results
+
+Validation completed for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| Full pytest | Passed; 115 tests |
+| Compileall | Passed |
+| JSON validation | Passed; root `agent_manifest.json` and `agent_contract.json` load |
+| Manifest discovery | Passed; 12 found, 12 valid, 0 invalid, 0 missing |
+| AppTest bilingual UI check | Passed; Chinese and English modes rendered with 0 Streamlit exceptions |
+| README screenshot path check | Passed; 10/10 canonical screenshot paths exist |
+| Public-safe scan | Passed; secret-value hits = 0 and `outputs/private` is absent |
+
+## HUB-V2-024 Recommended Next Stage
+
+Recommended next stage:
+HUB-V2-024-MAINTAIN-SHOWCASE-ONLY, only if a future explicit maintenance task is
+needed.
+
+Keep AgentHubControlCenter in maintain-only mode. Do not expand product
+features unless a new portfolio gap requires it.
+
+## HUB-V2-022 Bilingual UI Toggle And Stage Sync Check
+
+Checkpoint name:
+HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE
+
+## HUB-V2-022 Goal
+
+Add a local Chinese / English UI toggle to AgentHubControlCenter and fix the
+Project Stage display so the Streamlit UI no longer shows the stale hard-coded
+`HUB-V2-014` value.
+
+This checkpoint is UI display and metadata sync only. It does not expand the
+AgentHub feature engine, does not execute real actions, does not connect live
+providers, does not run child project scripts, does not modify git remotes, and
+does not push.
+
+## Completed In HUB-V2-022
+
+- Added `agent_hub/ui_i18n.py` with local translation dictionary support.
+- Added `agent_hub/stage_status.py` for Product Status / Latest Checkpoint /
+  Manifest Version separation.
+- Added `get_language()`, `set_language()`, `t()`, and
+  local translation fallback helpers.
+- Added a Streamlit sidebar language toggle using `st.session_state`.
+- Set Chinese as the default UI language while keeping English selectable.
+- Localized the major visible UI surfaces: sidebar, hero, top metrics, tabs,
+  Command Overview, My Tools / Agent Registry, My Workflows, Useful Signals,
+  Action Center, Connectors, Future Plugin Interface, Agent Onboarding, Codex
+  Prompt Generator, Demo Workflow Report Export, and safety/disclaimer text.
+- Kept Agent names, project names, action IDs, connector IDs, and schema values
+  in their original public metadata form.
+- Replaced the stale hard-coded `PRODUCT_STAGE = "HUB-V2-014"` display with a
+  stage snapshot that shows Product Status, Latest Checkpoint, and Manifest
+  Version separately.
+- Updated root `agent_manifest.json` and `agent_contract.json` metadata to the
+  HUB-V2-022 checkpoint.
+- Added `docs/BILINGUAL_UI_GUIDE.md`.
+- Added `docs/STAGE_STATUS_SYNC.md`.
+
+## HUB-V2-022 Stage Sync Result
+
+| Source | Result |
+| --- | --- |
+| Product Status | `Maintain / Showcase Ready` |
+| Latest Checkpoint | `HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE` |
+| Latest Checkpoint source | `PROJECT_STATUS.md` |
+| Manifest Version | `HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE` |
+| Stale UI value | Removed; `HUB-V2-014` is no longer hard-coded in `app.py` |
+
+## HUB-V2-022 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No OAuth flow was created.
+- No live Gmail, Google Sheets, Notion, Airtable, Telegram, GitHub, n8n, Make,
+  Zapier, or other connector was connected.
+- No child project script was run.
+- No real Agent action was executed.
+- No command template was executed.
+- Git remote was not modified.
+- No git push or force push was performed.
+- No `outputs/private` file was written.
+
+## HUB-V2-022 Validation Results
+
+Validation completed for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| i18n / contract / public release focused tests | Covered by full pytest; focused stage-status and AppTest checks passed |
+| Full pytest | Passed; 115 tests |
+| Compileall | Passed |
+| Streamlit smoke check | Passed; `http://localhost:8525` returned HTTP 200 |
+| Launcher smoke check | Passed; `launch_command_center.cmd` started a local Streamlit service and `http://localhost:8525` returned HTTP 200 |
+| AppTest bilingual UI check | Passed; Chinese and English tabs rendered with 0 Streamlit exceptions, Product Status / Latest Checkpoint / Manifest Version visible |
+| JSON validation | Passed; root `agent_manifest.json` and `agent_contract.json` load |
+| Manifest discovery | Passed; 12 scanned, 12 found, 12 valid, 0 invalid, 0 missing |
+| Action policy check | Passed; 12 Agents, 66 actions, unsafe execution modes = 0, real execution actions = 0, policy violations = 0 |
+| Connector / workflow / approval policy check | Passed; policy violations = 0 |
+| README screenshot path check | Passed; 10/10 canonical screenshot paths exist |
+| Public-safe scan | Passed; secret-value hits = 0 and `outputs/private` is absent |
+
+## HUB-V2-023 Recommended Next Stage
+
+Recommended next stage:
+HUB-V2-023-BILINGUAL-UI-DOCS-COMMIT, only if the user explicitly wants to
+commit and push the HUB-V2-022 UI/display documentation and metadata update.
+
+Keep AgentHubControlCenter in maintain-only mode and avoid new feature
+expansion unless explicitly requested.
 
 ## CLIENTDELIVERYKIT-010 AgentHub Published Status Sync
 

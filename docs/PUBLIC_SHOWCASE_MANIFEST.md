@@ -11,7 +11,7 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: CLIENTDELIVERYKIT-010-GITHUB-LIVE-SHOWCASE-VERIFICATION-AND-AGENTHUB-PUBLISHED-STATUS-SYNC-COMPLETE
+Current local development status: HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE
 
 ## HUB-006 Public Showcase Packaging
 
@@ -378,6 +378,23 @@ Pause status:
 | Top 3 next candidates | Complete | Client Delivery Kit Agent, SME Automation Demo Kit, and Data-to-Insight Workflow Agent. |
 | Final recommendation | Complete | Start `ClientDeliveryKitAgent` as the next standalone spoke project if the user chooses to continue portfolio expansion. |
 | Safety | Complete | Planning/docs only; no new project code, live connector, child script, real action, remote change, commit, push, or force push. |
+
+## HUB-V2-022 Bilingual UI Toggle And Stage Sync Check
+
+HUB-V2-022 improves the public demo usability of the Streamlit command center
+without expanding AgentHub execution features.
+
+UI/display status:
+
+| Area | Status | Notes |
+| --- | --- | --- |
+| Language toggle | Complete | Sidebar supports `中文` and `English` through `st.session_state`. |
+| Translation source | Complete | Local dictionary in `agent_hub/ui_i18n.py`; no translation API. |
+| Default language | Complete | Chinese default for local use, English available for public review. |
+| Main UI coverage | Complete | Sidebar, hero, metrics, tabs, Command Overview, My Tools, My Workflows, Useful Signals, Action Center, Connectors, Future Plugin Interface, Agent Onboarding, Codex Prompt Generator, Report Export, and safety copy. |
+| Stage status sync | Complete | Sidebar shows Product Status, Latest Checkpoint, and Manifest Version separately; stale `HUB-V2-014` hard-code removed. |
+| Stage status helper | Complete | `agent_hub/stage_status.py` reads `PROJECT_STATUS.md` and `agent_manifest.json` only. |
+| Public-safe boundary | Complete | UI/display-only; no live connector, child script, external API, command execution, credential read, git remote change, commit, push, or force push. |
 
 ## HUB-005 Showcase Capabilities
 

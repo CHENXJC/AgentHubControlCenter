@@ -1,5 +1,5 @@
 {
-  "manifest_version": "HUB-V2-012",
+  "manifest_version": "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE",
   "mode": "demo_static_contract",
   "description": "Standard Agent manifest example for AgentHubControlCenter V2.",
   "agents": [
@@ -9,8 +9,8 @@
       "category": "AgentOps / PortfolioOps",
       "description": "Personal AI Command Center for viewing, planning, and connecting local-first AI Agents and Skills.",
       "project_path": "F:\\AIProjects\\AgentHubControlCenter",
-      "status": "Active",
-      "version": "HUB-V2-012",
+      "status": "bilingual_ui_stage_sync_ready",
+      "version": "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE",
       "inputs": [
         "agent_registry",
         "project_status",
@@ -38,7 +38,9 @@
         "showcase_screenshot_refresh",
         "sample_demo_workflow_report_summary",
         "public_release_checklist",
-        "v2_release_readiness_report"
+        "v2_release_readiness_report",
+        "bilingual_ui_toggle",
+        "project_stage_sync_check"
       ],
       "actions": [
         {
@@ -172,7 +174,7 @@
       ],
       "public_showcase_status": "GitHub Public Showcase",
       "pin_status": "Not pinned",
-      "next_recommended_action": "Use HUB-V2-012 release readiness results to decide whether to commit/push the public-safe showcase update in a separate explicit stage.",
+      "next_recommended_action": "Maintain showcase; only refresh docs/screenshots or update UI labels when needed.",
       "action_schema_version": "HUB-V2-005",
       "useful_signals_engine_version": "HUB-V2-007",
       "connector_readiness_schema_version": "HUB-V2-008",
@@ -180,7 +182,9 @@
       "approval_gate_schema_version": "HUB-V2-009",
       "demo_workflow_report_export_schema_version": "HUB-V2-010",
       "showcase_screenshot_refresh_version": "HUB-V2-011",
-      "public_release_check_version": "HUB-V2-012"
+      "public_release_check_version": "HUB-V2-012",
+      "bilingual_ui_version": "HUB-V2-022",
+      "stage_sync_version": "HUB-V2-022"
     }
   ],
   "future_agent_template": {
@@ -276,5 +280,7 @@
   "approval_gate_schema_version": "HUB-V2-009",
   "demo_workflow_report_export_schema_version": "HUB-V2-010",
   "showcase_screenshot_refresh_version": "HUB-V2-011",
-  "public_release_check_version": "HUB-V2-012"
+  "public_release_check_version": "HUB-V2-012",
+  "bilingual_ui_version": "HUB-V2-022",
+  "stage_sync_version": "HUB-V2-022"
 }

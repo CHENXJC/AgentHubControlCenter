@@ -68,6 +68,9 @@ OPTIONAL_AGENT_FIELDS = [
 ]
 
 
+AGENTHUB_CURRENT_CHECKPOINT = "HUB-V2-022-BILINGUAL-UI-TOGGLE-AND-STAGE-SYNC-CHECK-COMPLETE"
+
+
 CATEGORY_IO_DEFAULTS = {
     "Media Intelligence": {
         "inputs": ["video_file", "image_file", "optional_prompt"],
@@ -430,8 +433,8 @@ def build_agent_manifests(
 def build_agent_contract() -> dict:
     """Return the V2 interface contract for future Agent onboarding."""
     return {
-        "contract_version": "HUB-V2-012",
-        "purpose": "Standard local-first declaration for AgentHubControlCenter tools, actions, Codex prompts, useful signals, connector readiness simulations, local workflow simulations, approval gates, public-safe demo workflow report exports, showcase screenshots, and public release readiness metadata.",
+        "contract_version": AGENTHUB_CURRENT_CHECKPOINT,
+        "purpose": "Standard local-first declaration for AgentHubControlCenter tools, actions, Codex prompts, useful signals, connector readiness simulations, local workflow simulations, approval gates, public-safe demo workflow report exports, showcase screenshots, public release readiness metadata, and bilingual UI stage sync.",
         "required_fields": STANDARD_AGENT_FIELDS,
         "optional_fields": OPTIONAL_AGENT_FIELDS,
         "action_schema_fields": ACTION_SCHEMA_FIELDS,
@@ -452,7 +455,7 @@ def build_agent_contract() -> dict:
         "report_export_format_enum": list(REPORT_FORMATS),
         "report_export_section_enum": list(REPORT_SECTION_IDS),
         "execution_policy": {
-            "current_stage": "public_showcase_release_check",
+            "current_stage": "bilingual_ui_toggle_stage_sync_check",
             "default_mode": "demo_safe",
             "external_api_calls": "disabled_by_default",
             "secrets": "must_not_be_read_or_printed",
@@ -465,8 +468,8 @@ def build_agent_contract() -> dict:
             "report_export": REPORT_EXPORT_POLICY,
         },
         "connector_policy": {
-            "current_stage": "public_showcase_release_check",
-            "live_connectors": "not_enabled_in_hub_v2_012",
+            "current_stage": "bilingual_ui_toggle_stage_sync_check",
+            "live_connectors": "not_enabled_in_hub_v2_022",
             "planned_connectors": PLANNED_CONNECTORS,
         },
         "codex_prompt_generator": {
@@ -528,6 +531,15 @@ def build_agent_contract() -> dict:
             "readiness_report": "docs/V2_RELEASE_READINESS_REPORT.md",
             "execution_policy": "public_safe_release_check_metadata_only_no_commit_no_push",
             "data_policy": "readme_docs_manifest_contract_screenshot_inventory_public_reports_only",
+        },
+        "bilingual_ui": {
+            "current_stage": "HUB-V2-022",
+            "default_language": "zh",
+            "supported_languages": ["zh", "en"],
+            "translation_policy": "local_dictionary_only_no_external_translation_api",
+            "stage_status_helper": "agent_hub/stage_status.py",
+            "stage_source_policy": "PROJECT_STATUS.md_first_agent_manifest_fallback",
+            "execution_policy": "ui_display_only_no_action_execution",
         },
     }
 
