@@ -48,6 +48,11 @@ from agent_hub.connector_readiness_engine import (
 )
 from agent_hub.demo_report_builder import build_demo_report_package, build_report_previews
 from agent_hub.demo_report_exporter import get_public_reports_dir
+from agent_hub.external_agent_summary import (
+    build_agent_summary_metrics,
+    build_external_summary_index,
+    build_summary_display_rows,
+)
 from agent_hub.health_checker import check_all_agents_health
 from agent_hub.next_action_planner import build_next_action_plan, summarize_next_actions
 from agent_hub.portfolio_matrix import (
@@ -429,6 +434,45 @@ def render_metric_cards(metrics: list[tuple[str, object]]) -> None:
     columns = st.columns(len(metrics))
     for index, (label, value) in enumerate(metrics):
         columns[index].metric(label, build_metric_display_value(value))
+
+
+def render_external_agent_summary(summary_record: dict, title: str) -> None:
+    """Render read-only summary metrics from an imported Agent output."""
+    language = get_language()
+    if not summary_record or not summary_record.get("available"):
+        return
+
+    summary_data = summary_record.get("data", {})
+    metrics = build_agent_summary_metrics(summary_data)
+    st.markdown(f"### {display_text(title, language)}")
+    render_metric_cards(
+        [
+            (display_text("Total items processed", language), metrics["total_items_processed"]),
+            (display_text("High-value signals", language), metrics["high_value_signals"]),
+            (display_text("Medium-value items", language), metrics["medium_value_items"]),
+            (display_text("Low/noise/review items", language), metrics["low_value_or_noise_items"]),
+            (display_text("Recommended actions", language), metrics["recommended_actions_count"]),
+            (display_text("Top route", language), metrics["top_route"]),
+        ]
+    )
+    summary_left, summary_right = st.columns(2)
+    with summary_left:
+        render_html_card(
+            display_text("Latest report path", language),
+            safe_display(metrics["latest_report_path"]),
+        )
+    with summary_right:
+        top_routes = summary_data.get("top_routes", {})
+        render_html_card(
+            display_text("Top routes", language),
+            safe_display(", ".join(f"{route}: {count}" for route, count in top_routes.items()) if isinstance(top_routes, dict) else ""),
+        )
+
+    st.dataframe(
+        localize_dataframe(display_dataframe(build_summary_display_rows(summary_data)), language),
+        width="stretch",
+        hide_index=True,
+    )
 
 
 def format_agent_card_title(agent_name: str) -> str:
@@ -1020,6 +1064,7 @@ inject_global_styles()
 static_agents = load_agent_registry(REGISTRY_PATH)
 onboarding_result = build_agent_onboarding(AI_PROJECTS_ROOT, static_agents)
 agents = onboarding_result["merged_agents"]
+external_summary_index = build_external_summary_index(agents)
 registry_summary = get_registry_summary(agents)
 validation_results = validate_registry(agents)
 health_results = check_all_agents_health(agents)
@@ -1220,6 +1265,13 @@ with command_overview_tab:
     st.markdown(f"### {t('what_you_can_use_now', language)}")
     render_manifest_cards(agent_manifests, max_items=6)
 
+    d2i_summary_record = external_summary_index.get("data_to_insight_workflow_agent")
+    if d2i_summary_record:
+        render_external_agent_summary(
+            d2i_summary_record,
+            "DataToInsightWorkflowAgent AgentHub Summary",
+        )
+
     st.markdown(f"### {t('command_center_summary', language)}")
     summary_left, summary_right = st.columns(2)
     with summary_left:
@@ -1363,6 +1415,19 @@ with tools_tab:
                 render_html_card(
                     t("github_url", language),
                     safe_display(build_open_github_command(selected_agent)),
+                )
+                if selected_agent.get("dashboard_path"):
+                    render_html_card(display_text("Dashboard path", language), safe_display(selected_agent.get("dashboard_path")))
+                if selected_agent.get("report_path"):
+                    render_html_card(display_text("Markdown report path", language), safe_display(selected_agent.get("report_path")))
+                if selected_agent.get("agenthub_summary_path"):
+                    render_html_card(display_text("AgentHub summary path", language), safe_display(selected_agent.get("agenthub_summary_path")))
+
+            selected_summary_record = external_summary_index.get(selected_agent.get("agent_id", ""))
+            if selected_summary_record:
+                render_external_agent_summary(
+                    selected_summary_record,
+                    f"{selected_agent.get('agent_name', 'Agent')} Summary Metrics",
                 )
 
             st.markdown(f"### {t('command_pack_panel', language)}")

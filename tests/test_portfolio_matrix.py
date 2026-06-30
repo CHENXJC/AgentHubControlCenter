@@ -89,6 +89,27 @@ def test_build_project_matrix_view_lists_client_delivery_spoke():
     assert "Review GitHub profile pin decision for ClientDeliveryKitAgent" in groups["Client Delivery / AI Consulting"]["next_step"]
 
 
+def test_build_project_matrix_view_lists_data_workflow_spoke():
+    matrix = build_project_matrix_view(
+        [
+            {
+                "agent_name": "DataToInsightWorkflowAgent",
+                "category": "Data Workflow / Insight Engine",
+                "status": "agenthub_integration_complete",
+                "showcase_status": "local_demo_dashboard_ready",
+                "pin_status": "not_ready_for_pin_until_public_showcase",
+                "next_action": "D2I-005 Public showcase preparation",
+                "portfolio_value": "Shows data-to-insight scoring and action recommendation workflow.",
+            }
+        ]
+    )
+
+    groups = {item["category_group"]: item for item in matrix}
+
+    assert "Data Workflow / Insight Engine" in groups
+    assert groups["Data Workflow / Insight Engine"]["projects"][0]["name"] == "DataToInsightWorkflowAgent"
+
+
 def test_build_priority_summary_returns_portfolio_buckets():
     summary = build_priority_summary(
         [

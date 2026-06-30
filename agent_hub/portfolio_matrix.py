@@ -56,6 +56,12 @@ PROJECT_MATRIX_GROUPS = [
         "empty_next_step": "Future candidate. Keep it as a portfolio gap until the current showcase pass is complete.",
     },
     {
+        "category_group": "Data Workflow / Insight Engine",
+        "categories": {"Data Workflow / Insight Engine", "data_workflow", "insight_engine"},
+        "portfolio_role": "Data-to-insight workflow, value scoring, action recommendations, and AgentHub-ready reporting.",
+        "empty_next_step": "No data workflow insight engine is registered yet.",
+    },
+    {
         "category_group": "Control Center / Meta Agent",
         "categories": {"Control Center", "Meta Agent", "AgentOps / PortfolioOps", "agent_ops"},
         "portfolio_role": "Portfolio command center, AgentOps dashboard, and project matrix hub.",
@@ -311,6 +317,7 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
         "News Intelligence": [],
         "Business Operations": [],
         "Client Delivery": [],
+        "Data Workflow / Insight Engine": [],
         "AgentOps / PortfolioOps": ["AgentHubControlCenter"],
     }
 
@@ -335,6 +342,8 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
             capability_clusters["Client Delivery"].append(name)
         elif category in {"Knowledge Base", "knowledge_management"}:
             capability_clusters.setdefault("Knowledge Management", []).append(name)
+        elif category in {"Data Workflow / Insight Engine", "data_workflow", "insight_engine"}:
+            capability_clusters["Data Workflow / Insight Engine"].append(name)
 
     showcase_strengths = [
         "Local-first AI workflows",

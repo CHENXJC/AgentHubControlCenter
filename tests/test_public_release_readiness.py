@@ -153,13 +153,18 @@ def test_manifest_contract_and_immediate_project_manifests_load():
     manifest_paths = sorted(project_root.glob("*/agent_manifest.json"))
     loaded = [json.loads(path.read_text(encoding="utf-8")) for path in manifest_paths]
 
-    assert len(loaded) == 12
+    assert len(loaded) >= 13
     client_manifest = next(
         item for item in loaded if item.get("agent_id") == "client_delivery_kit_agent"
     )
     assert client_manifest["github_repo"] == "https://github.com/CHENXJC/ClientDeliveryKitAgent"
     assert client_manifest["public_showcase_status"] == "live_showcase_verified"
     assert client_manifest["pin_status"] == "recommend_pin"
+    d2i_manifest = next(
+        item for item in loaded if item.get("agent_id") == "data_to_insight_workflow_agent"
+    )
+    assert d2i_manifest["display_name_zh"] == "数据洞察工作流智能体"
+    assert d2i_manifest["agenthub_summary_path"] == "outputs/agenthub_summary.json"
 
 
 def test_launcher_keeps_local_venv_and_fixed_port():

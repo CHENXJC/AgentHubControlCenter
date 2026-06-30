@@ -14,6 +14,7 @@ __all__ = [
     "connector_readiness_schema",
     "demo_report_builder",
     "demo_report_exporter",
+    "external_agent_summary",
     "health_checker",
     "manifest_loader",
     "next_action_planner",

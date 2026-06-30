@@ -70,6 +70,40 @@ def test_manifest_record_to_registry_record_maps_manifest_fields(tmp_path):
     assert record["safe_mode"] is True
 
 
+def test_manifest_record_to_registry_record_preserves_agenthub_summary_fields(tmp_path):
+    manifest_path = tmp_path / "DataToInsightWorkflowAgent" / "agent_manifest.json"
+    manifest_path.parent.mkdir()
+    manifest = _valid_manifest("data_to_insight_workflow_agent")
+    manifest.update(
+        {
+            "agent_name": "DataToInsightWorkflowAgent",
+            "display_name_zh": "数据洞察工作流智能体",
+            "local_first": True,
+            "public_safe": True,
+            "capabilities": ["streamlit_dashboard", "agenthub_export"],
+            "dashboard_path": "app.py",
+            "report_path": "outputs/demo_insight_report.md",
+            "agenthub_summary_path": "outputs/agenthub_summary.json",
+            "contract_path": "agent_contract.json",
+            "checkpoint": "D2I-004-AGENTHUB-CONTROLCENTER-INTEGRATION-COMPLETE",
+        }
+    )
+
+    record = manifest_record_to_registry_record(
+        manifest,
+        manifest_path,
+        source="local_manifest",
+    )
+
+    assert record["display_name_zh"] == "数据洞察工作流智能体"
+    assert record["local_first"] is True
+    assert record["public_safe"] is True
+    assert record["dashboard_path"] == "app.py"
+    assert record["report_path"] == "outputs/demo_insight_report.md"
+    assert record["agenthub_summary_path"] == "outputs/agenthub_summary.json"
+    assert "agenthub_export" in record["capabilities"]
+
+
 def test_scan_project_manifest_handles_valid_agents_list(tmp_path):
     project_dir = tmp_path / "DemoAgent"
     project_dir.mkdir()

@@ -31,6 +31,15 @@ OPTIONAL_MANIFEST_FIELDS = [
     "owner",
     "public_showcase_status",
     "pin_status",
+    "display_name_zh",
+    "local_first",
+    "public_safe",
+    "capabilities",
+    "dashboard_path",
+    "report_path",
+    "agenthub_summary_path",
+    "contract_path",
+    "checkpoint",
 ]
 
 SKIP_DIRECTORY_NAMES = {
@@ -195,10 +204,13 @@ def manifest_record_to_registry_record(
     project_path = _string_value(record.get("project_path")) or str(path.parent)
     github_url = _string_value(record.get("github_repo"))
     public_showcase_status = _string_value(record.get("public_showcase_status"))
+    report_path = _string_value(record.get("report_path"))
+    agenthub_summary_path = _string_value(record.get("agenthub_summary_path"))
 
     return {
         "agent_id": _string_value(record.get("agent_id")),
         "agent_name": _string_value(record.get("agent_name")),
+        "display_name_zh": _string_value(record.get("display_name_zh")),
         "category": _string_value(record.get("category")),
         "project_type": _string_value(record.get("project_type")) or "Agent",
         "local_path": project_path,
@@ -226,8 +238,16 @@ def manifest_record_to_registry_record(
         "action_schema_version": _string_value(record.get("action_schema_version")),
         "demo_mode": record.get("demo_mode") if isinstance(record.get("demo_mode"), bool) else True,
         "safe_mode": record.get("safe_mode") if isinstance(record.get("safe_mode"), bool) else True,
+        "local_first": record.get("local_first") if isinstance(record.get("local_first"), bool) else True,
+        "public_safe": record.get("public_safe") if isinstance(record.get("public_safe"), bool) else True,
+        "capabilities": record.get("capabilities") if isinstance(record.get("capabilities"), list) else [],
         "last_run": _string_value(record.get("last_run")) or "Not tracked yet",
         "dashboard_url": _string_value(record.get("dashboard_url")),
+        "dashboard_path": _string_value(record.get("dashboard_path")),
+        "report_path": report_path,
+        "agenthub_summary_path": agenthub_summary_path,
+        "contract_path": _string_value(record.get("contract_path")),
+        "checkpoint": _string_value(record.get("checkpoint")),
         "owner": _string_value(record.get("owner")),
     }
 

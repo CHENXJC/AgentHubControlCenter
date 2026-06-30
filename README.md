@@ -6,9 +6,9 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT-COMPLETE
+Current status: HUB-V2-026-D2I-AGENTHUB-INTEGRATION-COMPLETE
 
-Portfolio positioning: this repo is the hub project for showing how 12
+Portfolio positioning: this repo is the hub project for showing how 13
 local-first AI Agents and Skills can be organized into one safe, inspectable
 AgentOps workflow system.
 
@@ -38,6 +38,10 @@ no child project script, and no real action execution.
 - Scans `F:\AIProjects` child project folders for `agent_manifest.json`.
 - Validates manifest fields and shows onboarding warnings instead of crashing.
 - Merges valid manifest records with `data/agent_registry.csv` at runtime.
+- Imports DataToInsightWorkflowAgent through its AgentHub-compatible manifest
+  and reads its `outputs/agenthub_summary.json` summary metrics.
+- Shows D2I total processed items, high-value signals, medium-value items,
+  low/noise/review items, recommended actions, top routes, and report path.
 - Shows source labels: `static_registry`, `local_manifest`, and `demo_manifest`.
 - Shows connector readiness without enabling live Gmail, Google Sheets, Notion, Airtable, Telegram, or other external account actions.
 - Defines a unified local action schema for every onboarded Agent.
@@ -87,6 +91,7 @@ Agent and Skill portfolio.
 | BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
 | CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
 | ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Published: `https://github.com/CHENXJC/ClientDeliveryKitAgent` | Backlink live | Valid published manifest | Public-safe synthetic demo | Optional profile pin / maintain showcase |
+| DataToInsightWorkflowAgent | Data Workflow / Insight Engine | Data-to-insight workflow, scoring, action recommendation, and AgentHub-ready export spoke | Published: `https://github.com/CHENXJC/DataToInsightWorkflowAgent` | AgentHub integration documented | Valid published manifest + summary JSON | Public-safe synthetic demo | D2I-008 optional profile pin decision |
 | IdeaScoreAgent | Idea validation | Business idea scoring and validation node | Published | Backlink live | Valid manifest | Public-safe | Excluded deploy/report/bat artifacts remain local-only |
 | MarketSenseAgent | Market intelligence | Market watch and local automation node | Local-only non-git | Backlink local-only | Valid local manifest | Public-safe local metadata | Needs separate repo decision before publishing |
 | NewsSignalAgent | News intelligence | News signal analysis node | Published | Backlink live | Valid manifest | Public-safe | Keep as signal analysis example |
@@ -102,14 +107,14 @@ Agent and Skill portfolio.
 
 ![Command Center Overview](docs/images/01_command_overview.png)
 
-Public-safe command center home view with portfolio metrics, 12 available
+Public-safe command center home view with portfolio metrics, 13 available
 tools, and first-row Agent cards.
 
 ### Agent Registry
 
 ![Agent Registry](docs/images/02_agent_registry.png)
 
-My Tools / Agent Registry view showing 12 manifest-onboarded local Agents and
+My Tools / Agent Registry view showing 13 manifest-onboarded local Agents and
 Skills with source, demo-mode, safe-mode, action, and connector badges.
 
 ### Action Center
@@ -151,7 +156,7 @@ not-connected surfaces without enabling live account integrations.
 
 ![Agent Onboarding Metrics](docs/images/08_agent_onboarding_metrics.png)
 
-Agent onboarding metrics showing 12 manifests found, 12 valid manifests, 0
+Agent onboarding metrics showing 13 manifests found, 13 valid manifests, 0
 invalid manifests, and 0 missing manifests.
 
 ### Report Export
@@ -182,8 +187,8 @@ policy state for high-risk connector ideas.
 - Agent Onboarding section
 - Manifest discovery and validation
 - CSV + manifest runtime registry merge
-- Manifest-based Agent onboarding for 12 local Agents and Skills
-- HUB-V2-005+ local action schema for 66 metadata-only actions across 12 Agents
+- Manifest-based Agent onboarding for 13 local Agents and Skills
+- HUB-V2-005+ local action schema for 70 metadata-only actions across 13 Agents
 - HUB-V2-006 Codex Prompt Generator for copy-ready text prompts
 - HUB-V2-007 Useful Signals Engine for scored local recommendations
 - HUB-V2-008 Connector Readiness Simulator for design-only connector planning
@@ -248,8 +253,8 @@ live providers.
 
 CLIENTDELIVERYKIT-010 completes the published status sync for
 ClientDeliveryKitAgent after live GitHub showcase verification. AgentHubControlCenter
-now clearly presents itself as the hub-and-spoke entry point for 12 local-first
-AI Agents and Skills, with 9 published child repo backlinks, 2 local-only
+now clearly presents itself as the hub-and-spoke entry point for 13 local-first
+AI Agents and Skills, with 10 published child repos, 2 local-only
 non-git project notes, valid manifests, public-safe boundaries, and no real
 execution.
 
@@ -387,6 +392,7 @@ Current release readiness result:
 
 - AgentHubControlCenter
 - ClientDeliveryKitAgent
+- DataToInsightWorkflowAgent
 - VideoExtractSkill
 - MarketSenseAgent
 - QuantLabAgent

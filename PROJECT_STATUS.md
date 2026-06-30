@@ -1,6 +1,93 @@
 # Project Status
 
-Current status: HUB-V2-025-DEEP-CHINESE-UI-DOCS-COMMIT-COMPLETE
+Current status: HUB-V2-026-D2I-AGENTHUB-INTEGRATION-COMPLETE
+
+## HUB-V2-026 D2I AgentHub Integration
+
+Checkpoint name:
+HUB-V2-026-D2I-AGENTHUB-INTEGRATION-COMPLETE
+
+## HUB-V2-026 Goal
+
+Register and display DataToInsightWorkflowAgent through the existing
+AgentHubControlCenter manifest onboarding system, then read its
+`outputs/agenthub_summary.json` export as a public-safe local AgentHub
+summary.
+
+This integration is metadata/UI integration only. It does not connect real
+providers, does not execute D2I actions, does not run real user files, does not
+read credentials, and does not modify git remotes.
+
+## Completed In HUB-V2-026
+
+- Confirmed D2I `agent_manifest.json`, `agent_contract.json`, and
+  `outputs/agenthub_summary.json` parse as JSON.
+- Updated D2I manifest to satisfy AgentHub standard required fields.
+- Added D2I `docs/AGENTHUB_HANDOFF.md`.
+- Preserved existing AgentHub manifest onboarding and CSV merge architecture.
+- Added a read-only external Agent summary helper for manifest-declared
+  `agenthub_summary_path` files.
+- Preserved D2I dashboard/report/summary paths in imported registry records.
+- Added Data Workflow / Insight Engine as a portfolio matrix group.
+- Displayed D2I summary metrics in Command Overview and Agent Detail.
+- Added focused tests for D2I summary loading, path safety, manifest import,
+  and portfolio matrix placement.
+- Updated README and this status file for the 13-Agent portfolio view.
+
+## HUB-V2-026 Displayed D2I Fields
+
+- Agent name and Chinese display name
+- Category: Data Workflow / Insight Engine
+- Status and checkpoint
+- Local-first / public-safe / demo-mode / safe-mode flags
+- Capabilities
+- Dashboard path
+- Markdown report path
+- AgentHub summary path
+- Total items processed
+- High-value signals
+- Medium-value items
+- Low/noise/review items
+- Recommended actions count
+- Top routes
+- Latest report path
+
+## HUB-V2-026 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- No real connector was connected.
+- No external API was called.
+- No D2I child script was run from AgentHub.
+- No real action was executed.
+- Git remote was not modified.
+- Before the closeout commit stage, no git add, commit, push, or force push had
+  been performed for the integration checkpoint.
+- `git add .` was not used.
+
+## HUB-V2-026 Validation Results
+
+Validation completed for this checkpoint:
+
+| Check | Result |
+| --- | --- |
+| D2I pytest | Passed |
+| D2I compileall | Passed |
+| D2I demo pipeline | Passed |
+| AgentHub pytest | Passed |
+| AgentHub compileall | Passed |
+| AgentHub Streamlit smoke check | Passed |
+| D2I summary JSON parse | Passed |
+| Sensitive filename scan | Passed |
+
+## HUB-V2-027 Recommended Next Stage
+
+Recommended next stage:
+D2I-008-OPTIONAL-PROFILE-PIN-DECISION.
+
+Decide whether DataToInsightWorkflowAgent should be pinned on the GitHub
+profile after its public showcase release. Do not pin or change repository
+metadata unless explicitly requested.
 
 ## HUB-V2-025 Deep Chinese UI Docs Commit
 
