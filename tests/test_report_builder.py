@@ -77,6 +77,20 @@ def test_build_portfolio_markdown_report_contains_required_sections():
         validation_results=validation_results,
         action_plan=action_plan,
         portfolio_positioning=portfolio_positioning,
+        workflow_pack_integration={
+            "integration_status": "available",
+            "total_workflow_packs": 23,
+            "metadata_enriched_agents": 12,
+            "safe_metadata_integration": True,
+            "source_metadata_stats": {
+                "loaded_metadata_files": 35,
+                "missing_metadata_files": 37,
+                "rejected_metadata_files": 0,
+            },
+            "top_workflow_packs": [{"pack_name": "Codex Project Builder Pack"}],
+            "summary_path": "F:/AIProjects/WorkflowPackAgent/outputs/agenthub_summary.json",
+            "safety_note": "Only local JSON summaries are read.",
+        },
         generated_at="2026-06-24 10:00:00",
     )
 
@@ -90,6 +104,9 @@ def test_build_portfolio_markdown_report_contains_required_sections():
     assert "## Registry Validation" in report
     assert "## Priority Action Plan" in report
     assert "## Public Showcase Readiness" in report
+    assert "## Workflow Pack Integration" in report
+    assert "- Total Workflow Packs: 23" in report
+    assert "Codex Project Builder Pack" in report
     assert "## Portfolio Positioning" in report
     assert "## Disclaimer" in report
 

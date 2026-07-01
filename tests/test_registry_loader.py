@@ -4,6 +4,10 @@ from agent_hub.registry_loader import (
     validate_agent_record,
     validate_registry,
 )
+from pathlib import Path
+
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def test_load_agent_registry_returns_list(tmp_path):
@@ -84,3 +88,19 @@ def test_validate_registry_returns_list():
 
     assert isinstance(results, list)
     assert results[0]["is_valid"] is False
+
+
+def test_static_registry_includes_workflow_command_center_agent():
+    agents = load_agent_registry(ROOT / "data" / "agent_registry.csv")
+    wcc = next(
+        agent
+        for agent in agents
+        if agent.get("agent_name") == "WorkflowCommandCenterAgent"
+    )
+
+    assert wcc["github_url"] == "https://github.com/CHENXJC/WorkflowCommandCenterAgent"
+    assert wcc["stage"] == "WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE"
+    assert wcc["pin_status"] == "Not pinned"
+    assert wcc["category"] == "Workflow Orchestration / AgentOps / Project Command"
+    assert wcc["showcase_status"] == "GitHub Public Showcase"
+    assert "project execution" in wcc["notes"].lower()

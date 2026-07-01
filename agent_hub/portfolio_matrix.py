@@ -62,6 +62,17 @@ PROJECT_MATRIX_GROUPS = [
         "empty_next_step": "No data workflow insight engine is registered yet.",
     },
     {
+        "category_group": "Workflow Orchestration / AgentOps",
+        "categories": {
+            "Workflow Orchestration / AgentOps / Project Command",
+            "workflow-orchestration",
+            "workflow_orchestration",
+            "project-execution-command-center",
+        },
+        "portfolio_role": "Project execution command systems for Codex-ready instructions, workflow packs, checklists, and delivery reports.",
+        "empty_next_step": "No workflow orchestration command project is registered yet.",
+    },
+    {
         "category_group": "Control Center / Meta Agent",
         "categories": {"Control Center", "Meta Agent", "AgentOps / PortfolioOps", "agent_ops"},
         "portfolio_role": "Portfolio command center, AgentOps dashboard, and project matrix hub.",
@@ -318,6 +329,7 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
         "Business Operations": [],
         "Client Delivery": [],
         "Data Workflow / Insight Engine": [],
+        "Workflow Orchestration / Project Command": [],
         "AgentOps / PortfolioOps": ["AgentHubControlCenter"],
     }
 
@@ -344,6 +356,13 @@ def build_portfolio_positioning(agents: list[dict]) -> dict:
             capability_clusters.setdefault("Knowledge Management", []).append(name)
         elif category in {"Data Workflow / Insight Engine", "data_workflow", "insight_engine"}:
             capability_clusters["Data Workflow / Insight Engine"].append(name)
+        elif category in {
+            "Workflow Orchestration / AgentOps / Project Command",
+            "workflow-orchestration",
+            "workflow_orchestration",
+            "project-execution-command-center",
+        }:
+            capability_clusters["Workflow Orchestration / Project Command"].append(name)
 
     showcase_strengths = [
         "Local-first AI workflows",

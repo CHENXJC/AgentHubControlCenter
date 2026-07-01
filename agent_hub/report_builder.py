@@ -161,12 +161,14 @@ def build_portfolio_markdown_report(
     validation_results: list[dict] | None = None,
     action_plan: list[dict] | None = None,
     portfolio_positioning: dict | None = None,
+    workflow_pack_integration: dict | None = None,
     generated_at: datetime | str | None = None,
 ) -> str:
     """Build a Markdown portfolio report from registry and health data."""
     validation_results = validation_results or []
     action_plan = action_plan or []
     portfolio_positioning = portfolio_positioning or {}
+    workflow_pack_integration = workflow_pack_integration or {}
     high_priority_actions = sum(1 for item in action_plan if item.get("priority") == "High")
     command_center_summary = build_command_center_summary(
         registry_summary=registry_summary,
@@ -340,6 +342,30 @@ def build_portfolio_markdown_report(
                 status=_markdown_cell(item.get("status", "")),
                 note=_markdown_cell(item.get("public_safe_note", "")),
             )
+        )
+
+    if workflow_pack_integration:
+        metadata_stats = workflow_pack_integration.get("source_metadata_stats", {})
+        top_pack_names = [
+            str(pack.get("pack_name", ""))
+            for pack in workflow_pack_integration.get("top_workflow_packs", [])
+            if isinstance(pack, dict) and pack.get("pack_name")
+        ]
+        lines.extend(
+            [
+                "",
+                "## Workflow Pack Integration",
+                f"- Integration Status: {_markdown_cell(workflow_pack_integration.get('integration_status', 'missing'))}",
+                f"- Total Workflow Packs: {_markdown_cell(workflow_pack_integration.get('total_workflow_packs', 0))}",
+                f"- Metadata Enriched Agents: {_markdown_cell(workflow_pack_integration.get('metadata_enriched_agents', 0))}",
+                f"- Safe Metadata Integration: {_markdown_cell(workflow_pack_integration.get('safe_metadata_integration', False))}",
+                f"- Loaded Metadata Files: {_markdown_cell(metadata_stats.get('loaded_metadata_files', 0))}",
+                f"- Missing Metadata Files: {_markdown_cell(metadata_stats.get('missing_metadata_files', 0))}",
+                f"- Rejected Metadata Files: {_markdown_cell(metadata_stats.get('rejected_metadata_files', 0))}",
+                f"- Top Workflow Packs: {_markdown_cell(', '.join(top_pack_names) if top_pack_names else 'None')}",
+                f"- Summary Path: {_markdown_cell(workflow_pack_integration.get('summary_path', ''))}",
+                f"- Safety Note: {_markdown_cell(workflow_pack_integration.get('safety_note', ''))}",
+            ]
         )
 
     positioning_statement = portfolio_positioning.get(

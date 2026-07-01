@@ -110,6 +110,31 @@ def test_build_project_matrix_view_lists_data_workflow_spoke():
     assert groups["Data Workflow / Insight Engine"]["projects"][0]["name"] == "DataToInsightWorkflowAgent"
 
 
+def test_build_project_matrix_view_lists_workflow_command_center_spoke():
+    matrix = build_project_matrix_view(
+        [
+            {
+                "agent_name": "WorkflowCommandCenterAgent",
+                "category": "Workflow Orchestration / AgentOps / Project Command",
+                "status": "Complete",
+                "showcase_status": "GitHub Public Showcase",
+                "pin_status": "Not pinned",
+                "next_action": "Optional profile pin decision or maintain-showcase",
+                "portfolio_value": "Shows Codex-ready workflow command and delivery report infrastructure.",
+            }
+        ]
+    )
+
+    groups = {item["category_group"]: item for item in matrix}
+
+    assert "Workflow Orchestration / AgentOps" in groups
+    wcc_projects = groups["Workflow Orchestration / AgentOps"]["projects"]
+    assert wcc_projects[0]["name"] == "WorkflowCommandCenterAgent"
+    assert wcc_projects[0]["showcase_status"] == "GitHub Public Showcase"
+    assert "1 public showcase" in groups["Workflow Orchestration / AgentOps"]["status_summary"]
+    assert "Review GitHub profile pin decision for WorkflowCommandCenterAgent" in groups["Workflow Orchestration / AgentOps"]["next_step"]
+
+
 def test_build_priority_summary_returns_portfolio_buckets():
     summary = build_priority_summary(
         [

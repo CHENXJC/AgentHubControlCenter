@@ -921,6 +921,7 @@ AGENT_DISPLAY_NAMES = {
     "QuantLabAgent": "QuantLabAgent / 量化研究实验室智能体",
     "SocialPainFinderAgent": "SocialPainFinderAgent / 社媒痛点发现智能体",
     "VideoExtractSkill": "VideoExtractSkill / 视频图片内容提取技能",
+    "WorkflowCommandCenterAgent": "WorkflowCommandCenterAgent / AI 工作流指令中台",
 }
 
 CATEGORY_TRANSLATIONS = {
@@ -962,6 +963,11 @@ CATEGORY_TRANSLATIONS = {
     "News / Signal": "新闻 / 信号",
     "SME Automation": "中小企业自动化",
     "Finance & Quant Research": "金融与量化研究",
+    "Workflow Orchestration / AgentOps": "工作流编排 / 智能体运维",
+    "Workflow Orchestration / AgentOps / Project Command": "工作流编排 / 智能体运维 / 项目指令中台",
+    "workflow-orchestration": "工作流编排",
+    "workflow_orchestration": "工作流编排",
+    "project-execution-command-center": "项目执行指令中台",
 }
 
 STATUS_TRANSLATIONS = {
@@ -1111,6 +1117,7 @@ NEXT_STEP_TRANSLATIONS = {
     "Keep complete-no-pin status; use AgentHub for discovery and metadata review.": "保持完成但不置顶状态；使用 AgentHub 做发现和元数据审阅。",
     "Keep as educational research showcase; do not enable trading or automated execution.": "保持教育研究展示定位；不启用交易或自动执行。",
     "Keep paused after public showcase and profile pin; use AgentHub for portfolio-level review.": "公开展示和置顶后保持暂停；AgentHub 仅用于作品集层级审阅。",
+    "Optional profile pin decision or maintain-showcase": "可选 Profile 置顶决策或保持展示维护状态",
     "CLIENTDELIVERYKIT-012-MAINTAIN-SHOWCASE-PERIODIC-REFRESH-ONLY-IF-NEEDED": "CLIENTDELIVERYKIT-012：仅在需要时做展示维护刷新",
     "Review next action after current showcase pass.": "当前展示检查后再审阅下一步。",
     "Paused after public showcase/profile pin; no immediate expansion needed.": "公开展示 / 置顶后已暂停；暂无扩展需求。",

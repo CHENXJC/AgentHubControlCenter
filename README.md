@@ -6,9 +6,9 @@ portfolio dashboard into an AI Agent Operating System entry point: tools,
 workflows, useful signals, action center, connectors, and future plugin
 interface.
 
-Current status: HUB-V2-026-D2I-AGENTHUB-INTEGRATION-COMPLETE
+Current status: HUB-WCC-INTEGRATION-COMPLETE
 
-Portfolio positioning: this repo is the hub project for showing how 13
+Portfolio positioning: this repo is the hub project for showing how 14
 local-first AI Agents and Skills can be organized into one safe, inspectable
 AgentOps workflow system.
 
@@ -22,7 +22,7 @@ no child project script, and no real action execution.
 - Summarizes portfolio status, showcase coverage, pinned items, public-but-not-pinned projects, and paused/completed projects.
 - Checks whether each local project path contains expected public-project files.
 - Builds a capability matrix and positioning summary for the portfolio.
-- Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Client Delivery / AI Consulting, Knowledge Base, and Control Center / Meta Agent.
+- Builds a fixed project matrix view across Finance / Market, Media / OCR / Extraction, Career, News / Signal, SME Automation, Client Delivery / AI Consulting, Knowledge Base, Data Workflow / Insight Engine, Workflow Orchestration / AgentOps, and Control Center / Meta Agent.
 - Plans prioritized next actions from validation, health, screenshots, and pin status.
 - Provides a local Chinese / English UI toggle for the main command center surfaces.
 - Deepens Chinese mode coverage for dynamic display values such as categories,
@@ -42,6 +42,13 @@ no child project script, and no real action execution.
   and reads its `outputs/agenthub_summary.json` summary metrics.
 - Shows D2I total processed items, high-value signals, medium-value items,
   low/noise/review items, recommended actions, top routes, and report path.
+- Reads WorkflowPackAgent local JSON summaries from
+  `F:\AIProjects\WorkflowPackAgent\outputs\` and shows workflow pack count,
+  top workflow packs, safe metadata stats, enriched source agents, and
+  integration status.
+- Registers WorkflowCommandCenterAgent as a GitHub-public workflow
+  orchestration / project command spoke with checkpoint
+  `WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE` and profile pin status `Not pinned`.
 - Shows source labels: `static_registry`, `local_manifest`, and `demo_manifest`.
 - Shows connector readiness without enabling live Gmail, Google Sheets, Notion, Airtable, Telegram, or other external account actions.
 - Defines a unified local action schema for every onboarded Agent.
@@ -88,6 +95,7 @@ Agent and Skill portfolio.
 | Project | Category | Role in AgentHub | GitHub status | Backlink status | Manifest status | Public-safe status | Next note |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | AgentHubControlCenter | Hub / AgentOps Command Center | Main portfolio command center and review hub | Published | Hub project | Valid root manifest | Public-safe metadata only | Keep pinned as the main portfolio hub |
+| WorkflowCommandCenterAgent | Workflow Orchestration / AgentOps / Project Command | Codex instruction, workflow pack, checklist, prompt/rule, and delivery report command spoke | Published: `https://github.com/CHENXJC/WorkflowCommandCenterAgent` | AgentHub integration documented | Public manifest checked read-only | Public-safe demo workflow command data | Optional profile pin or maintain-showcase |
 | BusinessOpsAgent | SME operations | Business workflow and operations node | Published | Backlink live | Valid manifest | Public-safe | Keep as applied SME workflow example |
 | CareerPilotAgent | Career operations | Career planning and job workflow node | Published | Backlink live | Valid manifest | Public-safe | Keep as practical user-facing workflow example |
 | ClientDeliveryKitAgent | Client delivery / AI automation consulting | Client-facing delivery workflow spoke | Published: `https://github.com/CHENXJC/ClientDeliveryKitAgent` | Backlink live | Valid published manifest | Public-safe synthetic demo | Optional profile pin / maintain showcase |
@@ -231,8 +239,26 @@ policy state for high-risk connector ideas.
 - Standard Agent interface docs and JSON examples
 - Codex Prompt Generator docs and text-only prompt policy
 - Windows one-click command launcher
+- WorkflowPackAgent integration summary for local workflow pack readiness
+- WorkflowCommandCenterAgent registry and portfolio matrix integration
 
 ## Current MVP Status
+
+HUB-WCC-INTEGRATION completes WorkflowCommandCenterAgent integration into
+AgentHubControlCenter. WCC is tracked as a Workflow Orchestration / AgentOps /
+Project Command spoke with public repo
+`https://github.com/CHENXJC/WorkflowCommandCenterAgent`, checkpoint
+`WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE`, and profile pin status `Not pinned`.
+This stage updates AgentHub metadata, docs, and tests only; it does not modify
+the WCC project, push WCC, execute WCC scripts, or perform profile pinning.
+
+HUB-V2-027 / WPA-004 completes WorkflowPackAgent summary integration.
+AgentHubControlCenter now reads only local JSON summary files from
+WorkflowPackAgent and displays workflow pack count, top packs, metadata enriched
+agents, safe metadata integration status, source metadata stats, next actions,
+and public-safe integration notes. This is summary-display integration only; it
+does not execute WorkflowPackAgent scripts, read private files, call APIs, or
+use external network access.
 
 HUB-V2-024 completes the deep Chinese UI coverage check. Chinese mode now
 localizes user-facing dynamic values across Agent cards, filters, action cards,
@@ -391,6 +417,7 @@ Current release readiness result:
 ## Registered Agents
 
 - AgentHubControlCenter
+- WorkflowCommandCenterAgent
 - ClientDeliveryKitAgent
 - DataToInsightWorkflowAgent
 - VideoExtractSkill

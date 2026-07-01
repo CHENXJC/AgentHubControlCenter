@@ -1,5 +1,6 @@
 from agent_hub.ui_helpers import (
     build_metric_display_value,
+    pin_badge_text,
     render_health_label_text,
     render_priority_label_text,
     render_status_label_text,
@@ -15,6 +16,10 @@ def test_render_status_label_text():
 def test_render_health_label_text():
     assert render_health_label_text("Showcase Ready") == "Health: Showcase Ready"
     assert render_health_label_text("") == "Health: Unknown"
+
+
+def test_pin_badge_text_handles_workflow_command_center_not_pinned():
+    assert pin_badge_text("Not pinned") == "Pin: Not pinned"
 
 
 def test_render_priority_label_text():

@@ -21,6 +21,13 @@ required for V2-022, but future screenshot refreshes can capture either Chinese
 default UI or English public-review UI as long as the 10 canonical filenames
 remain stable.
 
+HUB-V2-027 / WPA-004 WorkflowPackAgent integration status: Command Overview now
+includes a Workflow Pack Integration section. A future screenshot refresh can
+capture this section to show workflow pack count, metadata enriched agents,
+safe metadata integration status, top workflow packs, and the local JSON
+summary safety note. No new canonical screenshot is required for this checkpoint
+unless the public showcase image set is refreshed.
+
 The public showcase screenshots are saved under `docs/images/` and are intended
 for the GitHub README screenshot section. The V2-011 set was captured from the
 local Streamlit demo app on port `8525` using manifest-onboarded Agent metadata.
@@ -44,7 +51,8 @@ local Streamlit demo app on port `8525` using manifest-onboarded Agent metadata.
 UI area: Command Overview.
 
 Shows the Personal AI Command Center hero, current stage label, 11 available
-tools, portfolio metrics, and first-row Agent cards.
+tools, portfolio metrics, first-row Agent cards, and optional Workflow Pack
+Integration summary when capturing the WPA-004 integration view.
 
 ### 2. `docs/images/02_agent_registry.png`
 

@@ -116,6 +116,7 @@ from agent_hub.workflow_simulation_engine import (
     workflow_simulation_to_useful_signals,
 )
 from agent_hub.report_export_schema import REPORT_FORMATS, REPORT_SECTION_OPTIONS
+from agent_hub.workflow_pack_integration import get_workflow_pack_integration_status
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -473,6 +474,64 @@ def render_external_agent_summary(summary_record: dict, title: str) -> None:
         width="stretch",
         hide_index=True,
     )
+
+
+def render_workflow_pack_integration(integration_card: dict) -> None:
+    """Render WorkflowPackAgent summary metrics from local JSON exports."""
+    language = get_language()
+    st.markdown(f"### {display_text('Workflow Pack Integration', language)}")
+    render_metric_cards(
+        [
+            (display_text("Integration status", language), integration_card.get("integration_status", "missing")),
+            (display_text("Workflow packs", language), integration_card.get("total_workflow_packs", 0)),
+            (display_text("Metadata enriched agents", language), integration_card.get("metadata_enriched_agents", 0)),
+            (
+                display_text("Safe metadata", language),
+                "Enabled" if integration_card.get("safe_metadata_integration") else "Unavailable",
+            ),
+        ]
+    )
+
+    summary_left, summary_right = st.columns(2)
+    with summary_left:
+        render_html_card(
+            "WorkflowPackAgent",
+            safe_display(integration_card.get("dashboard_hint")),
+        )
+        render_html_card(
+            display_text("Integration summary", language),
+            safe_display(integration_card.get("showcase_summary")),
+        )
+    with summary_right:
+        metadata_stats = integration_card.get("source_metadata_stats", {})
+        render_html_card(
+            display_text("Source metadata stats", language),
+            (
+                f"Loaded: {metadata_stats.get('loaded_metadata_files', 0)} | "
+                f"Missing: {metadata_stats.get('missing_metadata_files', 0)} | "
+                f"Rejected: {metadata_stats.get('rejected_metadata_files', 0)}"
+            ),
+        )
+        render_html_card(
+            display_text("Safety policy", language),
+            integration_card.get("safety_note", ""),
+        )
+
+    top_packs = integration_card.get("top_workflow_packs", [])
+    if top_packs:
+        st.markdown(f"#### {display_text('Top workflow packs', language)}")
+        st.dataframe(
+            localize_dataframe(display_dataframe(top_packs[:3]), language),
+            width="stretch",
+            hide_index=True,
+        )
+
+    next_actions = integration_card.get("recommended_next_actions", [])
+    if next_actions:
+        render_html_card(
+            display_text("Next actions", language),
+            "<br>".join(str(action) for action in next_actions[:3]),
+        )
 
 
 def format_agent_card_title(agent_name: str) -> str:
@@ -1065,6 +1124,7 @@ static_agents = load_agent_registry(REGISTRY_PATH)
 onboarding_result = build_agent_onboarding(AI_PROJECTS_ROOT, static_agents)
 agents = onboarding_result["merged_agents"]
 external_summary_index = build_external_summary_index(agents)
+workflow_pack_integration = get_workflow_pack_integration_status()
 registry_summary = get_registry_summary(agents)
 validation_results = validate_registry(agents)
 health_results = check_all_agents_health(agents)
@@ -1271,6 +1331,8 @@ with command_overview_tab:
             d2i_summary_record,
             "DataToInsightWorkflowAgent AgentHub Summary",
         )
+
+    render_workflow_pack_integration(workflow_pack_integration)
 
     st.markdown(f"### {t('command_center_summary', language)}")
     summary_left, summary_right = st.columns(2)
@@ -2242,6 +2304,7 @@ with plugin_tab:
         validation_results=validation_results,
         action_plan=action_plan,
         portfolio_positioning=portfolio_positioning,
+        workflow_pack_integration=workflow_pack_integration,
     )
     report_file_name = build_report_file_name()
 

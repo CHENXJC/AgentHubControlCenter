@@ -41,7 +41,9 @@ def test_translation_falls_back_to_key_for_unknown_label():
 
 def test_dynamic_agent_category_status_and_filter_translations():
     assert translate_agent_display_name("BusinessOpsAgent", "zh") == "BusinessOpsAgent / 小企业运营诊断智能体"
+    assert translate_agent_display_name("WorkflowCommandCenterAgent", "zh") == "WorkflowCommandCenterAgent / AI 工作流指令中台"
     assert translate_category("AgentOps / PortfolioOps", "zh") == "智能体运维 / 作品集运维"
+    assert translate_category("Workflow Orchestration / AgentOps / Project Command", "zh") == "工作流编排 / 智能体运维 / 项目指令中台"
     assert translate_category("sme_operations", "zh") == "中小企业运营"
     assert translate_status("Complete", "zh") == "已完成"
     assert translate_status("Showcase Ready", "zh") == "可公开展示"
@@ -58,6 +60,7 @@ def test_dynamic_action_connector_next_step_and_description_translations():
     assert translate_connector("Streamlit local dashboard", "zh") == "Streamlit 本地仪表盘"
     assert translate_next_step("No immediate action", "zh") == "暂无立即行动"
     assert translate_next_step("Maintain showcase", "zh") == "保持展示维护状态"
+    assert translate_next_step("Optional profile pin decision or maintain-showcase", "zh") == "可选 Profile 置顶决策或保持展示维护状态"
     assert translate_agent_description(
         "Business operations analysis Agent for KPI-style dashboards, operational summaries, and improvement planning.",
         "zh",

@@ -1,6 +1,125 @@
 # Project Status
 
-Current status: HUB-V2-026-D2I-AGENTHUB-INTEGRATION-COMPLETE
+Current status: HUB-WCC-INTEGRATION-COMPLETE
+
+## HUB-WCC-INTEGRATION WorkflowCommandCenterAgent AgentHub Integration
+
+Checkpoint name:
+HUB-WCC-INTEGRATION-COMPLETE
+
+## HUB-WCC-INTEGRATION Goal
+
+Integrate the GitHub-public WorkflowCommandCenterAgent into
+AgentHubControlCenter as a workflow orchestration / AgentOps / project command
+spoke without modifying the WCC project.
+
+WCC source metadata:
+
+- Project: `WorkflowCommandCenterAgent`
+- Chinese name: `AI 工作流指令中台 / 项目启动与执行控制台`
+- GitHub repo: `https://github.com/CHENXJC/WorkflowCommandCenterAgent`
+- Local path: `F:\AIProjects\WorkflowCommandCenterAgent`
+- WCC checkpoint recorded in AgentHub: `WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE`
+- WCC status recorded in AgentHub: GitHub Public Showcase
+- Profile pin status: Not pinned
+
+## Completed In HUB-WCC-INTEGRATION
+
+- Read WCC `agent_manifest.json` and
+  `release/public_showcase_manifest.json` in read-only mode.
+- Added WorkflowCommandCenterAgent to `data/agent_registry.csv`.
+- Added a Workflow Orchestration / AgentOps portfolio matrix group.
+- Recorded WCC as a project execution command center, not as a generic prompt
+  library.
+- Updated README and docs with WCC repo URL, checkpoint, public showcase status,
+  and not-pinned status.
+- Added tests for WCC registry fields, portfolio matrix placement, next action
+  handling, and UI pin badge display.
+
+## HUB-WCC-INTEGRATION Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- WCC manifests were read only.
+- No WCC file was modified.
+- No WCC script was executed from AgentHub.
+- No WCC GitHub repo update or push was performed.
+- No Profile Pin action was performed.
+- No git remote was changed.
+- No force push was used.
+
+## HUB-WCC-INTEGRATION Validation Results
+
+- `python -m pytest -q`: passed, 134 collected tests
+- `python -m compileall .`: passed
+- Public/release readiness tests: passed, 9 tests
+- WCC registry smoke check: passed, 1 WCC row with correct checkpoint and
+  Workflow Orchestration / AgentOps matrix placement
+
+## HUB-WCC-INTEGRATION Recommended Next Stage
+
+Recommended next stage:
+Optional profile pin decision or maintain-showcase.
+
+Keep AgentHubControlCenter in maintain-only mode. Do not expand AgentHub
+features unless a separate project integration or maintenance task is explicitly
+requested.
+
+## HUB-V2-027 / WPA-004 WorkflowPackAgent Integration
+
+Checkpoint name:
+HUB-V2-027-WPA-004-WORKFLOWPACK-INTEGRATION-COMPLETE
+
+## HUB-V2-027 Goal
+
+Read WorkflowPackAgent local JSON summaries and display workflow pack readiness
+inside AgentHubControlCenter without executing child scripts, reading private
+files, calling APIs, or using external network access.
+
+## Completed In HUB-V2-027
+
+- Added a read-only WorkflowPackAgent integration helper.
+- Reads only:
+  - `F:\AIProjects\WorkflowPackAgent\outputs\agenthub_summary.json`
+  - `F:\AIProjects\WorkflowPackAgent\outputs\workflow_pack_summary.json`
+- Returns stable `available`, `missing`, or `invalid` integration status.
+- Displays WorkflowPackAgent integration status in Command Overview.
+- Shows total workflow packs, metadata enriched agents, safe metadata status,
+  top workflow packs, source metadata stats, next actions, and safety note.
+- Adds Workflow Pack Integration section to the Markdown portfolio report.
+- Preserves existing AgentHub registry, manifest onboarding, and D2I summary
+  architecture.
+
+## HUB-V2-027 Safety Check
+
+- `.env` was not read.
+- No secret, token, password, API key, or credential was output.
+- Only local WorkflowPackAgent JSON summary files were read.
+- No WorkflowPackAgent script was executed from AgentHub.
+- No external API was called.
+- No network access was used.
+- No git push was executed.
+- No `git add .` was used.
+- No project outside WorkflowPackAgent and AgentHubControlCenter was modified.
+
+## HUB-V2-027 Validation Results
+
+- `python -m compileall agent_hub`: passed
+- `python -m py_compile app.py`: passed
+- `pytest -q`: 130 passed
+- WorkflowPackAgent integration helper: available
+- Workflow packs shown from summary: 23
+- Metadata enriched agents shown from summary: 12
+- Safe metadata integration shown from summary: true
+- Streamlit AppTest smoke check: 0 app exceptions
+
+## HUB-V2-028 Recommended Next Stage
+
+Recommended next stage:
+WPA-005 Client-ready Export Templates.
+
+Create client-ready Workflow Pack export templates after the AgentHub summary
+contract is stable. Keep the work local-first, public-safe, and summary-driven.
 
 ## HUB-V2-026 D2I AgentHub Integration
 

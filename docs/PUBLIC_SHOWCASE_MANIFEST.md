@@ -11,7 +11,22 @@ command center.
 
 Public release status: HUB-007-GITHUB-PUBLIC-RELEASE-COMPLETE
 
-Current local development status: HUB-V2-024-DEEP-CHINESE-UI-COVERAGE-CHECK-COMPLETE
+Current local development status: HUB-WCC-INTEGRATION-COMPLETE
+
+## HUB-WCC-INTEGRATION WorkflowCommandCenterAgent Integration
+
+WorkflowCommandCenterAgent is now registered in AgentHubControlCenter as a
+Workflow Orchestration / AgentOps / Project Command spoke.
+
+| Check | Status | Notes |
+| --- | --- | --- |
+| WCC GitHub repo | Complete | `https://github.com/CHENXJC/WorkflowCommandCenterAgent` |
+| WCC checkpoint | Complete | `WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE` |
+| AgentHub registry | Complete | WCC is listed in `data/agent_registry.csv`. |
+| Portfolio matrix | Complete | WCC appears under Workflow Orchestration / AgentOps, not as a generic prompt library. |
+| WCC manifest check | Complete | WCC `agent_manifest.json` and release manifest were checked read-only. |
+| Profile Pin | Not executed | WCC remains `Not pinned`. |
+| Safety | Complete | No WCC files, WCC repo, credentials, live connectors, profile pinning, or force push were modified in this integration. |
 
 ## HUB-006 Public Showcase Packaging
 

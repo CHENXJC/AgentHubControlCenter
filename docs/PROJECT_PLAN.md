@@ -481,6 +481,35 @@ launch command visibility, and next actions.
 - Kept the stage display-only: no live connector, child script, real action,
   external API, git remote change, commit, push, or force push.
 
+## HUB-V2-027 / WPA-004 WorkflowPackAgent Integration
+
+- Added read-only WorkflowPackAgent JSON summary integration.
+- Reads only `outputs/agenthub_summary.json` and
+  `outputs/workflow_pack_summary.json` from `F:\AIProjects\WorkflowPackAgent`.
+- Displays integration status, workflow pack count, metadata enriched agents,
+  safe metadata integration status, top workflow packs, source metadata stats,
+  next actions, and local summary path hints in Command Overview.
+- Adds Workflow Pack Integration to the Markdown portfolio report.
+- Keeps the integration summary-only: no WorkflowPackAgent script execution,
+  private file reads, API calls, network access, connector execution, git push,
+  or registry architecture rewrite.
+
+## HUB-WCC-INTEGRATION WorkflowCommandCenterAgent Integration
+
+- Integrated WorkflowCommandCenterAgent into the existing AgentHub registry and
+  portfolio matrix as a Workflow Orchestration / AgentOps / Project Command
+  spoke.
+- Recorded WCC repo URL:
+  `https://github.com/CHENXJC/WorkflowCommandCenterAgent`.
+- Recorded WCC checkpoint:
+  `WCC-004-GITHUB-PUBLIC-RELEASE-COMPLETE`.
+- Kept WCC profile pin status as `Not pinned`.
+- Added tests for registry fields, portfolio matrix placement, next action
+  handling, and UI pin display.
+- Kept the integration metadata-only: no WCC file edits, WCC script execution,
+  WCC push, profile pin action, live connector, credential read, or registry
+  architecture rewrite.
+
 ## Safety Boundary
 
 This project is a dashboard for local portfolio management and workflow planning.
